@@ -45,7 +45,7 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qlayout.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qrect.h>
 #include <qlineedit.h>
 #include <qlabel.h>
@@ -91,7 +91,7 @@ class gsysHierarchyWindow : public QDialog
   vector<gsysHierarchy*> hierarchyList;
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
-  gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
   gsysHierarchy* parent;
   gsysHierarchy* ownHierarchy;
   int dimFactor;
