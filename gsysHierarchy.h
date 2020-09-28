@@ -33,7 +33,7 @@
 
 #include "systemc.h"
 #include <qpoint.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <vector> 
 
 using namespace std;
@@ -53,7 +53,7 @@ class gsysHierarchy
   vector<gsysPort*> portsS;
   vector<gsysPort*> portsW;
   
-  QCanvasRectangle *hierRect;
+  Q3CanvasRectangle *hierRect;
   
   char* name;
   vector<gsysHierarchy*> childList;
@@ -102,8 +102,8 @@ class gsysHierarchy
   void setCenterPoint(QPoint* cp);
   QPoint* getCenterPoint();
 
-  void setHierRect(QCanvasRectangle *hrect);
-  QCanvasRectangle *getHierRect();
+  void setHierRect(Q3CanvasRectangle *hrect);
+  Q3CanvasRectangle *getHierRect();
 
   bool hasSidePort(gsysPort* p);
 };
