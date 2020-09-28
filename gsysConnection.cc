@@ -96,10 +96,10 @@
    */
   bool gsysConnection::rectHasColor(QRect rect,QColor col)
   {
-    QCanvasItemList cil = parentWindow->canvasView->canvas()->collisions(rect);
-    for(int i=0; i<cil.count(); i++)
-      if(cil[i]->rtti() == (new QCanvasLine(new QCanvas()))->rtti())
-        if(((QCanvasLine*)cil[i])->brush().color().rgb() == col.rgb()) return true;
+    Q3CanvasItemList ceil = parentWindow->canvasView->canvas()->collisions(rect);
+    for(int i=0; i<ceil.count(); i++)
+      if(ceil[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
+        if(((Q3CanvasLine*)ceil[i])->brush().color().rgb() == col.rgb()) return true;
     return false;  
   }
   
@@ -111,13 +111,13 @@
   {
     if(!activated)
     {
-      QCanvasRectangle* aktRect = 0;
-      QCanvasLine* aktLine = 0;
+      Q3CanvasRectangle* aktRect = 0;
+      Q3CanvasLine* aktLine = 0;
       for(int i=0; i<verlauf.size(); i++)
       {
-	if(verlauf[i]->rtti() == (new QCanvasLine(new QCanvas()))->rtti())
+	if(verlauf[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
 	{
-	  aktLine = (QCanvasLine*) verlauf[i];
+	  aktLine = (Q3CanvasLine*) verlauf[i];
 	  if(highlighted)
 	  {
 	    if(parentWindow!=0)
@@ -147,9 +147,9 @@
 	  aktLine->setActive(true);
 	  aktLine->canvas()->update();  
 	}
-	if(verlauf[i]->rtti() == (new QCanvasRectangle(new QCanvas()))->rtti())
+	if(verlauf[i]->rtti() == (new Q3CanvasRectangle(new Q3Canvas()))->rtti())
 	{
-	  aktRect = (QCanvasRectangle*) verlauf[i];
+	  aktRect = (Q3CanvasRectangle*) verlauf[i];
 	  if(parentWindow != 0)
 	  {	  
   	    if(aktRect->brush().color().rgb() == QColor(parentWindow->changedSignal).rgb()) 
@@ -188,9 +188,9 @@
     {
       for(int i=0; i<verlauf.size(); i++)
       {
-	if(verlauf[i]->rtti() == (new QCanvasLine(new QCanvas()))->rtti())
+	if(verlauf[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
 	{
-	  QCanvasLine* aktLine = (QCanvasLine*) verlauf[i];
+	  Q3CanvasLine* aktLine = (Q3CanvasLine*) verlauf[i];
 	  if(parentWindow != 0)
 	    if(highlighted)
 	    {
@@ -212,31 +212,31 @@
 	  aktLine->canvas()->update();  
 	  aktLine = 0;
 	}
-	if(verlauf[i]->rtti() == (new QCanvasRectangle(new QCanvas()))->rtti())
+	if(verlauf[i]->rtti() == (new Q3CanvasRectangle(new Q3Canvas()))->rtti())
 	{
-	  QCanvasRectangle* aktRect = (QCanvasRectangle*) verlauf[i];
+	  Q3CanvasRectangle* aktRect = (Q3CanvasRectangle*) verlauf[i];
 	  
 	  if(parentWindow != 0)
 	  {	  
 	    // Check whether any signal is highlighted (through click) and/or changed
-            QCanvasItemList cil = parentWindow->canvasView->canvas()->collisions(aktRect->rect());
+            Q3CanvasItemList cil = parentWindow->canvasView->canvas()->collisions(aktRect->rect());
 	    bool rectActivated = false;
 	    bool rectHighlighted = false;
             for(int i=0; i<cil.count(); i++)
 	    {	    
-              if(cil[i]->rtti() == (new QCanvasLine(new QCanvas()))->rtti())
+              if(cil[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
 	      {	      
-                if(((QCanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
+                if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
 		{
 		  rectActivated = true;
 		  rectHighlighted = true;
 		  break;
 		}
-		else if(((QCanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeSignal).rgb())
+		else if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeSignal).rgb())
 		     {
 		       rectActivated = true;
 		     }
-		     else if(((QCanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->changedSignal).rgb())
+		     else if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->changedSignal).rgb())
 			  {
 		            rectHighlighted = true;
 			  }
@@ -292,13 +292,13 @@
       #ifdef DEBUG_GSYSC
       cout << "CONN-highlight in " << this << ": \t parentWindow=" << parentWindow << endl << endl;
       #endif
-      QCanvasRectangle* aktRect = 0;
-      QCanvasLine* aktLine = 0;
+      Q3CanvasRectangle* aktRect = 0;
+      Q3CanvasLine* aktLine = 0;
       for(int i=0; i<verlauf.size(); i++)
       {
-	if(verlauf[i]->rtti() == (new QCanvasLine(new QCanvas()))->rtti())
+	if(verlauf[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
 	{
-	  aktLine = (QCanvasLine*) verlauf[i];
+	  aktLine = (Q3CanvasLine*) verlauf[i];
 	  if (parentWindow != 0)
 	  { 
 	    if(activated)
@@ -321,33 +321,33 @@
 	  aktLine->setActive(true);
 	  aktLine->canvas()->update();  
 	}
-	if(verlauf[i]->rtti() == (new QCanvasRectangle(new QCanvas()))->rtti())
+	if(verlauf[i]->rtti() == (new Q3CanvasRectangle(new Q3Canvas()))->rtti())
 	{
-	  aktRect = (QCanvasRectangle*) verlauf[i];
+	  aktRect = (Q3CanvasRectangle*) verlauf[i];
 	  #ifdef DEBUG_GSYSC
 	  cout << "RECT(high) i=" << i << ";  Coords: (" << aktRect->rect().x() << "," << aktRect->rect().y() << ");  Color=" << aktRect->brush().color().rgb() << "  (activeSignal-color: " << QColor(parentWindow->activeSignal).rgb() << ")" << endl;
 	  #endif
 	  if(parentWindow != 0)
 	  {
 	    // Check whether any signal is highlighted (through click) and/or changed
-            QCanvasItemList cil = parentWindow->canvasView->canvas()->collisions(aktRect->rect());
+            Q3CanvasItemList cil = parentWindow->canvasView->canvas()->collisions(aktRect->rect());
 	    bool rectActivated = false;
 	    bool rectHighlighted = false;
             for(int i=0; i<cil.count(); i++)
 	    {	    
-              if(cil[i]->rtti() == (new QCanvasLine(new QCanvas()))->rtti())
+              if(cil[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
 	      {	      
-                if(((QCanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
+                if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
 		{
 		  rectActivated = true;
 		  rectHighlighted = true;
 		  break;
 		}
-		else if(((QCanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeSignal).rgb())
+		else if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeSignal).rgb())
 		     {
 		       rectActivated = true;
 		     }
-		     else if(((QCanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->changedSignal).rgb())
+		     else if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->changedSignal).rgb())
 			  {
 		            rectHighlighted = true;
 			  }
@@ -407,9 +407,9 @@
       #endif
       for(int i=0; i<verlauf.size(); i++)
       {
-	if(verlauf[i]->rtti() == (new QCanvasLine(new QCanvas()))->rtti())
+	if(verlauf[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
 	{
-	  QCanvasLine* aktLine = (QCanvasLine*) verlauf[i];
+	  Q3CanvasLine* aktLine = (Q3CanvasLine*) verlauf[i];
 	  if(parentWindow != 0 && aktLine != 0)
 	  {
 	    if(activated)
@@ -433,9 +433,9 @@
 	    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
 	  }
 	}
-	if(verlauf[i]->rtti() == (new QCanvasRectangle(new QCanvas()))->rtti())
+	if(verlauf[i]->rtti() == (new Q3CanvasRectangle(new Q3Canvas()))->rtti())
 	{
-	  QCanvasRectangle* aktRect = (QCanvasRectangle*) verlauf[i];
+	  Q3CanvasRectangle* aktRect = (Q3CanvasRectangle*) verlauf[i];
 	  #ifdef DEBUG_GSYSC
 	  cout << "RECT(deHi) i=" << i << ";  Coords: (" << aktRect->rect().x() << "," << aktRect->rect().y() << ");  Color=" << aktRect->brush().color().rgb() << "  (activeChangedSig-color: " << QColor(parentWindow->activeChangedSig).rgb() << ")" << endl;
 	  #endif
@@ -502,13 +502,13 @@
   }
 
   /*
-   *   adds elemt pol to the drawn connection of the structure graphics
+   *   adds elemt powl to the drawn connection of the structure graphics
    *   That is because in this way gSysC can determine to which connection a
    *   clicked picture element belongs.
    */
-  void gsysConnection::addTraceElem(QCanvasPolygonalItem* pol)
+  void gsysConnection::addTraceElem(Q3CanvasPolygonalItem* powl)
   {
-    verlauf.push_back(pol);
+    verlauf.push_back(powl);
   }
  
   /*
