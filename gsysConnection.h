@@ -36,7 +36,7 @@
 #define GSYS_CONN_H
 
 #include "systemc.h"
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <vector> 
 
 using namespace std;
@@ -50,7 +50,7 @@ class gsysConnection
   private:
   
   vector<gsysSignal*> signalList;
-  vector<QCanvasPolygonalItem*> verlauf;
+  vector<Q3CanvasPolygonalItem*> verlauf;
   gsysHierarchy* anfang;
   gsysHierarchy* ende;
   QPoint* node1;
@@ -73,7 +73,7 @@ class gsysConnection
   ~gsysConnection();
   vector<gsysSignal*> getSignals();
   void addSignal(gsysSignal* signal);
-  void addTraceElem(QCanvasPolygonalItem* pol);
+  void addTraceElem(Q3CanvasPolygonalItem* pol);
   void activate();
   void deactivate();
   void highlight();
