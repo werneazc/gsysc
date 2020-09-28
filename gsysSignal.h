@@ -34,7 +34,7 @@
 
 #include "systemc.h"
 #include <qpoint.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 
 #include <vector> 
 
@@ -53,7 +53,7 @@ class gsysSignal
   bool activated;
   bool highlighted;
   vector<gsysPort*> connPorts;
-  vector<vector<QCanvasItem*> > portAnbindungen;  // Lines of the single ports to the network nodes as CanvasPolygonalItem
+  vector<vector<Q3CanvasItem*> > portAnbindungen;  // Lines of the single ports to the network nodes as CanvasPolygonalItem
   void* realSignal;
   gsysHierarchy* parentModule;
   gsysConnection* parentConn;
@@ -83,7 +83,7 @@ class gsysSignal
   gsysHierarchy* getParent();
   void setConn(gsysConnection* conn);
   gsysConnection* getConn();
-  QCanvasItemList getCanvasItemList();
+  Q3CanvasItemList getCanvasItemList();
   gsysSignalViewer* getSigViewWindow();
   void highlightChanged();
   void deHighlight();
