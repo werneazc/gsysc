@@ -57,7 +57,7 @@ class gsysRegister
   vector<gsysPort*> portList;
   vector<gsysPort*> notAssignedPorts;
   vector<gsysSignal*> notAssignedSignals;
-  vector<QListViewItem*> listViewElements;
+  vector<QListView*> listViewElements;
   vector<void*> bufferIDList;
   vector<char*> bufferNameList;
   vector<bool> bufferPercList;
@@ -68,8 +68,8 @@ class gsysRegister
   void regFinished();
   int connExists(gsysHierarchy* h1, gsysHierarchy* h2);
   gsysRegister();
-  QListViewItem *rootLVI;
-  void insertLVI(QListViewItem *parentLVI, gsysHierarchy* hier);
+  QListView *rootLVI;
+  void insertLVI(QListView *parentLVI, gsysHierarchy* hier);
 
 
   public:
