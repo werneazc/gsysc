@@ -21,11 +21,11 @@
 #include "gsysMain.h"
 #include "gsysRegister.h"
 
-#include <qvariant.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qlayout.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
 
 /* 
  *  Constructs a gsysBuffer as a child of 'parent', with the 

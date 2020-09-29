@@ -11,9 +11,9 @@ SYSTEMC = /opt/systemc-2.3.2
 LIB_SYSTEMC=$(SYSTEMC)/lib64/libsystemc.a 
 
 # other necessary path variables:
-QT_DIR = /usr/lib64/qt3
-INCDIR = -I$(SYSTEMC)/include -I$(QT_DIR)/include
-LIBDIR = -L/usr/lib -L$(QT_DIR)/lib64
+QT_DIR = /usr/include/qt4
+INCDIR = -I$(SYSTEMC)/include -I$(QT_DIR)
+LIBDIR = -L/usr/lib -L$(QT_DIR)
 
 
 ####################################################################

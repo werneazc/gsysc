@@ -32,11 +32,11 @@
 #ifndef GSYSBUFFER_H
 #define GSYSBUFFER_H
 
-#include <qvariant.h>
-#include <qdialog.h>
-#include <qwidget.h>
-#include <qprogressbar.h>
-#include <qgroupbox.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qdialog.h>
+#include <QtGui/qwidget.h>
+#include <QtGui/qprogressbar.h>
+#include <QtGui/qgroupbox.h>
 #include <vector>
 
 class QVBoxLayout;

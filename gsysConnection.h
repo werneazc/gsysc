@@ -36,7 +36,7 @@
 #define GSYS_CONN_H
 
 #include "systemc.h"
-#include <q3canvas.h>
+#include <Qt3Support/q3canvas.h>
 #include <vector> 
 
 using namespace std;

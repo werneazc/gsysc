@@ -22,20 +22,24 @@
 #include "gsysMain.h"
 #include "gsysMainGUI.h"
 
-
   /*
    *   constructor of this class
    */
-  gsysHierarchyTree::gsysHierarchyTree( QWidget* parent, const char* name, bool modal, WFlags fl ) : QDialog( parent, name, modal, fl )
+  gsysHierarchyTree::gsysHierarchyTree( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl ) : QDialog( parent, fl )
   {
     windowOpen.clear();
     allHierarchies.clear();
     allConnections.clear();
+    setModal(modal);
+    setObjectName("gsysHierarchyTree");
 
-    if ( !name ) setName("gsysHierarchyTree");
-    gsysHierarchyTreeLayout = new QVBoxLayout( this, 11, 6, "gsysHierarchyTreeLayout");
+    gsysHierarchyTreeLayout = new QVBoxLayout( this );
+    gsysHierarchyTreeLayout->setObjectName("gsysHierarchyTreeLayout");
+    gsysHierarchyTreeLayout->setSpacing(6);
+    gsysHierarchyTreeLayout->setMargin(11);
+    
 
-    tree = new QListView(this,"tree");
+    tree = new Q3ListView(this,"tree");
     tree->setRootIsDecorated(true);
     tree->addColumn(tr("Module"));
     tree->addColumn(tr("Type"));

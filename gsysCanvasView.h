@@ -29,7 +29,7 @@
  *************************************************************************/
 
 
-#include "q3canvas.h"
+#include "Qt3Support/q3canvas.h"
 #include <iostream>
 #include <vector>
 #include "Qt3Support/Q3CanvasView"

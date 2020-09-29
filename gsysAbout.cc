@@ -18,13 +18,13 @@
 
 #include "gsysAbout.moc"
 
-#include <qvariant.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qlayout.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGuiqimage.h>
+#include <QtGui/qpixmap.h>
 
 // University Logo
 static const char* const image0_data[] = { 

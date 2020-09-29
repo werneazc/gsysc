@@ -32,8 +32,8 @@
 #define GSYS_HIERARCHY_H
 
 #include "systemc.h"
-#include <qpoint.h>
-#include <q3canvas.h>
+#include <Qt/qpoint.h>
+#include <Qt3Support/q3canvas.h>
 #include <vector> 
 
 using namespace std;

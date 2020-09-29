@@ -512,7 +512,7 @@
   /*
    *   set a pointer to the corresponding rectangle
    */
-  void gsysHierarchy::setHierRect(QCanvasRectangle *hrect)
+  void gsysHierarchy::setHierRect(Q3CanvasRectangle *hrect)
   {
     hierRect = hrect;
   }
@@ -520,7 +520,7 @@
   /*
    *   get a pointer to the corresponding rectangle
    */
-  QCanvasRectangle *gsysHierarchy::getHierRect()
+  Q3CanvasRectangle *gsysHierarchy::getHierRect()
   {
     return hierRect;
   }

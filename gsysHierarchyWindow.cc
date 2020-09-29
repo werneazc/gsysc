@@ -24,10 +24,10 @@
 #include "gsysPort.h"
 #include "gsysCanvasView.h"
 #include "gsysRegister.h"
-#include "qpicture.h"
-#include "qpainter.h"
-#include <qfiledialog.h>
-#include <qmessagebox.h>
+#include "QtGui/qpicture.h"
+#include "QtGui/qpainter.h"
+#include <QtGui/qfiledialog.h>
+#include <QtGui/qmessagebox.h>
 
   /*
    *   method to read the config file gsysHViewer.conf

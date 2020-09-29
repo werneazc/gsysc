@@ -30,13 +30,13 @@
 #ifndef GSYS_MAINGUI_H
 #define GSYS_MAINGUI_H
 
-#include <qvariant.h>
-#include <qdialog.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qdialog.h>
 
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qlayout.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
 
 class gsysSimulator;
 class gsysHierarchyTree;
@@ -92,7 +92,7 @@ private:
      *  The dialog will by default be modeless, unless you set 'modal' to
      *  TRUE to construct a modal dialog.
      */
-    gsysMainGUI( QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0);
+    gsysMainGUI( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
 															  
 public slots:
     void pushButton4_clicked();    // start simulator

@@ -39,17 +39,17 @@
 #include <stdio.h>
 #include <string>
 
-#include <qvariant.h>
-#include <qdialog.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qlayout.h>
-#include <q3canvas.h>
-#include <qrect.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qgroupbox.h>
+#include <Qt/qvariant.h>
+#include <QtGui/qdialog.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGui/qlayout.h>
+#include <Qt3Support/q3canvas.h>
+#include <QtCore/qrect.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qgroupbox.h>
 
 class gsysSignalViewer;
 class gsysPort;

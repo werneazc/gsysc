@@ -37,14 +37,14 @@ class gsysHierarchy;
 class gsysHierarchyWindow;
 class gsysConnection;
 
-#include <qvariant.h>
-#include <qdialog.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qlayout.h>
-#include <qlistview.h>
-#include <qmessagebox.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qdialog.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGui/qlayout.h>
+#include <QtGui/qlistview.h>
+#include <QtGui/qmessagebox.h>
 
 #include <vector>
 
@@ -66,7 +66,7 @@ class gsysHierarchyTree : public QDialog
   vector<gsysHierarchy*> allHierarchies;
   vector<gsysConnection*> allConnections;
   
-  gsysHierarchyTree( QWidget* parent, const char* name = 0, bool modal = FALSE, WFlags fl = 0 ); 
+  gsysHierarchyTree( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 ); 
 
   gsysHierarchyWindow* isOpen(gsysHierarchy* hier);
   

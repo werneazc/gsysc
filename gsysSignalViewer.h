@@ -29,17 +29,17 @@
 #ifndef GSYS_SIGNALVIEWER_H
 #define GSYS_SIGNALVIEWER_H
 
-#include <qvariant.h>
-#include <qdialog.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qdialog.h>
 
-#include <qvariant.h>
-#include <qgroupbox.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qgroupbox.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qlayout.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
 #include <stdio.h>
 #include <sstream>
 #include <vector>
@@ -51,7 +51,7 @@ class gsysSignalViewer : public QDialog
     Q_OBJECT
 
 private:
-    gsysSignalViewer( QWidget* parent, int portCount=2, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    gsysSignalViewer( QWidget* parent, int portCount=2, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
     ~gsysSignalViewer();
 
     vector<QGroupBox*> groupBoxList;

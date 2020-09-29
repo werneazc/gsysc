@@ -27,7 +27,7 @@
 #include "gsysSignal.h"
 #include "gsysPort.h"
 #include "gsysPortViewer.h"
-#include "qcanvas.h"
+#include "Qt3Support/q3canvas.h"
 
   /*
    *   constructor

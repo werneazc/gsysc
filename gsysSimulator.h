@@ -40,18 +40,18 @@ class gsysHierarchyTree;
 class gsysRegister;
 class gsysPort;
 
-#include <qvariant.h>
-#include <qdialog.h>
-#include <qcheckbox.h>
-#include <qgroupbox.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qspinbox.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qdialog.h>
+#include <QtGui/qcheckbox.h>
+#include <QtGui/qgroupbox.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qspinbox.h>
+#include <QtGui/qlayout.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qcombobox.h>
 
 #include <stdio.h>
 #include <sstream>
@@ -110,7 +110,7 @@ private:
    *  The dialog will by default be modeless, unless you set 'modal' to
    *  TRUE to construct a modal dialog.
    */
-  gsysSimulator( QWidget* parent, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  gsysSimulator( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
   
   bool haveToStop();
 

@@ -33,7 +33,7 @@
 #define GSYS_REGISTER_H
 
 #include "systemc.h"
-#include <qlistview.h>
+#include <Qt/qlistview.h>
 #include <vector>
 
 class gsysConnection;

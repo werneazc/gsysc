@@ -31,9 +31,9 @@
 #ifndef GSYSABOUT_H
 #define GSYSABOUT_H
 
-#include <qvariant.h>
-#include <qpixmap.h>
-#include <qdialog.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qpixmap.h>
+#include <QtGui/qdialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
