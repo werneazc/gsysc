@@ -42,7 +42,7 @@ gsysSignalViewer::gsysSignalViewer( QWidget* parent, int portCount, const char* 
     {
       ostringstream ostr;
       ostr << (i+1) << ends;
-      groupBoxList.push_back(new QGroupBox(this,"groupBox"));
+      groupBoxList.push_back(new Q3GroupBox(this,"groupBox"));
       groupBoxList.back()->setColumnLayout(0, Qt::Vertical );
       groupBoxList.back()->layout()->setSpacing( 6 );
       groupBoxList.back()->layout()->setMargin( 11 );
@@ -61,7 +61,7 @@ gsysSignalViewer::gsysSignalViewer( QWidget* parent, int portCount, const char* 
       gsysSignalViewerLayout->addWidget(groupBoxList.back());
     }
 
-    groupBox3 = new QGroupBox( this, "groupBox3" );
+    groupBox3 = new Q3GroupBox( this, "groupBox3" );
     groupBox3->setColumnLayout(0, Qt::Vertical );
     groupBox3->layout()->setSpacing( 6 );
     groupBox3->layout()->setMargin( 11 );

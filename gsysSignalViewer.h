@@ -40,6 +40,8 @@
 #include <QtGui/qlayout.h>
 #include <QtGui/qtooltip.h>
 #include <QtGui/qwhatsthis.h>
+#include <Qt3Support/Q3GroupBox>
+
 #include <stdio.h>
 #include <sstream>
 #include <vector>
@@ -54,12 +56,12 @@ private:
     gsysSignalViewer( QWidget* parent, int portCount=2, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
     ~gsysSignalViewer();
 
-    vector<QGroupBox*> groupBoxList;
+    vector<Q3GroupBox*> groupBoxList;
     vector<QGridLayout*> gridLayoutList;
     vector<QLabel*> textLabelList;
     vector<QLineEdit*> lineEditList;
 		    
-    QGroupBox* groupBox3;
+    Q3GroupBox* groupBox3;
     QLabel* textLabel3;
     QLabel* textLabel4;
     QLineEdit* lineEdit3;
