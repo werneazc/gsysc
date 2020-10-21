@@ -114,7 +114,7 @@
      *  The dialog will by default be modeless, unless you set 'modal' to
      *  TRUE to construct a modal dialog.
      */
-    gsysMainGUI::gsysMainGUI( QWidget* parent, const char* name, bool modal, WFlags fl )
+    gsysMainGUI::gsysMainGUI( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
            : QDialog( parent, name, modal, fl )
     {
       simulator = new gsysSimulator(this);
