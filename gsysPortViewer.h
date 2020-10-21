@@ -35,7 +35,7 @@
 #include <QtGui/qcombobox.h>
 #include <QtGui/qframe.h>
 #include <QtGui/qpushbutton.h>
-#include <QtGui/qtable.h>
+#include <Qt3Support/q3table.h>
 #include <QtGui/qlayout.h>
 #include <QtGui/qtooltip.h>
 #include <QtGui/qwhatsthis.h>
@@ -60,7 +60,7 @@ public:
     gsysPortViewer( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
     ~gsysPortViewer();
 
-    QTable* table1;
+    Q3Table* table1;
     QFrame* frame4;
     QComboBox* comboBox1;
     QPushButton* pushButton1;

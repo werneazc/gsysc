@@ -38,14 +38,14 @@ gsysPortViewer::gsysPortViewer( QWidget* parent, const char* name, bool modal, Q
 
     portVec.clear();
 
-    table1 = new QTable( this, "table1" );
+    table1 = new Q3Table( this, "table1" );
     table1->setNumRows( 0 );
     table1->setNumCols( 3 );
     table1->horizontalHeader()->setLabel( 0, tr( "Port name" ) );
     table1->horizontalHeader()->setLabel( 1, tr( "Value" ) );
     table1->horizontalHeader()->setLabel( 2, tr( "ID" ) );
     table1->setReadOnly( true );
-    table1->setSelectionMode((QTable::SelectionMode) 2);	// SingleRow
+    table1->setSelectionMode((Q3Table::SelectionMode) 2);	// SingleRow
     gsysPortViewerLayout->addWidget( table1 );
 
     frame4 = new QFrame( this, "frame4" );
