@@ -52,6 +52,7 @@ class gsysPort;
 #include <QtGui/qwhatsthis.h>
 #include <QtGui/qlineedit.h>
 #include <QtGui/qcombobox.h>
+#include <Qt3Support/Q3GroupBox>
 
 #include <stdio.h>
 #include <sstream>
@@ -71,23 +72,23 @@ class gsysSimulator : public QDialog
 
 public:
 
-  QGroupBox* groupBox1;
+  Q3GroupBox* groupBox1;
   QLabel* textLabel1;
   QSpinBox* stepSpin;
   QLabel* textLabel2;
   QSpinBox* maxSpin;
-  QGroupBox* groupBox2;
+  Q3GroupBox* groupBox2;
   QPushButton* stepButton;
   QPushButton* startButton;
   QPushButton* stopButton;
-  QGroupBox* groupBox3;
+  Q3GroupBox* groupBox3;
   QCheckBox* useViewer;
   QCheckBox* autoStep;
-  QGroupBox* groupBox4;
+  Q3GroupBox* groupBox4;
   QLabel* textLabel3;
   QLabel* textLabel3_2;
   QSpinBox* intervalSpin;
-  QGroupBox* groupBox5;
+  Q3GroupBox* groupBox5;
   QCheckBox* useWatcher;
   QComboBox* watchVariable;
   QLabel* textLabel1_2;

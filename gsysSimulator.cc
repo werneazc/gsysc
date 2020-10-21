@@ -49,7 +49,7 @@
     hierTree = 0;
 	
 
-    groupBox1 = new QGroupBox( this, "groupBox1" );
+    groupBox1 = new Q3GroupBox( this, "groupBox1" );
     groupBox1->setColumnLayout(0, Qt::Vertical );
     groupBox1->layout()->setSpacing( 6 );
     groupBox1->layout()->setMargin( 11 );
@@ -80,7 +80,7 @@
     groupBox1Layout->addItem( spacer_3 );
     gsysSimulatorLayout->addWidget( groupBox1 );
 
-    groupBox2 = new QGroupBox( this, "groupBox2" );
+    groupBox2 = new Q3GroupBox( this, "groupBox2" );
     groupBox2->setColumnLayout(0, Qt::Vertical );
     groupBox2->layout()->setSpacing( 6 );
     groupBox2->layout()->setMargin( 11 );
@@ -104,7 +104,7 @@
     groupBox2Layout->addItem( spacer_5 );
     gsysSimulatorLayout->addWidget( groupBox2 );
 
-    groupBox3 = new QGroupBox( this, "groupBox3" );
+    groupBox3 = new Q3GroupBox( this, "groupBox3" );
     groupBox3->setColumnLayout(0, Qt::Vertical );
     groupBox3->layout()->setSpacing( 6 );
     groupBox3->layout()->setMargin( 11 );
@@ -118,7 +118,7 @@
     autoStep = new QCheckBox( groupBox3, "autoStep" );
     groupBox3Layout->addWidget( autoStep );
 
-    groupBox4 = new QGroupBox( groupBox3, "groupBox4" );
+    groupBox4 = new Q3GroupBox( groupBox3, "groupBox4" );
     groupBox4->setEnabled( FALSE );
     groupBox4->setColumnLayout(0, Qt::Vertical );
     groupBox4->layout()->setSpacing( 6 );
@@ -151,7 +151,7 @@
     useWatcher = new QCheckBox( groupBox3, "useWatcher" );
     groupBox3Layout->addWidget( useWatcher );
 
-    groupBox5 = new QGroupBox( groupBox3, "groupBox5" );
+    groupBox5 = new Q3GroupBox( groupBox3, "groupBox5" );
     groupBox5->setEnabled( FALSE );
     groupBox5->setColumnLayout(0, Qt::Vertical );
     groupBox5->layout()->setSpacing( 6 );
