@@ -23,7 +23,7 @@
 #include <QtGui/qlayout.h>
 #include <QtGui/qtooltip.h>
 #include <QtGui/qwhatsthis.h>
-#include <QtGuiqimage.h>
+#include <QtGui/qimage.h>
 #include <QtGui/qpixmap.h>
 
 // University Logo
@@ -398,7 +398,7 @@ static const char* const image1_data[] = {
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-gsysAbout::gsysAbout( QWidget* parent, const char* name, bool modal, WFlags fl )
+gsysAbout::gsysAbout( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
     : QDialog( parent, name, modal, fl )
 ,
       image0( (const char **) image0_data ),
