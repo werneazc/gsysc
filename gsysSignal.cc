@@ -38,7 +38,7 @@
     realSignal = 0;
     parentModule = 0;
     parentConn = 0;
-    name = "";
+    name = (char*)"";
     oldValue = 0;
     sigValue = 0;
     sigViewWindow = 0;
@@ -80,7 +80,7 @@
       #ifdef DEBUG_GSYS
       cout<<"gsysSignal("<<this<<")->getValue() == '' (undefined)"<<endl;
       #endif
-      return(">>UNDEFINED<<");
+      return((char*)">>UNDEFINED<<");
     }  
     #ifdef DEBUG_GSYSC
     cout<<"gsysSignal("<<this<<")->getValue() (sigValue->"<<&(this->sigValue)<<") gives value '"<<this->sigValue<<"'"<<endl;
@@ -234,7 +234,7 @@
    */
   void gsysSignal::setName(const char* name)
   {
-    this->name = name;
+    this->name = (char*)name;
   }
 
   /*
@@ -312,13 +312,13 @@
   /*
    *   get list of canvas items that represent this signal
    */
-  QCanvasItemList gsysSignal::getCanvasItemList()
+  Q3CanvasItemList gsysSignal::getCanvasItemList()
   {
-    QCanvasItemList qcil;
+    Q3CanvasItemList qcil;
     qcil.clear();
     for(int i=0; i<connPorts.size(); i++)
       for(int o=0; o<connPorts[i]->getCanvasItems().size(); o++)
-        qcil.push_back((QCanvasItem*)connPorts[i]->getCanvasItems()[o]);
+        qcil.push_back((Q3CanvasItem*)connPorts[i]->getCanvasItems()[o]);
     return qcil;
   }
 
