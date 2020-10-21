@@ -37,6 +37,8 @@
 #include <QtGui/qwidget.h>
 #include <QtGui/qprogressbar.h>
 #include <QtGui/qgroupbox.h>
+#include <Qt3Support/Q3ProgressBar>
+
 #include <vector>
 
 class QVBoxLayout;
@@ -54,11 +56,11 @@ class gsysBuffer : public QDialog
     Q_OBJECT
 
 private:
-    gsysBuffer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    gsysBuffer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
     ~gsysBuffer();
     
     // List of all ProgressBars
-    vector<QProgressBar*> pgList;
+    vector<Q3ProgressBar*> pgList;
     // List of all identification numbers of the Prog.Bars
     vector<void*> idList;
     // List of the GroupBoxes, in which bars are shown

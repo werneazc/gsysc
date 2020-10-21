@@ -34,7 +34,7 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-gsysBuffer::gsysBuffer( QWidget* parent, const char* name, bool modal, WFlags fl )
+gsysBuffer::gsysBuffer( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
     : QDialog( parent, name, modal, fl )
 {
     if ( !name )
@@ -55,7 +55,7 @@ gsysBuffer::gsysBuffer( QWidget* parent, const char* name, bool modal, WFlags fl
       QVBoxLayout* groupBox1Layout = new QVBoxLayout(groupBox1,11,6,"gsysGroupBoxLayout");
       groupBox1Layout->setAlignment( Qt::AlignTop );
 
-      QProgressBar* progressBar1 = new QProgressBar( groupBox1, "progressBar1" );
+      Q3ProgressBar* progressBar1 = new Q3ProgressBar( groupBox1, "progressBar1" );
       
       QSpacerItem* spacer1 = new QSpacerItem(40,20,QSizePolicy::Minimum,QSizePolicy::Expanding);
       QSpacerItem* spacer2 = new QSpacerItem(40,20,QSizePolicy::Minimum,QSizePolicy::Expanding);
@@ -115,7 +115,7 @@ void gsysBuffer::refreshBuffer(void* id, int value, int maxValue)
   #endif
   if(getBufferIndex(id)>=0)
   {
-    QProgressBar* aktPg = pgList[getBufferIndex(id)];
+    Q3ProgressBar* aktPg = pgList[getBufferIndex(id)];
     aktPg->setTotalSteps(maxValue);
     aktPg->setProgress(value);
     aktPg = 0;
