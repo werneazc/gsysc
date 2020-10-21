@@ -31,21 +31,20 @@
     allHierarchies.clear();
     allConnections.clear();
     setModal(modal);
-    setObjectName("gsysHierarchyTree");
+    if ( !name ) setObjectName("gsysHierarchyTree");
 
     gsysHierarchyTreeLayout = new QVBoxLayout( this );
     gsysHierarchyTreeLayout->setObjectName("gsysHierarchyTreeLayout");
     gsysHierarchyTreeLayout->setSpacing(6);
     gsysHierarchyTreeLayout->setMargin(11);
     
-
     tree = new Q3ListView(this,"tree");
     tree->setRootIsDecorated(true);
     tree->addColumn(tr("Module"));
     tree->addColumn(tr("Type"));
     tree->addColumn(tr("Address"));
     gsysHierarchyTreeLayout->addWidget( tree );
-    openMod = new QPushButton( this, "openMod" );
+    openMod = new QPushButton("openMod", this );
     gsysHierarchyTreeLayout->addWidget( openMod );
 
     languageChanged();
@@ -136,7 +135,7 @@
    */
   void gsysHierarchyTree::openMod_clicked()
   {
-    QListViewItem* lvi = tree->currentItem();
+    Q3ListViewItem* lvi = tree->currentItem();
     if (lvi != 0)
     {
       int addr = lvi->text(2).toInt();
