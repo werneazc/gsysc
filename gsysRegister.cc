@@ -100,10 +100,10 @@
  
   // recursive function for insertion of the hierarchies according to their parent-/child-structure
   // WARNING: It is assumed, that the Root node is already inserted!           =>  hier!=0 (always!)
-  void gsysRegister::insertLVI(QListViewItem *parentLVI, gsysHierarchy* hier)
+  void gsysRegister::insertLVI(Q3ListView *parentLVI, gsysHierarchy* hier)
   {
     gsysMain* mainWdw = new gsysMain();
-    QListViewItem* lvi = new QListViewItem(parentLVI,hier->getName(),"Modul",mainWdw->getSimulator()->asChar((int) hier));
+    Q3ListView* lvi = (Q3ListView*) new Q3ListViewItem(parentLVI,hier->getName(),"Modul",mainWdw->getSimulator()->asChar((int) hier));
     listViewElements.push_back( lvi );
     
     int chSize = hier->getChildren().size();
@@ -220,7 +220,7 @@
     vector<gsysPort*> ports;
     gsysMain* mainWdw = new gsysMain();
     gsysPortViewer* pv = mainWdw->getMainWindow()->getPortViewer();
-    rootLVI = new QListViewItem(mainWdw->getHierarchyTree()->tree,"/","Root","0");
+    rootLVI = (Q3ListView*) new Q3ListViewItem(mainWdw->getHierarchyTree()->tree,"/","Root","0");
     listViewElements.push_back( rootLVI );
     
     for (int i=0; i<hierarchyList.size(); i++)
@@ -373,7 +373,7 @@
       {
         if(parent!=0)
 	{
-	  gsysHierarchy* parentM = new gsysHierarchy("unknownParent");
+	  gsysHierarchy* parentM = new gsysHierarchy((char*)"unknownParent");
 	  parentM->setReal(parent);
 	  hierarchyList.push_back(parentM);
 	  newHier->setParent(parentM);
@@ -397,7 +397,7 @@
 	{
 	  if(parent!=0)
 	  {
-	    gsysHierarchy* parentM = new gsysHierarchy("unknownParent");
+	    gsysHierarchy* parentM = new gsysHierarchy((char*)"unknownParent");
 	    parentM->setReal(parent);
 	    hierarchyList.push_back(parentM);
 	    hierarchyList[it]->setParent(parentM);
@@ -428,7 +428,7 @@
     {
       std::cerr<<"ERROR: The port '" << realPort << "' should be already created, but cannot be found!"<<std::endl;
       port=new gsysPort(2);
-      port->setName("NoName");
+      port->setName((char*)"NoName");
       preRegPort(port,realPort);
       std::cerr<<"\tPort is created due to reasons of consistency (as INOUT-Port)!"<<std::endl;
     }  
@@ -449,7 +449,7 @@
       }
       else
       {
-        registerModule(parentPointer,"unknownMod");
+        registerModule(parentPointer,(char*)"unknownMod");
 	port->setParent(hierarchyList.back());
 	hierarchyList.back()->addPort(port);
       }

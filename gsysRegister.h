@@ -33,8 +33,10 @@
 #define GSYS_REGISTER_H
 
 #include "systemc.h"
-#include <Qt/qlistview.h>
 #include <vector>
+
+#include <Qt3Support/Q3ListView>
+#include <Qt3Support/Q3ListViewItem>
 
 class gsysConnection;
 class gsysHierarchy;
@@ -57,7 +59,7 @@ class gsysRegister
   vector<gsysPort*> portList;
   vector<gsysPort*> notAssignedPorts;
   vector<gsysSignal*> notAssignedSignals;
-  vector<QListView*> listViewElements;
+  vector<Q3ListView*> listViewElements;
   vector<void*> bufferIDList;
   vector<char*> bufferNameList;
   vector<bool> bufferPercList;
@@ -68,8 +70,8 @@ class gsysRegister
   void regFinished();
   int connExists(gsysHierarchy* h1, gsysHierarchy* h2);
   gsysRegister();
-  QListView *rootLVI;
-  void insertLVI(QListView *parentLVI, gsysHierarchy* hier);
+  Q3ListView *rootLVI;
+  void insertLVI(Q3ListView *parentLVI, gsysHierarchy* hier);
 
 
   public:
