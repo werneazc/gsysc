@@ -130,7 +130,7 @@
       cout<<"aAa port("<<this<<")->getValue():  No signal connected to this port!"<<endl;
     #endif
     if(connSignal!=0) return connSignal->getValue();
-    else return ">>UNDEFINED<<";
+    else return (char*)">>UNDEFINED<<";
   }
 
   /*
@@ -223,7 +223,7 @@
    *   add an graphical element to the list of all drawn elements,
    *   that represent the port an its connection to the routing nodes
    */
-  void gsysPort::addLineElem(QCanvasPolygonalItem* line)
+  void gsysPort::addLineElem(Q3CanvasPolygonalItem* line)
   {
     lines.push_back(line);
   }
@@ -231,7 +231,7 @@
   /*
    *   get the list of graphical representations
    */
-  vector<QCanvasPolygonalItem*> gsysPort::getCanvasItems()
+  vector<Q3CanvasPolygonalItem*> gsysPort::getCanvasItems()
   {
     return lines;
   }
@@ -244,9 +244,9 @@
     if(!activated)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == QCanvasLine::RTTI)
+        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
         {
-          QCanvasLine* aktLine = (QCanvasLine*)lines[i];
+          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
 	  if(highlighted)
 	  {
 	    aktLine->setZ(80);
@@ -291,9 +291,9 @@
     if(activated)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == QCanvasLine::RTTI)
+        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
         {
-          QCanvasLine* aktLine = (QCanvasLine*)lines[i];
+          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
 	  if(highlighted)
 	  {
   	    aktLine->setZ(40);
@@ -338,9 +338,9 @@
     if(!highlighted)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == QCanvasLine::RTTI)
+        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
         {
-          QCanvasLine* aktLine = (QCanvasLine*)lines[i];
+          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
 	  if(activated)
 	  {
 	    aktLine->setZ(80);
@@ -385,9 +385,9 @@
     if(highlighted)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == QCanvasLine::RTTI)
+        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
         {
-          QCanvasLine* aktLine = (QCanvasLine*)lines[i];
+          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
 	  if(activated)
 	  {
   	    aktLine->setZ(60);
