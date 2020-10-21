@@ -165,7 +165,7 @@ public:
           m_delta( ~sc_dt::UINT64_ONE ), m_writer( 0 )
 	{
           gSignal = new gsysSignal();
-          gSignal->setName("unnamedSignal");
+          gSignal->setName((char*)"unnamedSignal");
           (new gsysMain())->getRegModule()->registerSignal(gSignal,this);
 	}
 
@@ -405,7 +405,7 @@ public:
           m_writer( 0 )
 	{
             gSignal = new gsysSignal();
-            gSignal->setName("unnamedSignal");
+            gSignal->setName((char*)"unnamedSignal");
             (new gsysMain())->getRegModule()->registerSignal(gSignal,this);
 	}
 
@@ -677,7 +677,7 @@ public:
 	  m_writer( 0 )
 	{
             gSignal = new gsysSignal();
-            gSignal->setName("unnamedSignal");
+            gSignal->setName((char*)"unnamedSignal");
             (new gsysMain())->getRegModule()->registerSignal(gSignal,this);
 	}
 
@@ -975,7 +975,7 @@ public:
 	: /*base_type()*/ sc_in<T>(), m_traces( 0 )
 	{
            gPort = new gsysPort(0);
-           gPort->setName("unnamedPort");
+           gPort->setName((char*)"unnamedPort");
            (new gsysMain())->getRegModule()->preRegPort(gPort,this);
 	}
 
@@ -1256,7 +1256,7 @@ public:
 	: /*base_type()*/ sc_in<bool>(), m_traces( 0 )
 	{
             gPort = new gsysPort(0);
-            gPort->setName("unnamedPort");
+            gPort->setName((char*)"unnamedPort");
             (new gsysMain())->getRegModule()->preRegPort(gPort,this);
 	}
 
@@ -1512,7 +1512,7 @@ public:
 	: /*base_type()*/ sc_in<sc_logic>(), m_traces( 0 )
 	{
             gPort = new gsysPort(0);
-            gPort->setName("unnamedPort");
+            gPort->setName((char*)"unnamedPort");
             (new gsysMain())->getRegModule()->preRegPort(gPort,this);
 	}
 
@@ -1768,7 +1768,7 @@ public:
 	: /*base_type()*/ sc_inout<T>(), m_init_val( 0 ), m_traces( 0 )
 	{
             gPort = new gsysPort(2);
-            gPort->setName("unnamedPort");
+            gPort->setName((char*)"unnamedPort");
             (new gsysMain())->getRegModule()->preRegPort(gPort,this);
 	}
 
@@ -2047,7 +2047,7 @@ public:
 	: /*base_type()*/ sc_inout<bool>(), m_init_val( 0 ), m_traces( 0 )
 	{
             gPort = new gsysPort(2);
-            gPort->setName("unnamedPort");
+            gPort->setName((char*)"unnamedPort");
             (new gsysMain())->getRegModule()->preRegPort(gPort,this);
 	}
 
@@ -2294,7 +2294,7 @@ public:
 	: /*base_type()*/ sc_inout<sc_logic>(), m_init_val( 0 ), m_traces( 0 )
 	{
             gPort = new gsysPort(2);
-            gPort->setName("unnamedPort");
+            gPort->setName((char*)"unnamedPort");
             (new gsysMain())->getRegModule()->preRegPort(gPort,this);
         }
 
@@ -2543,7 +2543,7 @@ public:
 	: base_type()
 	{
            gPort = new gsysPort(1);
-           gPort->setName("unnamedPort");
+           gPort->setName((char*)"unnamedPort");
            (new gsysMain())->getRegModule()->preRegPort(gPort,this);
         }
 
