@@ -29,10 +29,11 @@
  *************************************************************************/
 
 
-#include "Qt3Support/q3canvas.h"
 #include <iostream>
 #include <vector>
-#include "Qt3Support/Q3CanvasView"
+#include <Qt3Support/q3canvas.h>
+#include <Qt3Support/Q3CanvasView>
+#include <QtGui/QMouseEvent>
 
 #include <stdio.h>
 #include <sstream>
