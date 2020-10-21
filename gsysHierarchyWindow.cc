@@ -28,6 +28,8 @@
 #include "QtGui/qpainter.h"
 #include <QtGui/qfiledialog.h>
 #include <QtGui/qmessagebox.h>
+#include <Qt3Support/Q3Canvas>
+#include <Qt3Support/Q3FileDialog>
 
   /*
    *   method to read the config file gsysHViewer.conf
@@ -39,19 +41,19 @@
     fp = fopen("gsysHViewer.conf","r");
     if(fp!=0)
     {
-      backgroundColor="#FFFFFF";
-      moduleColor="#DBDBDB";
-      moduleWithChild="#9999CC";
-      normalSignal="#000000";
-      normalNode="#000000";
-      textColor="#000000";
-      activeSignal="#FF7F00";
-      changedSignal="#FF0000";
-      activeChangedSig="#FF00FF";
-      inPort="#00DD00";
-      outPort="#0000FF";
-      inoutPort="#00DDFF";
-      mmHierConnColor="#FFFF00";
+      backgroundColor=(char*)"#FFFFFF";
+      moduleColor=(char*)"#DBDBDB";
+      moduleWithChild=(char*)"#9999CC";
+      normalSignal=(char*)"#000000";
+      normalNode=(char*)"#000000";
+      textColor=(char*)"#000000";
+      activeSignal=(char*)"#FF7F00";
+      changedSignal=(char*)"#FF0000";
+      activeChangedSig=(char*)"#FF00FF";
+      inPort=(char*)"#00DD00";
+      outPort=(char*)"#0000FF";
+      inoutPort=(char*)"#00DDFF";
+      mmHierConnColor=(char*)"#FFFF00";
       mmHierConnShow = true;
       mmSigPortShow = true;
       sideMargin=130;
@@ -128,19 +130,19 @@
     }
     else
     {
-      backgroundColor="#FFFFFF";
-      moduleColor="#DBDBDB";
-      moduleWithChild="#9999CC";
-      normalSignal="#000000";
-      normalNode="#000000";
-      textColor="#000000";
-      activeSignal="#FF7F00";
-      changedSignal="#FF0000";
-      activeChangedSig="#FF00FF";
-      inPort="#00DD00";
-      outPort="#0000FF";
-      inoutPort="#00DDFF";
-      mmHierConnColor="#FFFF00";
+      backgroundColor=(char*)"#FFFFFF";
+      moduleColor=(char*)"#DBDBDB";
+      moduleWithChild=(char*)"#9999CC";
+      normalSignal=(char*)"#000000";
+      normalNode=(char*)"#000000";
+      textColor=(char*)"#000000";
+      activeSignal=(char*)"#FF7F00";
+      changedSignal=(char*)"#FF0000";
+      activeChangedSig=(char*)"#FF00FF";
+      inPort=(char*)"#00DD00";
+      outPort=(char*)"#0000FF";
+      inoutPort=(char*)"#00DDFF";
+      mmHierConnColor=(char*)"#FFFF00";
       mmHierConnShow = true;
       mmSigPortShow = true;
       sideMargin=130;
@@ -185,7 +187,7 @@
   /*
    *   constructor
    */
-  gsysHierarchyWindow::gsysHierarchyWindow( QWidget* parent, const char* name, bool modal, WFlags fl )
+  gsysHierarchyWindow::gsysHierarchyWindow( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
   {
     hierarchyList.clear();
     connList.clear();
@@ -193,33 +195,35 @@
     parent = 0;
     ownHierarchy = 0;
 
-    canvasView = new gsysCanvasView(new QCanvas(300,300),this,"Canvas");
+    canvasView = new gsysCanvasView(new Q3Canvas(300,300),this,"Canvas");
     /* Size- and color properties for the structure graphic read out of the configuration file */
     readConfig();
     canvasView->setMM(mmSigPortShow, mmHierConnShow, mmHierConnColor, moduleColor, moduleWithChild);
 
     if (!name) 
     { 
-      setName("HierarchyWindow");
-      setCaption( name );
+      setObjectName("HierarchyWindow");
+      QWidget::setWindowTitle( name );
     }  
 
     if(mmSigPortShow || mmHierConnShow)
     {
-      moveInfos = new QGroupBox(this,"moveInfos");
+      moveInfos = new Q3GroupBox(this,"moveInfos");
       moveInfos->setColumnLayout(0, Qt::Vertical );
       moveInfos->layout()->setSpacing( 6 );
       moveInfos->layout()->setMargin( 11 );
-      moveInfosLayout = new QHBoxLayout( moveInfos->layout() );
+      moveInfosLayout = new QHBoxLayout( moveInfos );
+      moveInfosLayout->layout()->setSpacing( 6 );
+      moveInfosLayout->layout()->setMargin( 11 );
       moveInfosLayout->setAlignment( Qt::AlignTop );
-      labelKoordinaten = new QLabel(moveInfos,"labelKoordinaten");
-      coord = new QLineEdit(moveInfos,"coord");
+      labelKoordinaten = new QLabel("labelKoordinaten", moveInfos);
+      coord = new QLineEdit("coord", moveInfos);
       coord->setReadOnly(true);
-      labelTyp = new QLabel(moveInfos,"labelTyp");
-      lineEditTyp = new QLineEdit(moveInfos,"lineEditTyp");
+      labelTyp = new QLabel("labelTyp", moveInfos);
+      lineEditTyp = new QLineEdit("lineEditTyp", moveInfos);
       lineEditTyp->setReadOnly(true);
-      labelWert = new QLabel(moveInfos,"labelWert");
-      lineEditWert = new QLineEdit(moveInfos,"lineEditWert");
+      labelWert = new QLabel("labelWert", moveInfos);
+      lineEditWert = new QLineEdit("lineEditWert", moveInfos);
       lineEditWert->setReadOnly(true);
       coord->setText( "0/0" );
       lineEditTyp->setText("");
@@ -232,9 +236,11 @@
       moveInfosLayout->addWidget( lineEditWert );
     }
     
-    saveButton = new QPushButton(this,"saveButton");
+    saveButton = new QPushButton("saveButton", this);
     
-    hierWinLayout = new QVBoxLayout(this,11,6,"hierWinLayout");
+    hierWinLayout = new QVBoxLayout(this);
+    hierWinLayout->layout()->setSpacing( 6 );
+    hierWinLayout->layout()->setMargin( 11 );
     hierWinLayout->addWidget(canvasView);
     hierWinLayout->addWidget(saveButton);
 
@@ -295,20 +301,20 @@
   void gsysHierarchyWindow::saveButton_clicked()
   { 
     try {
-      QFileDialog *fd = new QFileDialog(this,tr("Save file"),true);
-      fd->setMode(QFileDialog::AnyFile);
-      fd->setPreviewMode(QFileDialog::NoPreview);
+      Q3FileDialog *fd = new Q3FileDialog(this,tr("Save file").toLocal8Bit().constData(),true);
+      fd->setMode(Q3FileDialog::AnyFile);
+      fd->setPreviewMode(Q3FileDialog::NoPreview);
       fd->addFilter("BMP (*.bmp *.BMP)");
       fd->addFilter("XBM (*.xbm *.XBM)");
       fd->addFilter("XPM (*.xpm *.XPM)");
       fd->addFilter("SVG (*.svg *.SVG)");
       fd->addFilter("PNM (*.pnm *.PNM)");
       fd->addFilter("PNG (*.png *.PNG)");
-      fd->setCaption(tr("Save image"));
+      fd->setSelection(tr("Save image"));
       if(fd->exec() == QDialog::Accepted)
       {
         QString filename = fd->selectedFile();
-        if((fopen(filename,"r")!=0 && QMessageBox::warning(this,"gSysC",tr("The chosen file does already exist.\nAre you sure you want to overwrite it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes) || fopen(filename,"r")==0) 
+        if((fopen(filename.toLocal8Bit().constData(),"r")!=0 && QMessageBox::warning(this,"gSysC",tr("The chosen file does already exist.\nAre you sure you want to overwrite it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes) || fopen(filename.toLocal8Bit().constData(),"r")==0) 
 	{
 	  QString fileType = fd->selectedFilter();
 	  if(fileType == "PNG (*.png *.PNG)") fileType="PNG";
@@ -337,11 +343,11 @@
 	       fileType=="XPM" ||
 	       fileType=="PNM")
 	    {   
-	      cout<<"-- Saving structure graphics in file; "<<fileType<<"-format --"<<endl;
+	      cout<<"-- Saving structure graphics in file; "<<fileType.toLocal8Bit().constData()<<"-format --"<<endl;
 	      QPixmap *pm = new QPixmap();
 	      *pm = QPixmap::grabWidget(canvasView->viewport());
 	      if(pm==0) cout<<"Error: Cannot grab viewport!"<<endl;
-	      pm->save(filename,fileType);
+	      pm->save(filename,fileType.toLocal8Bit().constData());
 	      cout<<"saving done."<<endl;
 	      delete pm;
 	      pm = 0;
@@ -458,19 +464,21 @@
     //     For simplicity X-Y-routing is used as placement strategy!!!
     dimFactor = (int) (ceil(sqrt((double) hierarchyList.size())));
     canvasView->resize(dimFactor*moduleWidth+2*sideMargin+(dimFactor-1)*horizontalSpace+10,dimFactor*moduleHeight+(dimFactor-1)*verticalSpace+2*topMargin+10);
-    canvasView->setBackgroundColor(backgroundColor);
     canvasView->canvas()->resize(dimFactor*moduleWidth+2*sideMargin+(dimFactor-1)*horizontalSpace,dimFactor*moduleHeight+(dimFactor-1)*verticalSpace+2*topMargin);
+    QPalette palette;
+    palette.setColor(canvasView->backgroundRole(), backgroundColor);
+    canvasView->setPalette(palette);
 
-    vector<QCanvasRectangle*> modRect;
-    vector<QCanvasText*> modText;
+    vector<Q3CanvasRectangle*> modRect;
+    vector<Q3CanvasText*> modText;
     QRect textRect;
     int x=sideMargin;
     int y=topMargin;
     for (int i=0; i<hierarchyList.size(); i++)
     {
-      modRect.push_back(new QCanvasRectangle(0,0,moduleWidth,moduleHeight,canvasView->canvas()));
+      modRect.push_back(new Q3CanvasRectangle(0,0,moduleWidth,moduleHeight,canvasView->canvas()));
       hierarchyList[i]->setHierRect(modRect.back());
-      modText.push_back(new QCanvasText(canvasView->canvas()));
+      modText.push_back(new Q3CanvasText(canvasView->canvas()));
       
       // draw module
       if(hierarchyList[i]->getChildren().size()>0)
@@ -1082,8 +1090,8 @@
     #ifdef DEBUG_GSYSC
     std::cout<<"\n#####\nHierarchyWindow.drawNetConns for "<<hier->getName()<<":\n"<<"\tPorts:  N->"<<hier->getNPorts().size()<<"  E->"<<hier->getEPorts().size()<<"  S->"<<hier->getSPorts().size()<<"  W->"<<hier->getWPorts().size()<<std::endl;
     #endif
-    vector<QCanvasLine*> lines;
-    vector<QCanvasPolygon*> polygons;
+    vector<Q3CanvasLine*> lines;
+    vector<Q3CanvasPolygon*> polygons;
     int abstand;
     int x = hier->getCenterPoint()->x() - (int) ceil((double)moduleWidth*0.5) +1;
     int y = hier->getCenterPoint()->y() - (int) ceil((double)moduleHeight*0.5) +1;
@@ -1103,8 +1111,8 @@
       #endif
       if(ports[i]->getType() == 0)   	// IN-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(5);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(5);
 	pa[0] = QPoint(x,y);
 	pa[1] = QPoint(x+6,y);
 	pa[2] = QPoint(x+6,y+7);
@@ -1119,8 +1127,8 @@
       }
       if(ports[i]->getType() == 1)   	// OUT-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(5);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(5);
 	pa[0] = QPoint(x+3,y);
 	pa[1] = QPoint(x+6,y+2);
 	pa[2] = QPoint(x+6,y+9);
@@ -1135,8 +1143,8 @@
       }
       if(ports[i]->getType() == 2)   	// INOUT-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(6);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(6);
 	pa[0] = QPoint(x+3,y);
 	pa[1] = QPoint(x+6,y+2);
 	pa[2] = QPoint(x+6,y+7);
@@ -1152,16 +1160,16 @@
       }
       if(!ports[i]->isEndPort())
       {
-        lines.push_back(new QCanvasLine(canvasView->canvas()));
+        lines.push_back(new Q3CanvasLine(canvasView->canvas()));
         lines.back()->setPoints(x+3,y,x+3,y-((verticalSpace-16)/2));
-        ports[i]->addLineElem((QCanvasPolygonalItem*)lines.back());
+        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
         lines.back()->show();
-        lines.push_back(new QCanvasLine(canvasView->canvas()));
+        lines.push_back(new Q3CanvasLine(canvasView->canvas()));
         if (ports[i]->getInitDir() == W) 
           lines.back()->setPoints(x+3,y-((verticalSpace-16)/2),hier->getCenterPoint()->x()-(int)floor((double)moduleWidth*0.5)-(int)floor((double)horizontalSpace*0.5),y-((verticalSpace-16)/2));
         else	
           lines.back()->setPoints(x+3,y-((verticalSpace-16)/2),hier->getCenterPoint()->x()+(int)ceil((double)moduleWidth*0.5)+(int)floor((double)horizontalSpace*0.5),y-((verticalSpace-16)/2));
-        ports[i]->addLineElem((QCanvasPolygonalItem*)lines.back());
+        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
         lines.back()->show();
       }	
       x += 7;	
@@ -1185,8 +1193,8 @@
       #endif
       if(ports[i]->getType() == 0)   	// IN-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(5);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(5);
 	pa[0] = QPoint(x,y);
 	pa[1] = QPoint(x+6,y);
 	pa[2] = QPoint(x+6,y-7);
@@ -1201,8 +1209,8 @@
       }
       if(ports[i]->getType() == 1)   	// OUT-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(5);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(5);
 	pa[0] = QPoint(x+3,y);
 	pa[1] = QPoint(x+6,y-2);
 	pa[2] = QPoint(x+6,y-9);
@@ -1217,8 +1225,8 @@
       }
       if(ports[i]->getType() == 2)   	// INOUT-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(6);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(6);
 	pa[0] = QPoint(x+3,y);
 	pa[1] = QPoint(x+6,y-2);
 	pa[2] = QPoint(x+6,y-7);
@@ -1235,16 +1243,16 @@
       
       if(!ports[i]->isEndPort())
       {
-        lines.push_back(new QCanvasLine(canvasView->canvas()));
+        lines.push_back(new Q3CanvasLine(canvasView->canvas()));
         lines.back()->setPoints(x+3,y,x+3,y+((verticalSpace-16)/2));
-        ports[i]->addLineElem((QCanvasPolygonalItem*)lines.back());
+        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
         lines.back()->show();
-        lines.push_back(new QCanvasLine(canvasView->canvas()));
+        lines.push_back(new Q3CanvasLine(canvasView->canvas()));
         if (ports[i]->getInitDir() == W) 
           lines.back()->setPoints(x+3,y+((verticalSpace-16)/2),hier->getCenterPoint()->x()-(int)floor((double)moduleWidth*0.5)-(int)floor((double)horizontalSpace*0.5),y+((verticalSpace-16)/2));
         else	
           lines.back()->setPoints(x+3,y+((verticalSpace-16)/2),hier->getCenterPoint()->x()+(int)ceil((double)moduleWidth*0.5)+(int)floor((double)horizontalSpace*0.5),y+((verticalSpace-16)/2));
-        ports[i]->addLineElem((QCanvasPolygonalItem*)lines.back());
+        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
         lines.back()->show();
       }	
       x += 7;	
@@ -1268,8 +1276,8 @@
       #endif
       if(ports[i]->getType() == 0)   	// IN-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(5);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(5);
 	pa[0] = QPoint(x,y);
 	pa[1] = QPoint(x+7,y);
 	pa[2] = QPoint(x+9,y+3);
@@ -1284,8 +1292,8 @@
       }
       if(ports[i]->getType() == 1)   	// OUT-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(5);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(5);
 	pa[0] = QPoint(x,y+3);
 	pa[1] = QPoint(x+2,y);
 	pa[2] = QPoint(x+9,y);
@@ -1300,8 +1308,8 @@
       }
       if(ports[i]->getType() == 2)   	// INOUT-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(6);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(6);
 	pa[0] = QPoint(x,y+3);
 	pa[1] = QPoint(x+2,y);
 	pa[2] = QPoint(x+7,y);
@@ -1319,11 +1327,11 @@
       {
         if(ports[i]->getDest().isNull())
         {
-          lines.push_back(new QCanvasLine(canvasView->canvas()));
+          lines.push_back(new Q3CanvasLine(canvasView->canvas()));
           lines.back()->setPoints(x,y+3,x-((horizontalSpace-16)/2),y+3);
-          ports[i]->addLineElem((QCanvasPolygonalItem*)lines.back());
+          ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
 	  lines.back()->show();
-          lines.push_back(new QCanvasLine(canvasView->canvas()));
+          lines.push_back(new Q3CanvasLine(canvasView->canvas()));
           if (ports[i]->getInitDir() == N) 
   	  {
             lines.back()->setPoints(x-((horizontalSpace-16)/2),y+3,x-((horizontalSpace-16)/2),hier->getCenterPoint()->y()-(int)floor((double)moduleHeight*0.5)-(int)floor((double)verticalSpace*0.5));
@@ -1337,11 +1345,11 @@
         }	
         else
         {
-          lines.push_back(new QCanvasLine(canvasView->canvas()));
+          lines.push_back(new Q3CanvasLine(canvasView->canvas()));
 	  lines.back()->setPoints(x,y+3,ports[i]->getDest().x(),ports[i]->getDest().y());
 	  lines.back()->show();
         }
-        ports[i]->addLineElem((QCanvasPolygonalItem*)lines.back());
+        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
       }
       y += 7;	
     }
@@ -1364,8 +1372,8 @@
       #endif
       if(ports[i]->getType() == 0)   	// IN-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(5);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(5);
 	pa[0] = QPoint(x,y);
 	pa[1] = QPoint(x-7,y);
 	pa[2] = QPoint(x-9,y+3);
@@ -1380,8 +1388,8 @@
       }
       if(ports[i]->getType() == 1)   	// OUT-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(5);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(5);
 	pa[0] = QPoint(x,y+3);
 	pa[1] = QPoint(x-2,y);
 	pa[2] = QPoint(x-9,y);
@@ -1396,8 +1404,8 @@
       }
       if(ports[i]->getType() == 2)   	// INOUT-Port
       {
-        polygons.push_back(new QCanvasPolygon(canvasView->canvas()));
-	QPointArray pa(6);
+        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
+	Q3PointArray pa(6);
 	pa[0] = QPoint(x,y+3);
 	pa[1] = QPoint(x-2,y);
 	pa[2] = QPoint(x-7,y);
@@ -1416,11 +1424,11 @@
       {
 	if(ports[i]->getDest().isNull())
 	{
-	  lines.push_back(new QCanvasLine(canvasView->canvas()));
+	  lines.push_back(new Q3CanvasLine(canvasView->canvas()));
 	  lines.back()->setPoints(x,y+3,x+((horizontalSpace-16)/2),y+3);
-	  ports[i]->addLineElem((QCanvasPolygonalItem*)lines.back());
+	  ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
 	  lines.back()->show();
-	  lines.push_back(new QCanvasLine(canvasView->canvas()));
+	  lines.push_back(new Q3CanvasLine(canvasView->canvas()));
 	  if (ports[i]->getInitDir() == N) 
 	  {
 	    lines.back()->setPoints(x+((horizontalSpace-16)/2),y+3,x+((horizontalSpace-16)/2),hier->getCenterPoint()->y()-(int)floor((double)moduleHeight*0.5)-(int)floor((double)verticalSpace*0.5));
@@ -1434,11 +1442,11 @@
 	}	
 	else
 	{
-	  lines.push_back(new QCanvasLine(canvasView->canvas()));
+	  lines.push_back(new Q3CanvasLine(canvasView->canvas()));
 	  lines.back()->setPoints(x,y+3,ports[i]->getDest().x(),ports[i]->getDest().y());
 	  lines.back()->show();
 	}
-	ports[i]->addLineElem((QCanvasPolygonalItem*)lines.back());
+	ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
       }
       y += 7;	
     }
@@ -1475,17 +1483,17 @@
       return false;
     }
     short steigung;
-    QCanvasItemList cil = canvasView->canvas()->collisions(*p1);
-    QCanvasRectangle *nodeRect = 0;
+    Q3CanvasItemList cil = canvasView->canvas()->collisions(*p1);
+    Q3CanvasRectangle *nodeRect = 0;
     for(int o=0; o<cil.size(); o++)
     {	    
-      if(cil[o]->rtti() == QCanvasRectangle::RTTI) 
+      if(cil[o]->rtti() == Q3CanvasRectangle::RTTI) 
       {
-	nodeRect = (QCanvasRectangle*) cil[o];
+	nodeRect = (Q3CanvasRectangle*) cil[o];
       }	
     }  
     if(nodeRect==0)  
-      nodeRect = new QCanvasRectangle(p1->x()-11,p1->y()-11,24,24,canvasView->canvas());
+      nodeRect = new Q3CanvasRectangle(p1->x()-11,p1->y()-11,24,24,canvasView->canvas());
     nodeRect->setZ(100);
     nodeRect->setPen(QColor(normalNode));
     nodeRect->setBrush(QColor(normalNode));
@@ -1495,7 +1503,7 @@
     else
     {
       steigung = getSector(p1,p2);
-      QCanvasLine *connLine = new QCanvasLine(canvasView->canvas());
+      Q3CanvasLine *connLine = new Q3CanvasLine(canvasView->canvas());
       connLine->setZ(20);
       connLine->setPen(QPen(QColor(normalSignal),3));
       if(steigung == N || steigung == NNW || steigung == NNE)
@@ -1605,13 +1613,13 @@
  
     QFont smallerFont;
     smallerFont.setPointSize(8);
-    QCanvasPolygon *polygon = new QCanvasPolygon(canvasView->canvas());
-    QCanvasText *text = new QCanvasText(canvasView->canvas());
+    Q3CanvasPolygon *polygon = new Q3CanvasPolygon(canvasView->canvas());
+    Q3CanvasText *text = new Q3CanvasText(canvasView->canvas());
     if (left)
     {
       if (port->getType() == 0)
       {
-        QPointArray pa(5);
+        Q3PointArray pa(5);
 	pa[0] = QPoint(x,y);
 	pa[1] = QPoint(x+40,y);
 	pa[2] = QPoint(x+50,y+11);
@@ -1630,7 +1638,7 @@
       }
       if (port->getType() == 1)
       {
-        QPointArray pa(5);
+        Q3PointArray pa(5);
 	pa[0] = QPoint(x,y+11);
 	pa[1] = QPoint(x+10,y);
 	pa[2] = QPoint(x+50,y);
@@ -1649,7 +1657,7 @@
       }
       if (port->getType() == 2)
       {
-        QPointArray pa(6);
+        Q3PointArray pa(6);
 	pa[0] = QPoint(x,y+11);
 	pa[1] = QPoint(x+10,y);
 	pa[2] = QPoint(x+40,y);
@@ -1672,7 +1680,7 @@
     {
       if (port->getType() == 0)
       {
-        QPointArray pa(5);
+        Q3PointArray pa(5);
 	pa[0] = QPoint(x,y);
 	pa[1] = QPoint(x-40,y);
 	pa[2] = QPoint(x-50,y+11);
@@ -1691,7 +1699,7 @@
       }
       if (port->getType() == 1)
       {
-        QPointArray pa(5);
+        Q3PointArray pa(5);
 	pa[0] = QPoint(x,y+11);
 	pa[1] = QPoint(x-10,y);
 	pa[2] = QPoint(x-50,y);
@@ -1710,7 +1718,7 @@
       }
       if (port->getType() == 2)
       {
-        QPointArray pa(6);
+        Q3PointArray pa(6);
 	pa[0] = QPoint(x,y+11);
 	pa[1] = QPoint(x-10,y);
 	pa[2] = QPoint(x-40,y);

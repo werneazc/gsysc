@@ -46,6 +46,8 @@
 #include <QtGui/qwhatsthis.h>
 #include <QtGui/qlayout.h>
 #include <Qt3Support/q3canvas.h>
+#include <Qt3Support/Q3GroupBox>
+#include <QtGui/QHBoxLayout>
 #include <QtCore/qrect.h>
 #include <QtGui/qlineedit.h>
 #include <QtGui/qlabel.h>
@@ -124,7 +126,7 @@ class gsysHierarchyWindow : public QDialog
   void readConfig();
  
   QPushButton *saveButton;
-  QGroupBox* moveInfos;
+  Q3GroupBox* moveInfos;
   QLabel* labelKoordinaten;
   QLineEdit* coord;
   QLabel* labelTyp;
