@@ -1,10 +1,11 @@
 TARGET_ARCH = linux
 CC     = g++
 OPT    = #-O2
+QT3    = -DQT3_SUPPORT
 DEBUG  = -g #-DDEBUG_GSYSC 
 #OTHER  = -Wall -Wno-deprecated
 OTHER  = -Wno-deprecated -fpermissive -DSC_USE_SC_STRING_OLD
-CFLAGS = $(OPT) $(OTHER) $(DEBUG)
+CFLAGS = $(OPT) $(QT3) $(OTHER) $(DEBUG)
 
 ## Variable that points to SystemC installation path
 SYSTEMC = /opt/systemc-2.3.2
