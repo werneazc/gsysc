@@ -46,9 +46,9 @@
 #include "gsysReplaced.h"
 #endif
 
-#include <qapplication.h>
-#include <qtranslator.h>
-#include <qtextcodec.h>
+#include <Qt/qapplication.h>
+#include <Qt/qtranslator.h>
+#include <Qt/qtextcodec.h>
 
 
 
