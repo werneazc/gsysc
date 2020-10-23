@@ -9,12 +9,13 @@ CFLAGS = $(OPT) $(QT3) $(OTHER) $(DEBUG)
 
 ## Variable that points to SystemC installation path
 SYSTEMC = /opt/systemc-2.3.2
-LIB_SYSTEMC=$(SYSTEMC)/lib64/libsystemc.a 
+LIB_SYSTEMC=$(SYSTEMC)/lib-linux64/libsystemc.a 
 
 # other necessary path variables:
-QT_DIR = /usr/include/qt4
-INCDIR = -I$(SYSTEMC)/include -I$(QT_DIR)
-LIBDIR = -L/usr/lib -L$(QT_DIR)
+QT_DIR  = /usr/include/qt4
+MOC_DIR = /usr/share/qt4
+INCDIR  = -I$(SYSTEMC)/include -I$(QT_DIR)
+LIBDIR  = -L/usr/lib -L$(QT_DIR)
 
 
 ####################################################################
@@ -44,7 +45,7 @@ lib: $(MOC) $(OBJS) $(HEAD) $(LIB_SYSTEMC)
 
 # rule to create MetaObject-files; necessary for Qt
 $(MOC): %.moc: %.h
-	$(QT_DIR)/bin/moc $< -o $@
+	$(MOC_DIR)/bin/moc $< -o $@
 
 # rule to create object files
 .cc.o: $(MOC) $(HEAD) 
