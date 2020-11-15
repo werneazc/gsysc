@@ -32,6 +32,6 @@ target_include_directories(gsysc
 target_link_libraries(gsysc
     PRIVATE Qt4::QtGui Qt4::QtCore Qt4::Qt3Support
     PRIVATE "${SYSTEMC_LIBRARIES}" 
-    PRIVATE "lpthread"
+    PRIVATE "pthread"
 )
 #####################################################################
