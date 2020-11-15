@@ -7,11 +7,12 @@ project(gSysC
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 find_package(SystemC REQUIRED)
-message("SystemC Library: ${SYSTEMC_LIBRARY}")
-message("SystemC Include Dir: ${SYSTEMC_INCLUDE_DIR}")
+message("SystemC Library: ${SYSTEMC_LIBRARIES}")
+message("SystemC Include Dir: ${SYSTEMC_INCLUDE_DIRS}")
 
 set(CMAKE_AUTOMOC ON)
 find_package(Qt4 REQUIRED)
+
 
 add_library(gsysc STATIC
     "gsysConnection.cc" "gsysHierarchy.cc" "gsysHierarchyTree.cc" "gsysHierarchyWindow.cc" "gsysRegister.cc"
@@ -26,11 +27,11 @@ target_compile_options(gsysc
 )
 target_include_directories(gsysc
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-    PRIVATE ${SYSTEMC_INCLUDE_DIR}
+    PRIVATE ${SYSTEMC_INCLUDE_DIRS}
 )
 target_link_libraries(gsysc
     PRIVATE Qt4::QtGui Qt4::QtCore Qt4::Qt3Support
-    PRIVATE "${SYSTEMC_LIBRARY}" 
+    PRIVATE "${SYSTEMC_LIBRARIES}" 
     PRIVATE "lpthread"
 )
 #####################################################################
