@@ -17,7 +17,7 @@
 */
 
 #include "gsysBuffer.moc"
-
+#include "gsysBuffer.h"
 #include "gsysMain.h"
 #include "gsysRegister.h"
 

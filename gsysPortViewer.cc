@@ -17,6 +17,7 @@
 */
 
 #include "gsysPortViewer.moc"
+#include "gsysPortViewer.h"
 #include "gsysPort.h"
 #include "gsysMain.h"
 #include "gsysSimulator.h"

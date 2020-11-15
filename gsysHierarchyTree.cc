@@ -17,6 +17,7 @@
 */
 
 #include "gsysHierarchyTree.moc"
+#include "gsysHierarchyTree.h"
 #include "gsysHierarchy.h"
 #include "gsysHierarchyWindow.h"
 #include "gsysMain.h"

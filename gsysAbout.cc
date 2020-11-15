@@ -17,7 +17,7 @@
 */
 
 #include "gsysAbout.moc"
-
+#include "gsysAbout.h"
 #include <QtCore/qvariant.h>
 #include <QtGui/qlabel.h>
 #include <QtGui/qlayout.h>
