@@ -152,7 +152,7 @@ void gsysPortViewer::pushButton1_clicked()
       table1->setNumRows( table1->numRows() + 1 );
       table1->setText(table1->numRows()-1, 0, aktPort->getName());
       table1->setText(table1->numRows()-1, 1, aktPort->getValue());
-      table1->setText(table1->numRows()-1, 2, (new gsysMain())->getSimulator()->asChar((int)aktPort));
+      table1->setText(table1->numRows()-1, 2, (new gsysMain())->getSimulator()->asChar((int64_t)aktPort));
       portVec.erase(portVec.begin());
     }
     aktPort = 0;
@@ -165,7 +165,7 @@ void gsysPortViewer::pushButton1_clicked()
     table1->setNumRows( table1->numRows() + 1 );
     table1->setText(table1->numRows()-1, 0, aktPort->getName());
     table1->setText(table1->numRows()-1, 1, aktPort->getValue());
-    table1->setText(table1->numRows()-1, 2, (new gsysMain())->getSimulator()->asChar((int)aktPort));
+    table1->setText(table1->numRows()-1, 2, (new gsysMain())->getSimulator()->asChar((int64_t)aktPort));
     portVec.erase(portVec.begin()+idx-1);
   }
 }
