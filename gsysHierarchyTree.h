@@ -43,7 +43,6 @@ class gsysConnection;
 #include <QtGui/qtooltip.h>
 #include <QtGui/qwhatsthis.h>
 #include <QtGui/qlayout.h>
-#include <QtGui/qlistview.h>
 #include <QtGui/qmessagebox.h>
 #include <Qt3Support/Q3ListView>
 

@@ -35,7 +35,6 @@
 #include <QtCore/qvariant.h>
 #include <QtGui/qdialog.h>
 #include <QtGui/qwidget.h>
-#include <QtGui/qprogressbar.h>
 #include <QtGui/qgroupbox.h>
 #include <Qt3Support/Q3ProgressBar>
 

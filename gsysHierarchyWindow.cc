@@ -28,7 +28,6 @@
 #include "QtGui/qpainter.h"
 #include <QtGui/qfiledialog.h>
 #include <QtGui/qmessagebox.h>
-#include <Qt3Support/Q3Canvas>
 #include <Qt3Support/Q3FileDialog>
 
   /*
