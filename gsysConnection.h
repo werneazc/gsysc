@@ -36,7 +36,8 @@
 #define GSYS_CONN_H
 
 #include "systemc.h"
-#include <Qt3Support/q3canvas.h>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QAbstractGraphicsShapeItem>
 #include <vector> 
 
 using namespace std;
@@ -50,7 +51,7 @@ class gsysConnection
   private:
   
   vector<gsysSignal*> signalList;
-  vector<Q3CanvasPolygonalItem*> verlauf;
+  vector< QAbstractGraphicsShapeItem*> verlauf;
   gsysHierarchy* anfang;
   gsysHierarchy* ende;
   QPoint* node1;
@@ -73,7 +74,7 @@ class gsysConnection
   ~gsysConnection();
   vector<gsysSignal*> getSignals();
   void addSignal(gsysSignal* signal);
-  void addTraceElem(Q3CanvasPolygonalItem* pol);
+  void addTraceElem(QAbstractGraphicsShapeItem* pol);
   void activate();
   void deactivate();
   void highlight();
