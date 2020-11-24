@@ -32,8 +32,8 @@
 #define GSYS_HIERARCHY_H
 
 #include "systemc.h"
-#include <Qt/qpoint.h>
-#include <Qt3Support/q3canvas.h>
+#include <QtCore/qpoint.h>
+#include <QtWidgets/QGraphicsScene>
 #include <vector> 
 
 using namespace std;
@@ -53,7 +53,7 @@ class gsysHierarchy
   vector<gsysPort*> portsS;
   vector<gsysPort*> portsW;
   
-  Q3CanvasRectangle *hierRect;
+  QGraphicsRectItem *hierRect;
   
   char* name;
   vector<gsysHierarchy*> childList;
@@ -102,8 +102,8 @@ class gsysHierarchy
   void setCenterPoint(QPoint* cp);
   QPoint* getCenterPoint();
 
-  void setHierRect(Q3CanvasRectangle *hrect);
-  Q3CanvasRectangle *getHierRect();
+  void setHierRect(QGraphicsRectItem *hrect);
+  QGraphicsRectItem *getHierRect();
 
   bool hasSidePort(gsysPort* p);
 };
