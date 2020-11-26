@@ -93,7 +93,7 @@ class gsysHierarchyWindow : public QDialog
   vector<gsysHierarchy*> hierarchyList;
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
-  gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
+  gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
   gsysHierarchy* parent;
   gsysHierarchy* ownHierarchy;
   int dimFactor;

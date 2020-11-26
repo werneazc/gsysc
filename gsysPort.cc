@@ -223,7 +223,7 @@
    *   add an graphical element to the list of all drawn elements,
    *   that represent the port an its connection to the routing nodes
    */
-  void gsysPort::addLineElem(Q3CanvasPolygonalItem* line)
+  void gsysPort::addLineElem(QAbstractGraphicsShapeItem* line)
   {
     lines.push_back(line);
   }
@@ -231,7 +231,7 @@
   /*
    *   get the list of graphical representations
    */
-  vector<Q3CanvasPolygonalItem*> gsysPort::getCanvasItems()
+  vector<QAbstractGraphicsShapeItem*> gsysPort::getCanvasItems()
   {
     return lines;
   }

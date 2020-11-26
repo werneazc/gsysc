@@ -70,8 +70,8 @@ class gsysRegister
   void regFinished();
   int connExists(gsysHierarchy* h1, gsysHierarchy* h2);
   gsysRegister();
-  Q3ListView *rootLVI;
-  void insertLVI(Q3ListView *parentLVI, gsysHierarchy* hier);
+  QListWidget *rootLVI;
+  void insertLVI(QListWidget *parentLVI, gsysHierarchy* hier);
 
 
   public:
