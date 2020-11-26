@@ -38,13 +38,13 @@ class gsysHierarchyWindow;
 class gsysConnection;
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qmessagebox.h>
-#include <Qt3Support/Q3ListView>
+#include <QtWidgets/qdialog.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qtooltip.h>
+#include <QtWidgets/qwhatsthis.h>
+#include <QtWidgets/qlayout.h>
+#include <QtWidgets/qmessagebox.h>
+#include <QtWidgets/QListWidget>
 
 #include <vector>
 
@@ -66,7 +66,7 @@ class gsysHierarchyTree : public QDialog
   vector<gsysHierarchy*> allHierarchies;
   vector<gsysConnection*> allConnections;
   
-  gsysHierarchyTree( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 ); 
+  gsysHierarchyTree( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 ); 
 
   gsysHierarchyWindow* isOpen(gsysHierarchy* hier);
   
@@ -77,7 +77,7 @@ class gsysHierarchyTree : public QDialog
   void setInfoVectors(vector<gsysHierarchy*> hier, vector<gsysConnection*> conn);
 
   QPushButton *openMod;
-  Q3ListView *tree;
+  QListWidget *tree;
   QSpacerItem *spacer;
 
   public slots:
