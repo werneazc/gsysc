@@ -39,7 +39,7 @@
     gsysHierarchyTreeLayout->setSpacing(6);
     gsysHierarchyTreeLayout->setMargin(11);
     
-    tree = new Q3ListView(this,"tree");
+    tree = new QListWidget(this,"tree");
     tree->setRootIsDecorated(true);
     tree->addColumn(tr("Module"));
     tree->addColumn(tr("Type"));
@@ -136,7 +136,7 @@
    */
   void gsysHierarchyTree::openMod_clicked()
   {
-    Q3ListViewItem* lvi = tree->currentItem();
+    QListWidgetItem* lvi = tree->currentItem();
     if (lvi != 0)
     {
       int addr = lvi->text(2).toInt();

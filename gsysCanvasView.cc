@@ -97,7 +97,7 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
   if(e->button()==Qt::LeftButton)
   {
     QPoint p = e->pos();
-    Q3CanvasItemList l=canvas()->collisions(QRect(p.x()-2,p.y()-2,5,5));
+    QList<QGraphicsItem*> l=canvas()->collisions(QRect(p.x()-2,p.y()-2,5,5));
     
     // Something found? else leave function!
     if(l.size()==0) return;
@@ -362,7 +362,7 @@ void gsysCanvasView::contentsMouseMoveEvent(QMouseEvent *e)
     ostringstream ostr;
     ostr << p.x() << "/" << p.y() << ends;
     ((gsysHierarchyWindow*) parentWidget())->coord->setText(QString(ostr.str().c_str()));
-    Q3CanvasItemList l=canvas()->collisions(p);
+    QList<QGraphicsItem*> l=canvas()->collisions(p);
     if(l.size()>=1 && l.front()->rtti()==Q3CanvasText::RTTI) l.erase(l.begin());
     if(mmSigPortShow && l.size()>=1 && l.front()->rtti()==Q3CanvasPolygon::RTTI)
     {
