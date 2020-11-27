@@ -244,9 +244,9 @@
     if(!activated)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::RTTI)
         {
-          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
+          QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(highlighted)
 	  {
 	    aktLine->setZ(80);
@@ -276,7 +276,7 @@
 	    }
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();
+	  aktLine->scene()->update();
 	  aktLine = 0;
         }
       activated = true;
@@ -291,9 +291,9 @@
     if(activated)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::RTTI)
         {
-          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
+          QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(highlighted)
 	  {
   	    aktLine->setZ(40);
@@ -323,7 +323,7 @@
 	    }
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();
+	  aktLine->scene()->update();
 	  aktLine = 0;
         }
       activated = false;
@@ -338,9 +338,9 @@
     if(!highlighted)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::RTTI)
         {
-          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
+          QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(activated)
 	  {
 	    aktLine->setZ(80);
@@ -370,7 +370,7 @@
 	    }
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();
+	  aktLine->scene()->update();
 	  aktLine = 0;
         }
       highlighted = true;
@@ -385,9 +385,9 @@
     if(highlighted)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::RTTI)
         {
-          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
+          QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(activated)
 	  {
   	    aktLine->setZ(60);
@@ -417,7 +417,7 @@
 	    }
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();
+	  aktLine->scene()->update();
 	  aktLine = 0;
         }
       highlighted = false;	
