@@ -71,23 +71,23 @@ class gsysSimulator : public QDialog
 
 public:
 
-  Q3GroupBox* groupBox1;
+  QGroupBox* groupBox1;
   QLabel* textLabel1;
   QSpinBox* stepSpin;
   QLabel* textLabel2;
   QSpinBox* maxSpin;
-  Q3GroupBox* groupBox2;
+  QGroupBox* groupBox2;
   QPushButton* stepButton;
   QPushButton* startButton;
   QPushButton* stopButton;
-  Q3GroupBox* groupBox3;
+  QGroupBox* groupBox3;
   QCheckBox* useViewer;
   QCheckBox* autoStep;
-  Q3GroupBox* groupBox4;
+  QGroupBox* groupBox4;
   QLabel* textLabel3;
   QLabel* textLabel3_2;
   QSpinBox* intervalSpin;
-  Q3GroupBox* groupBox5;
+  QGroupBox* groupBox5;
   QCheckBox* useWatcher;
   QComboBox* watchVariable;
   QLabel* textLabel1_2;
@@ -110,7 +110,7 @@ private:
    *  The dialog will by default be modeless, unless you set 'modal' to
    *  TRUE to construct a modal dialog.
    */
-  gsysSimulator( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
+  gsysSimulator( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
   
   bool haveToStop();
 
