@@ -41,18 +41,17 @@ class gsysRegister;
 class gsysPort;
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
-#include <QtGui/qcheckbox.h>
-#include <QtGui/qgroupbox.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qspinbox.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qcombobox.h>
-#include <Qt3Support/Q3GroupBox>
+#include <QtWidgets/qdialog.h>
+#include <QtWidgets/qcheckbox.h>
+#include <QtWidgets/qlabel.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qspinbox.h>
+#include <QtWidgets/qlayout.h>
+#include <QtWidgets/qtooltip.h>
+#include <QtWidgets/qwhatsthis.h>
+#include <QtWidgets/qlineedit.h>
+#include <QtWidgets/qcombobox.h>
+#include <QtWidgets/QGroupBox>
 
 #include <stdio.h>
 #include <sstream>
