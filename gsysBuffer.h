@@ -55,7 +55,7 @@ class gsysBuffer : public QDialog
     Q_OBJECT
 
 private:
-    gsysBuffer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
+    gsysBuffer( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     ~gsysBuffer();
     
     // List of all ProgressBars
