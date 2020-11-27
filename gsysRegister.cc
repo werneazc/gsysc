@@ -100,7 +100,7 @@
  
   // recursive function for insertion of the hierarchies according to their parent-/child-structure
   // WARNING: It is assumed, that the Root node is already inserted!           =>  hier!=0 (always!)
-  void gsysRegister::insertLVI(Q3ListView *parentLVI, gsysHierarchy* hier)
+  void gsysRegister::insertLVI(QListWidget *parentLVI, gsysHierarchy* hier)
   {
     gsysMain* mainWdw = new gsysMain();
     Q3ListView* lvi = (Q3ListView*) new Q3ListViewItem(parentLVI,hier->getName(),"Modul",mainWdw->getSimulator()->asChar(reinterpret_cast<int64_t>(hier)));
@@ -220,7 +220,7 @@
     vector<gsysPort*> ports;
     gsysMain* mainWdw = new gsysMain();
     gsysPortViewer* pv = mainWdw->getMainWindow()->getPortViewer();
-    rootLVI = (Q3ListView*) new Q3ListViewItem(mainWdw->getHierarchyTree()->tree,"/","Root","0");
+    rootLVI = (QListWidget*) new QListWidgetItem(mainWdw->getHierarchyTree()->tree,"/","Root","0");
     listViewElements.push_back( rootLVI );
     
     for (int i=0; i<hierarchyList.size(); i++)
