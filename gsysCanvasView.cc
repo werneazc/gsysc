@@ -31,8 +31,8 @@
 /*
  *  Constructs an object of this class
  */
-gsysCanvasView::gsysCanvasView( Q3Canvas* c, QWidget* parent, const char* name, Qt::WindowFlags f) : 
-    Q3CanvasView(c,parent,name,f)  
+gsysCanvasView::gsysCanvasView( QGraphicsScene* c, QWidget* parent, const char* name, Qt::WindowFlags f) : 
+    QGraphicsView(c,parent,name,f)  
     {
       // initialize all global variables
       connShowHierarchy = 0; 
@@ -97,21 +97,21 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
   if(e->button()==Qt::LeftButton)
   {
     QPoint p = e->pos();
-    QList<QGraphicsItem*> l=canvas()->collisions(QRect(p.x()-2,p.y()-2,5,5));
+    QList<QGraphicsItem*> l=scene()->items(QRect(p.x()-2,p.y()-2,5,5));
     
     // Something found? else leave function!
     if(l.size()==0) return;
 
-    if(l.size()>=1 && l.front()->rtti()==Q3CanvasText::RTTI) l.erase(l.begin());
-    Q3CanvasItemList lines;
-    Q3CanvasItemList polygons;
+    if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
+     lines;
+    QList<QGraphicsItem*> polygons;
     lines.clear();
     polygons.clear();
-    for (Q3CanvasItemList::Iterator it=l.begin(); it!=l.end(); ++it) {
-      if ( (*it)->rtti() == Q3CanvasLine::RTTI ) {
+    for (QList<QGraphicsItem*>::Iterator it=l.begin(); it!=l.end(); ++it) {
+      if ( (*it)->type() == QGraphicsLineItem::RTTI ) {
 	lines.push_back(*it);
       }
-      if ( (*it)->rtti() == Q3CanvasPolygon::RTTI ) {
+      if ( (*it)->type() == Q3CanvasPolygon::RTTI ) {
 	polygons.push_back(*it);
       }
     }
@@ -121,8 +121,8 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
     // hit 2 lines of the same signal?
     if(lines.size()==2)
     {
-      Q3CanvasLine* line0 = (Q3CanvasLine*) lines[0];
-      Q3CanvasLine* line1 = (Q3CanvasLine*) lines[1];
+      QGraphicsLineItem* line0 = (QGraphicsLineItem*) lines[0];
+      QGraphicsLineItem* line1 = (QGraphicsLineItem*) lines[1];
       if((line0->startPoint()==line1->startPoint() || 
 	  line0->startPoint()==line1->endPoint()   ||
 	  line0->endPoint()==line1->startPoint()   ||
@@ -140,7 +140,7 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
       sigList = (new gsysMain())->getRegModule()->getAllSignals();
       for(int i=0; i<sigList.size(); i++)
       {
-	Q3CanvasItemList cil = sigList[i]->getCanvasItemList();
+	QList<QGraphicsItem*> cil = sigList[i]->getCanvasItemList();
 	if((lines.size()==1 && cil.contains(lines[0])) ||
 	   (polygons.size()==1 && cil.contains(polygons[0])))
 	    {
@@ -180,13 +180,13 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
     {
       lines.clear();
       polygons.clear();
-      l=canvas()->collisions(QRect(p.x()-1,p.y()-1,3,3));
-      if(l.size()>=1 && l.front()->rtti()==Q3CanvasText::RTTI) l.erase(l.begin());
-      for (Q3CanvasItemList::Iterator it=l.begin(); it!=l.end(); ++it) {
-	if ( (*it)->rtti() == Q3CanvasLine::RTTI ) {
+      l=scene()->items(QRect(p.x()-1,p.y()-1,3,3));
+      if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
+      for (QList<QGraphicsItem*>::Iterator it=l.begin(); it!=l.end(); ++it) {
+	if ( (*it)->type() == QGraphicsLineItem::RTTI ) {
 	  lines.push_back(*it);
 	}
-	if ( (*it)->rtti() == Q3CanvasPolygon::RTTI ) {
+	if ( (*it)->type() == Q3CanvasPolygon::RTTI ) {
 	  polygons.push_back(*it);
 	}
       }
@@ -196,8 +196,8 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
       // hit 2 lines of the same signal?
       if(lines.size()==2)
       {
-	Q3CanvasLine* line0 = (Q3CanvasLine*) lines[0];
-	Q3CanvasLine* line1 = (Q3CanvasLine*) lines[1];
+	QGraphicsLineItem* line0 = (QGraphicsLineItem*) lines[0];
+	QGraphicsLineItem* line1 = (QGraphicsLineItem*) lines[1];
 	if((line0->startPoint()==line1->startPoint() || 
 	    line0->startPoint()==line1->endPoint()   ||
 	    line0->endPoint()==line1->startPoint()   ||
@@ -213,7 +213,7 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
 	vector<gsysSignal*> sigList = (new gsysMain())->getRegModule()->getAllSignals();
 	for(int i=0; i<sigList.size(); i++)
 	{
-	  Q3CanvasItemList cil = sigList[i]->getCanvasItemList();
+	  QList<QGraphicsItem*> cil = sigList[i]->getCanvasItemList();
 	  if((lines.size()==1 && cil.contains(lines[0])) ||
 	     (polygons.size()==1 && cil.contains(polygons[0])))
 	      {
@@ -249,13 +249,13 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
       {
 	lines.clear();
 	polygons.clear();
-	l=canvas()->collisions(p);
-	if(l.size()>=1 && l.front()->rtti()==Q3CanvasText::RTTI) l.erase(l.begin());
-	for (Q3CanvasItemList::Iterator it=l.begin(); it!=l.end(); ++it) {
-	  if ( (*it)->rtti() == Q3CanvasLine::RTTI ) {
+	l=scene()->items(p);
+	if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
+	for (QList<QGraphicsItem*>::Iterator it=l.begin(); it!=l.end(); ++it) {
+	  if ( (*it)->type() == QGraphicsLineItem::RTTI ) {
 	    lines.push_back(*it);
 	  }
-	  if ( (*it)->rtti() == Q3CanvasPolygon::RTTI ) {
+	  if ( (*it)->type() == Q3CanvasPolygon::RTTI ) {
 	    polygons.push_back(*it);
 	  }
 	}
@@ -265,8 +265,8 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
 	// hit 2 lines of the same signal?
 	if(lines.size()==2)
 	{
-	  Q3CanvasLine* line0 = (Q3CanvasLine*) lines[0];
-	  Q3CanvasLine* line1 = (Q3CanvasLine*) lines[1];
+	  QGraphicsLineItem* line0 = (QGraphicsLineItem*) lines[0];
+	  QGraphicsLineItem* line1 = (QGraphicsLineItem*) lines[1];
 	  if((line0->startPoint()==line1->startPoint() || 
 	      line0->startPoint()==line1->endPoint()   ||
 	      line0->endPoint()==line1->startPoint()   ||
@@ -282,7 +282,7 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
 	  vector<gsysSignal*> sigList = (new gsysMain())->getRegModule()->getAllSignals();
 	  for(int i=0; i<sigList.size(); i++)
 	  {
-	    Q3CanvasItemList cil = sigList[i]->getCanvasItemList();
+	    QList<QGraphicsItem*> cil = sigList[i]->getCanvasItemList();
 	    if((lines.size()==1 && cil.contains(lines[0])) ||
 	       (polygons.size()==1 && cil.contains(polygons[0])))
 	        {
@@ -317,9 +317,9 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
       }
     }
     
-    if(l.size()>=1 && l.front()->rtti()==Q3CanvasText::RTTI) l.erase(l.begin());
+    if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
     // if a hierarchy having children is clicked, then decent in lower hierarchy level
-    if(l.size()==1 && l.front()->rtti()==Q3CanvasRectangle::RTTI)
+    if(l.size()==1 && l.front()->type()==QGraphicsRectItem::RTTI)
     {
       if(foundAndOpenedHier(p))
 	return;
@@ -362,12 +362,12 @@ void gsysCanvasView::contentsMouseMoveEvent(QMouseEvent *e)
     ostringstream ostr;
     ostr << p.x() << "/" << p.y() << ends;
     ((gsysHierarchyWindow*) parentWidget())->coord->setText(QString(ostr.str().c_str()));
-    QList<QGraphicsItem*> l=canvas()->collisions(p);
-    if(l.size()>=1 && l.front()->rtti()==Q3CanvasText::RTTI) l.erase(l.begin());
-    if(mmSigPortShow && l.size()>=1 && l.front()->rtti()==Q3CanvasPolygon::RTTI)
+    QList<QGraphicsItem*> l=scene()->items(p);
+    if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
+    if(mmSigPortShow && l.size()>=1 && l.front()->type()==Q3CanvasPolygon::RTTI)
     {
       vector<gsysSignal*> sigList = (new gsysMain())->getRegModule()->getAllSignals();
-      Q3CanvasItemList cil;
+      QList<QGraphicsItem*> cil;
       for(int i=0; i<sigList.size(); i++)
       {
         cil.clear();
@@ -383,7 +383,7 @@ void gsysCanvasView::contentsMouseMoveEvent(QMouseEvent *e)
 	}
       }
     }
-    if(mmHierConnShow && l.size()>=1 && l.front()->rtti()==Q3CanvasRectangle::RTTI)
+    if(mmHierConnShow && l.size()>=1 && l.front()->type()==QGraphicsRectItem::RTTI)
     {
       vector<gsysHierarchy*> hierList = (new gsysMain())->getRegModule()->getHierarchyList();
       for(int i=0; i<hierList.size(); i++)
@@ -478,7 +478,7 @@ void gsysCanvasView::contentsMouseMoveEvent(QMouseEvent *e)
 	conns.clear();
       }
     }
-    canvas()->update();
+    scene()->update();
   }  
 }
 

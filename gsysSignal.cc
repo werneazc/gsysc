@@ -312,9 +312,9 @@
   /*
    *   get list of canvas items that represent this signal
    */
-  Q3CanvasItemList gsysSignal::getCanvasItemList()
+  QList<QGraphicsItem*> gsysSignal::getCanvasItemList()
   {
-    Q3CanvasItemList qcil;
+    QList<QGraphicsItem*> qcil;
     qcil.clear();
     for(int i=0; i<connPorts.size(); i++)
       for(int o=0; o<connPorts[i]->getCanvasItems().size(); o++)
