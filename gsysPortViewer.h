@@ -35,7 +35,7 @@
 #include <QtGui/qcombobox.h>
 #include <QtGui/qframe.h>
 #include <QtGui/qpushbutton.h>
-#include <Qt3Support/q3table.h>
+#include <QtWidgets/QTableWidget>
 #include <QtGui/qlayout.h>
 #include <QtGui/qtooltip.h>
 #include <QtGui/qwhatsthis.h>
