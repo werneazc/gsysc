@@ -45,6 +45,7 @@ class gsysConnection;
 #include <QtWidgets/qlayout.h>
 #include <QtWidgets/qmessagebox.h>
 #include <QtWidgets/QListWidget>
+#include <QtWidgets/QTreeWidget>
 
 #include <vector>
 
@@ -77,7 +78,7 @@ class gsysHierarchyTree : public QDialog
   void setInfoVectors(vector<gsysHierarchy*> hier, vector<gsysConnection*> conn);
 
   QPushButton *openMod;
-  QListWidget *tree;
+  QTreeWidget *tree;
   QSpacerItem *spacer;
 
   public slots:
