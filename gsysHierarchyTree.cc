@@ -39,11 +39,11 @@
     gsysHierarchyTreeLayout->setSpacing(6);
     gsysHierarchyTreeLayout->setMargin(11);
     
-    tree = new QListWidget(this,"tree");
+    tree = new QTreeWidget(this);
     tree->setRootIsDecorated(true);
-    tree->addColumn(tr("Module"));
-    tree->addColumn(tr("Type"));
-    tree->addColumn(tr("Address"));
+    tree->setHeaderLabel(tr("Module"));
+    tree->setHeaderLabel(tr("Type"));
+    tree->setHeaderLabel(tr("Address"));
     gsysHierarchyTreeLayout->addWidget( tree );
     openMod = new QPushButton("openMod", this );
     gsysHierarchyTreeLayout->addWidget( openMod );
@@ -111,7 +111,7 @@
 	  else std::cout << "Node is /: " << isRoot << ";  Name of module: " << hierarchy->getName() << std::endl;
 	  #endif
 
-	  hierWdw->setCaption(isRoot?"Root":hierarchy->getName());
+	  hierWdw->setWindowTitle(isRoot?"Root":hierarchy->getName());
 	  if (!isRoot) hierWdw->initializeWdw(hierarchy,allHierarchies,allConnections,false);
 	  else hierWdw->initializeWdw(0,allHierarchies,allConnections,false);
 	  
@@ -136,7 +136,7 @@
    */
   void gsysHierarchyTree::openMod_clicked()
   {
-    QListWidgetItem* lvi = tree->currentItem();
+    QTreeWidgetItem* lvi = tree->currentItem();
     if (lvi != 0)
     {
       int addr = lvi->text(2).toInt();
@@ -151,7 +151,7 @@
    */
   void gsysHierarchyTree::languageChanged()
   {
-    setCaption("HierarchyTree");
+    setWindowTitle("HierarchyTree");
     openMod->setText( tr("&Open module") );
   }
 
