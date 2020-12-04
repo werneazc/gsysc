@@ -34,8 +34,7 @@
     setModal(modal);
     if ( !name ) setObjectName("gsysHierarchyTree");
 
-    gsysHierarchyTreeLayout = new QVBoxLayout( this );
-    gsysHierarchyTreeLayout->setObjectName("gsysHierarchyTreeLayout");
+    gsysHierarchyTreeLayout = new QVBoxLayout("gsysHierarchyTreeLayout", this );
     gsysHierarchyTreeLayout->setSpacing(6);
     gsysHierarchyTreeLayout->setMargin(11);
     

@@ -33,9 +33,9 @@
 #define GSYSBUFFER_H
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
-#include <QtGui/qwidget.h>
-#include <QtGui/qgroupbox.h>
+#include <QtWidgets/qdialog.h>
+#include <QtWidgets/qwidget.h>
+#include <QtWidgets/qgroupbox.h>
 #include <QtWidgets/QProgressBar>
 
 #include <vector>
