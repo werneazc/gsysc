@@ -33,7 +33,7 @@
 
 #include <QtCore/qvariant.h>
 #include <QtGui/qpixmap.h>
-#include <QtGui/qdialog.h>
+#include <QtWidgets/qdialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

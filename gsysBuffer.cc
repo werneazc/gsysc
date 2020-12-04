@@ -44,7 +44,9 @@ gsysBuffer::gsysBuffer( QWidget* parent, const char* name, bool modal, Qt::Windo
     gboxList.clear();
     gbLayoutList.clear();
 
-    gsysBufferLayout = new QVBoxLayout(this, 11, 6, "gsysBufferLayout");
+    gsysBufferLayout = new QVBoxLayout("gsysBufferLayout", this);
+    gsysBufferLayout->setMargin(6);
+    gsysBufferLayout->setSpacing(11);
 
     idList = (new gsysMain())->getRegModule()->getBufferIDs();
     vector<char*> nameList = (new gsysMain())->getRegModule()->getBufferNames();
@@ -52,7 +54,7 @@ gsysBuffer::gsysBuffer( QWidget* parent, const char* name, bool modal, Qt::Windo
     for(int i=0; i<idList.size(); i++)
     {
       QGroupBox* groupBox1 = new QGroupBox( this, "groupBox1" );
-      QVBoxLayout* groupBox1Layout = new QVBoxLayout(groupBox1,11,6,"gsysGroupBoxLayout");
+      QVBoxLayout* groupBox1Layout = new QVBoxLayout(groupBox1,11,6,"gsysGroupBoxLayout"); //Top
       groupBox1Layout->setAlignment( Qt::AlignTop );
 
       Q3ProgressBar* progressBar1 = new Q3ProgressBar( groupBox1, "progressBar1" );

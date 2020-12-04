@@ -115,36 +115,37 @@
      *  TRUE to construct a modal dialog.
      */
     gsysMainGUI::gsysMainGUI( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
-           : QDialog( parent, name, modal, fl )
+           : QDialog( parent, fl )
     {
       simulator = new gsysSimulator(this);
       hierTree = new gsysHierarchyTree(this);
       aboutWdw = 0;
       portViewer = NULL;
       bufferWdw = 0;
+      setModal(modal);
       
-      if ( !name )
-        setName( "gsysMain" );
-      gsysMainGUILayout = new QVBoxLayout( this, 11, 6, "gsysMainGUILayout");
+      gsysMainGUILayout = new QVBoxLayout( this );
+      gsysMainGUILayout->setSpacing(6);
+      gsysMainGUILayout->setMargin(11);
 
-      pushButton4 = new QPushButton( this, "pushButton4" );
+      pushButton4 = new QPushButton( "pushButton4", this );
       gsysMainGUILayout->addWidget( pushButton4 );
       QSpacerItem* spacer = new QSpacerItem( 20, 16, QSizePolicy::Minimum, QSizePolicy::Fixed );
       gsysMainGUILayout->addItem( spacer );
 
-      pushButton5 = new QPushButton( this, "pushButton5" );
+      pushButton5 = new QPushButton( "pushButton5", this );
       gsysMainGUILayout->addWidget( pushButton5 );
 
-      pushButton8 = new QPushButton( this, "pushButton8" );
+      pushButton8 = new QPushButton( "pushButton8", this );
       gsysMainGUILayout->addWidget( pushButton8 );
 
-      pushButton9 = new QPushButton( this, "pushButton9" );
+      pushButton9 = new QPushButton( "pushButton9", this );
       gsysMainGUILayout->addWidget( pushButton9 );
       QSpacerItem* spacer_2 = new QSpacerItem( 20, 16, QSizePolicy::Minimum, QSizePolicy::Fixed );
       gsysMainGUILayout->addItem( spacer_2 );
       if((new gsysMain())->getRegModule()->getBufferIDs().size() <= 0) pushButton9->setEnabled( false );
 
-      pushButton6 = new QPushButton( this, "pushButton6" );
+      pushButton6 = new QPushButton( "pushButton6", this );
       gsysMainGUILayout->addWidget( pushButton6 );
       QSpacerItem* spacer_3 = new QSpacerItem( 20, 16, QSizePolicy::Minimum, QSizePolicy::Expanding );
       gsysMainGUILayout->addItem( spacer_3 );
@@ -243,7 +244,7 @@
      */
     void gsysMainGUI::languageChange()
     {
-      setCaption( tr( "gSysC" ) );
+      setWindowTitle( tr( "gSysC" ) );
       pushButton4->setText( tr( "&Start simulator" ) );
       pushButton5->setText( tr( "&Hierarchy-Viewer" ) );
       pushButton8->setText( tr( "&Port-Viewer" ) );
