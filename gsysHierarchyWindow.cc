@@ -1580,7 +1580,7 @@
 	}
       }
       connLine->show();
-      connection->addTraceElem(connLine);
+      connection->addTraceElem(new QGraphicsPathItem(connLine));               //(connLine);
       return true;
     }
 

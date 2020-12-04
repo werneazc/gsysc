@@ -60,7 +60,7 @@ public:
     gsysPortViewer( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     ~gsysPortViewer();
 
-    QTable* table1;
+    QTableWidget* table1;
     QFrame* frame4;
     QComboBox* comboBox1;
     QPushButton* pushButton1;
