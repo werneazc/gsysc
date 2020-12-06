@@ -34,11 +34,14 @@
    *  TRUE to construct a modal dialog.
    */
   gsysSimulator::gsysSimulator( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
-	    : QDialog( parent, name, modal, fl )
+	    : QDialog( parent, fl )
   {
-    if ( !name )
-       setName( "gsysSimulator" );
-    gsysSimulatorLayout = new QVBoxLayout( this, 11, 6, "gsysSimulatorLayout");
+    setModal(modal);
+    if ( !name ) setObjectName( "gsysSimulator" );
+    gsysSimulatorLayout = new QVBoxLayout( this );
+    gsysSimulatorLayout->setObjectName("gsysSimulatorLayout");
+    gsysSimulatorLayout->setSpacing(6);
+    gsysSimulatorLayout->setMargin(11);
     
     
     /** Initialization block **/
@@ -50,94 +53,97 @@
     hierTree = 0;
 	
 
-    groupBox1 = new QGroupBox( this, "groupBox1" );
-    groupBox1->setColumnLayout(0, Qt::Vertical );
+    groupBox1 = new QGroupBox( "groupBox1", this );
     groupBox1->layout()->setSpacing( 6 );
     groupBox1->layout()->setMargin( 11 );
-    groupBox1Layout = new QHBoxLayout( groupBox1->layout() );
+    groupBox1Layout = new QHBoxLayout();
+    groupBox1Layout->addLayout( groupBox1->layout() );
     groupBox1Layout->setAlignment( Qt::AlignTop );
     QSpacerItem* spacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     groupBox1Layout->addItem( spacer );
 
-    textLabel1 = new QLabel( groupBox1, "textLabel1" );
+    textLabel1 = new QLabel( "textLabel1", groupBox1 );
     groupBox1Layout->addWidget( textLabel1 );
 
-    stepSpin = new QSpinBox( groupBox1, "stepSpin" );
-    stepSpin->setMaxValue( 1000 );
-    stepSpin->setMinValue( 1 );
+    stepSpin = new QSpinBox( groupBox1 );
+    stepSpin->setObjectName( "stepSpin" );
+    stepSpin->setMaximum( 1000 );
+    stepSpin->setMinimum( 1 );
     groupBox1Layout->addWidget( stepSpin );
     QSpacerItem* spacer_2 = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     groupBox1Layout->addItem( spacer_2 );
 
-    textLabel2 = new QLabel( groupBox1, "textLabel2" );
+    textLabel2 = new QLabel( "textLabel2", groupBox1 );
     groupBox1Layout->addWidget( textLabel2 );
 
-    maxSpin = new QSpinBox( groupBox1, "maxSpin" );
-    maxSpin->setMaxValue( 999999999 );
-    maxSpin->setMinValue( 1 );
+    maxSpin = new QSpinBox( groupBox1 );
+    stepSpin->setObjectName( "maxSpin" );
+    maxSpin->setMaximum( 999999999 );
+    maxSpin->setMinimum( 1 );
     maxSpin->setValue( 1000 );
     groupBox1Layout->addWidget( maxSpin );
     QSpacerItem* spacer_3 = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     groupBox1Layout->addItem( spacer_3 );
     gsysSimulatorLayout->addWidget( groupBox1 );
 
-    groupBox2 = new QGroupBox( this, "groupBox2" );
-    groupBox2->setColumnLayout(0, Qt::Vertical );
+    groupBox2 = new QGroupBox( "groupBox2", this );
     groupBox2->layout()->setSpacing( 6 );
     groupBox2->layout()->setMargin( 11 );
-    groupBox2Layout = new QHBoxLayout( groupBox2->layout() );
+    groupBox2Layout = new QHBoxLayout();
+    groupBox2Layout->addLayout( groupBox2->layout() );
     groupBox2Layout->setAlignment( Qt::AlignTop );
     QSpacerItem* spacer_4 = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     groupBox2Layout->addItem( spacer_4 );
 
-    stepButton = new QPushButton( groupBox2, "stepButton" );
+    stepButton = new QPushButton( "stepButton", groupBox2 );
     groupBox2Layout->addWidget( stepButton );
     
     QSpacerItem* spacer_9_2 = new QSpacerItem( 8, 40, QSizePolicy::Fixed, QSizePolicy::Fixed );
     groupBox2Layout->addItem( spacer_9_2 );
 
-    startButton = new QPushButton( groupBox2, "startButton" );
+    startButton = new QPushButton( "startButton", groupBox2 );
     groupBox2Layout->addWidget( startButton );
 
-    stopButton = new QPushButton( groupBox2, "stopButton" );
+    stopButton = new QPushButton( "stopButton", groupBox2 );
     groupBox2Layout->addWidget( stopButton );
     QSpacerItem* spacer_5 = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     groupBox2Layout->addItem( spacer_5 );
     gsysSimulatorLayout->addWidget( groupBox2 );
 
-    groupBox3 = new QGroupBox( this, "groupBox3" );
-    groupBox3->setColumnLayout(0, Qt::Vertical );
+    groupBox3 = new QGroupBox( "groupBox3", this );
     groupBox3->layout()->setSpacing( 6 );
     groupBox3->layout()->setMargin( 11 );
-    groupBox3Layout = new QVBoxLayout( groupBox3->layout() );
+    groupBox3Layout = new QVBoxLayout();
+    groupBox3Layout->addLayout( groupBox3->layout() );
     groupBox3Layout->setAlignment( Qt::AlignTop );
 
-    useViewer = new QCheckBox( groupBox3, "useViewer" );
-    useViewer->setChecked( FALSE );
+    useViewer = new QCheckBox( "useViewer", groupBox3 );
+    useViewer->setChecked( false );
     groupBox3Layout->addWidget( useViewer );
 						
-    autoStep = new QCheckBox( groupBox3, "autoStep" );
+    autoStep = new QCheckBox( "autoStep", groupBox3 );
     groupBox3Layout->addWidget( autoStep );
 
-    groupBox4 = new QGroupBox( groupBox3, "groupBox4" );
-    groupBox4->setEnabled( FALSE );
-    groupBox4->setColumnLayout(0, Qt::Vertical );
+    groupBox4 = new QGroupBox( "groupBox4", groupBox3 );
+    groupBox4->setEnabled( false );
     groupBox4->layout()->setSpacing( 6 );
     groupBox4->layout()->setMargin( 11 );
-    groupBox4Layout = new QHBoxLayout( groupBox4->layout() );
+    groupBox4Layout = new QHBoxLayout();
+    groupBox4Layout->addLayout( groupBox4->layout() );;
     groupBox4Layout->setAlignment( Qt::AlignTop );
     QSpacerItem* spacer_6 = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     groupBox4Layout->addItem( spacer_6 );
 
-    textLabel3 = new QLabel( groupBox4, "textLabel3" );
-    textLabel3_2 = new QLabel( groupBox4, "textLabel3_2" );
+    textLabel3 = new QLabel( "textLabel3", groupBox4 );
+    textLabel3_2 = new QLabel( "textLabel3_2", groupBox4 );
     textLabel3_2->setText(" [1/10 s]");
     groupBox4Layout->addWidget( textLabel3 );
     groupBox4Layout->addItem( spacer_9_2 );
-    intervalSpin = new QSpinBox( groupBox4, "intervalSpin" );
-    intervalSpin->setEnabled( FALSE );
+    intervalSpin = new QSpinBox( groupBox4 );
+    intervalSpin->setObjectName( "intervalSpin" );
+    intervalSpin->setEnabled( false );
     intervalSpin->setValue(10);
-    intervalSpin->setMinValue( 1 );
+    intervalSpin->setMinimum( 1 );
     
     groupBox4Layout->addWidget( intervalSpin );
     groupBox4Layout->addWidget( textLabel3_2 );
@@ -149,25 +155,25 @@
     gsysSimulatorLayout->addItem( spacer_8 );
    
 
-    useWatcher = new QCheckBox( groupBox3, "useWatcher" );
+    useWatcher = new QCheckBox( "useWatcher", groupBox3 );
     groupBox3Layout->addWidget( useWatcher );
 
-    groupBox5 = new QGroupBox( groupBox3, "groupBox5" );
-    groupBox5->setEnabled( FALSE );
-    groupBox5->setColumnLayout(0, Qt::Vertical );
+    groupBox5 = new QGroupBox( "groupBox5", groupBox3 );
+    groupBox5->setEnabled( false );
     groupBox5->layout()->setSpacing( 6 );
     groupBox5->layout()->setMargin( 11 );
-    groupBox5Layout = new QHBoxLayout( groupBox5->layout() );
+    groupBox5Layout = new QHBoxLayout();
+    groupBox5Layout->addLayout( groupBox5->layout() );
     groupBox5Layout->setAlignment( Qt::AlignTop );
     QSpacerItem* spacer_9 = new QSpacerItem( 3, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     groupBox5Layout->addItem( spacer_9 );
 
-    watchVariable = new QComboBox( FALSE, groupBox5, "watchVariable" );
+    watchVariable = new QComboBox( false, "watchVariable", groupBox5 );
     watchVariable->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, watchVariable->sizePolicy().hasHeightForWidth() ) );
     watchVariable->setMinimumSize( QSize( 0, 0 ) );
     groupBox5Layout->addWidget( watchVariable );
 
-    textLabel1_2 = new QLabel( groupBox5, "textLabel1_2" );
+    textLabel1_2 = new QLabel( "textLabel1_2", groupBox5 );
     groupBox5Layout->addWidget( textLabel1_2 );
 
     watchValue = new QLineEdit( groupBox5, "watchValue" );
@@ -231,7 +237,7 @@
     if (steps>0)
     {
       maxSpin->setValue(steps);
-      stepSpin->setMaxValue(steps);
+      stepSpin->setMaximum(steps);
     }
     this->show();
   }
