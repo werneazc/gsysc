@@ -83,7 +83,7 @@ class gsysSignal
   gsysHierarchy* getParent();
   void setConn(gsysConnection* conn);
   gsysConnection* getConn();
-  QList<QGraphicsItem> getGraphicsItemList();
+  QList<QGraphicsItem*> getCanvasItemList();
   gsysSignalViewer* getSigViewWindow();
   void highlightChanged();
   void deHighlight();

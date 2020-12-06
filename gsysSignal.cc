@@ -318,7 +318,7 @@
     qcil.clear();
     for(int i=0; i<connPorts.size(); i++)
       for(int o=0; o<connPorts[i]->getCanvasItems().size(); o++)
-        qcil.push_back((Q3CanvasItem*)connPorts[i]->getCanvasItems()[o]);
+        qcil.push_back((QGraphicsItem*)connPorts[i]->getCanvasItems()[o]);
     return qcil;
   }
 
