@@ -244,34 +244,30 @@
     if(!activated)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->type() == QGraphicsLineItem::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::Type)
         {
           QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(highlighted)
 	  {
-	    aktLine->setZ(80);
+	    aktLine->setZValue(80);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->activeChangedSig));   // violet
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->activeChangedSig));   // violet
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF00FF"));   // violet
 	      aktLine->setPen(QColor("#FF00FF"));   // violet
 	    }
 	  }
 	  else
 	  {
-	    aktLine->setZ(60);
+	    aktLine->setZValue(60);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->activeSignal));   // dark orange
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->activeSignal));   // dark orange
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF7F00"));   // dark orange
 	      aktLine->setPen(QColor("#FF7F00"));   // dark orange
 	    }
 	  }
@@ -291,34 +287,30 @@
     if(activated)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->type() == QGraphicsLineItem::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::Type)
         {
           QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(highlighted)
 	  {
-  	    aktLine->setZ(40);
+  	    aktLine->setZValue(40);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->changedSignal));   // red
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->changedSignal));   // red
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF0000"));   // red
 	      aktLine->setPen(QColor("#FF0000"));   // red
 	    }
 	  }
 	  else
 	  {
-  	    aktLine->setZ(20);
+  	    aktLine->setZValue(20);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->normalSignal));   // black
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->normalSignal));   // black
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#000000"));   // black
 	      aktLine->setPen(QColor("#000000"));   // black
 	    }
 	  }
@@ -338,34 +330,30 @@
     if(!highlighted)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->type() == QGraphicsLineItem::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::Type)
         {
           QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(activated)
 	  {
-	    aktLine->setZ(80);
+	    aktLine->setZValue(80);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->activeChangedSig));   // violet
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->activeChangedSig));   // violet
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF00FF"));   // violet
 	      aktLine->setPen(QColor("#FF00FF"));   // violet
 	    }
 	  }
 	  else
 	  {
-	    aktLine->setZ(40);
+	    aktLine->setZValue(40);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->changedSignal));   // red
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->changedSignal));   // red
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF0000"));   // red
 	      aktLine->setPen(QColor("#FF0000"));   // red
 	    }
 	  }
@@ -385,34 +373,30 @@
     if(highlighted)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->type() == QGraphicsLineItem::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::Type)
         {
           QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(activated)
 	  {
-  	    aktLine->setZ(60);
+  	    aktLine->setZValue(60);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->activeSignal));   // orange
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->activeSignal));   // orange
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF7F00"));   // orange
 	      aktLine->setPen(QColor("#FF7F00"));   // orange
 	    }
 	  }
 	  else
 	  {
-  	    aktLine->setZ(20);
+  	    aktLine->setZValue(20);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->normalSignal));   // black
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->normalSignal));   // black
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#000000"));   // black
 	      aktLine->setPen(QColor("#000000"));   // black
 	    }
 	  }
