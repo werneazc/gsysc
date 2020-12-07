@@ -32,8 +32,9 @@
  *  Constructs an object of this class
  */
 gsysCanvasView::gsysCanvasView( QGraphicsScene* c, QWidget* parent, const char* name, Qt::WindowFlags f) : 
-    QGraphicsView(c,parent,name,f)  
+    QGraphicsView(c,parent)  
     {
+      setObjectName(name);
       // initialize all global variables
       connShowHierarchy = 0; 
       mmSigPortShow = true;
@@ -102,16 +103,16 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
     // Something found? else leave function!
     if(l.size()==0) return;
 
-    if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
-     lines;
+    if(l.size()>=1 && l.front()->type()==QGraphicsTextItem::Type) l.erase(l.begin());
+    QList<QGraphicsItem*> lines;
     QList<QGraphicsItem*> polygons;
     lines.clear();
     polygons.clear();
     for (QList<QGraphicsItem*>::Iterator it=l.begin(); it!=l.end(); ++it) {
-      if ( (*it)->type() == QGraphicsLineItem::RTTI ) {
+      if ( (*it)->type() == QGraphicsLineItem::Type ) {
 	lines.push_back(*it);
       }
-      if ( (*it)->type() == Q3CanvasPolygon::RTTI ) {
+      if ( (*it)->type() == QGraphicsPolygonItem::Type ) {
 	polygons.push_back(*it);
       }
     }
@@ -123,7 +124,7 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
     {
       QGraphicsLineItem* line0 = (QGraphicsLineItem*) lines[0];
       QGraphicsLineItem* line1 = (QGraphicsLineItem*) lines[1];
-      if((line0->startPoint()==line1->startPoint() || 
+      if((line0->scenePos()==line1->startPoint() || 
 	  line0->startPoint()==line1->endPoint()   ||
 	  line0->endPoint()==line1->startPoint()   ||
 	  line0->endPoint()==line1->endPoint())    &&
@@ -181,12 +182,12 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
       lines.clear();
       polygons.clear();
       l=scene()->items(QRect(p.x()-1,p.y()-1,3,3));
-      if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
+      if(l.size()>=1 && l.front()->type()==QGraphicsTextItem::Type) l.erase(l.begin());
       for (QList<QGraphicsItem*>::Iterator it=l.begin(); it!=l.end(); ++it) {
-	if ( (*it)->type() == QGraphicsLineItem::RTTI ) {
+	if ( (*it)->type() == QGraphicsLineItem::Type ) {
 	  lines.push_back(*it);
 	}
-	if ( (*it)->type() == Q3CanvasPolygon::RTTI ) {
+	if ( (*it)->type() == QGraphicsPolygonItem::Type ) {
 	  polygons.push_back(*it);
 	}
       }
@@ -250,12 +251,12 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
 	lines.clear();
 	polygons.clear();
 	l=scene()->items(p);
-	if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
+	if(l.size()>=1 && l.front()->type()==QGraphicsTextItem::Type) l.erase(l.begin());
 	for (QList<QGraphicsItem*>::Iterator it=l.begin(); it!=l.end(); ++it) {
-	  if ( (*it)->type() == QGraphicsLineItem::RTTI ) {
+	  if ( (*it)->type() == QGraphicsLineItem::Type ) {
 	    lines.push_back(*it);
 	  }
-	  if ( (*it)->type() == Q3CanvasPolygon::RTTI ) {
+	  if ( (*it)->type() == QGraphicsPolygonItem::Type ) {
 	    polygons.push_back(*it);
 	  }
 	}
@@ -317,9 +318,9 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
       }
     }
     
-    if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
+    if(l.size()>=1 && l.front()->type()==QGraphicsTextItem::Type) l.erase(l.begin());
     // if a hierarchy having children is clicked, then decent in lower hierarchy level
-    if(l.size()==1 && l.front()->type()==QGraphicsRectItem::RTTI)
+    if(l.size()==1 && l.front()->type()==QGraphicsRectItem::Type)
     {
       if(foundAndOpenedHier(p))
 	return;
@@ -363,8 +364,8 @@ void gsysCanvasView::contentsMouseMoveEvent(QMouseEvent *e)
     ostr << p.x() << "/" << p.y() << ends;
     ((gsysHierarchyWindow*) parentWidget())->coord->setText(QString(ostr.str().c_str()));
     QList<QGraphicsItem*> l=scene()->items(p);
-    if(l.size()>=1 && l.front()->type()==Q3CanvasText::RTTI) l.erase(l.begin());
-    if(mmSigPortShow && l.size()>=1 && l.front()->type()==Q3CanvasPolygon::RTTI)
+    if(l.size()>=1 && l.front()->type()==QGraphicsTextItem::Type) l.erase(l.begin());
+    if(mmSigPortShow && l.size()>=1 && l.front()->type()==QGraphicsPolygonItem::Type)
     {
       vector<gsysSignal*> sigList = (new gsysMain())->getRegModule()->getAllSignals();
       QList<QGraphicsItem*> cil;
@@ -383,7 +384,7 @@ void gsysCanvasView::contentsMouseMoveEvent(QMouseEvent *e)
 	}
       }
     }
-    if(mmHierConnShow && l.size()>=1 && l.front()->type()==QGraphicsRectItem::RTTI)
+    if(mmHierConnShow && l.size()>=1 && l.front()->type()==QGraphicsRectItem::Type)
     {
       vector<gsysHierarchy*> hierList = (new gsysMain())->getRegModule()->getHierarchyList();
       for(int i=0; i<hierList.size(); i++)
