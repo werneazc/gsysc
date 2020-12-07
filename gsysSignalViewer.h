@@ -68,6 +68,7 @@ private:
 protected:
     QVBoxLayout* gsysSignalViewerLayout;
     QGridLayout* groupBox3Layout;
+    QGridLayout* groupBoxListLayout;
 
 protected slots:
     virtual void languageChange();
