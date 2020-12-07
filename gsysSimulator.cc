@@ -168,15 +168,22 @@
     QSpacerItem* spacer_9 = new QSpacerItem( 3, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     groupBox5Layout->addItem( spacer_9 );
 
-    watchVariable = new QComboBox( false, "watchVariable", groupBox5 );
-    watchVariable->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, watchVariable->sizePolicy().hasHeightForWidth() ) );
+    watchVariable = new QComboBox( groupBox5 );
+    watchVariable->setObjectName("watchVariable");
+
+    watchVarPolicy = new QSizePolicy( (QSizePolicy::Policy)1, (QSizePolicy::Policy)0 );
+    watchVarPolicy->setHorizontalStretch( 0 );
+    watchVarPolicy->setVerticalStretch( 0 );
+    watchVarPolicy->setHeightForWidth( watchVariable->sizePolicy().hasHeightForWidth() );
+    
+    watchVariable->setSizePolicy( *watchVarPolicy );
     watchVariable->setMinimumSize( QSize( 0, 0 ) );
     groupBox5Layout->addWidget( watchVariable );
 
     textLabel1_2 = new QLabel( "textLabel1_2", groupBox5 );
     groupBox5Layout->addWidget( textLabel1_2 );
 
-    watchValue = new QLineEdit( groupBox5, "watchValue" );
+    watchValue = new QLineEdit( "watchValue", groupBox5 );
     groupBox5Layout->addWidget( watchValue );
     QSpacerItem* spacer_10 = new QSpacerItem( 3, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     groupBox5Layout->addItem( spacer_10 );
@@ -253,18 +260,18 @@
       aktStep += timeValue;   
       if(autoStep->isChecked())
       {
-        setCaption( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
+        setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
 	(new gsysMain())->getMainWindow()->getPortViewer()->refresh();
         if(useViewer->isChecked())
           (new gsysMain())->getRegModule()->showChanges();
       }	
       if (useWatcher->isChecked())   // use port observation
       {
-        if (strcmp(watchPorts[watchVariable->currentItem()]->getValue(),watchValue->text()) == 0)
+        if (strcmp(watchPorts[watchVariable->currentIndex()]->getValue(),watchValue->text().toLocal8Bit().data()) == 0)
 	{
 	  toStop = true;
 	  hardStop = true;
-          setCaption( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
+          setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
 	  (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
           if(useViewer->isChecked())
             (new gsysMain())->getRegModule()->showChanges();
@@ -278,7 +285,7 @@
       sc_start();
       aktStep++;   
       hardStop = true;
-      setCaption( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
+      setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
       (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
       if(useViewer->isChecked())
         (new gsysMain())->getRegModule()->showChanges();
@@ -376,7 +383,7 @@
     hardStop = false;
     start(stepSpin->value());
     if (aktStep > maxSpin->value()) { maxSpin->setValue(aktStep); }
-    setCaption( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
+    setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
     (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
   }
 
@@ -388,7 +395,7 @@
   void gsysSimulator::addPort(gsysPort* port)
   {
     watchPorts.push_back(port);
-    watchVariable->insertItem(port->getName());
+    watchVariable->insertItem(0, port->getName());
   }
 
   /*
@@ -405,7 +412,7 @@
    */
   void gsysSimulator::languageChange()
   {
-    setCaption( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
+    setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
     groupBox1->setTitle( tr( "Iteration interval", "important values..." ) );
     textLabel1->setText( tr( "Number of steps" ) );
     textLabel2->setText( tr( "Maximum" ) );

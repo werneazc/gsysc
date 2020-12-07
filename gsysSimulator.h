@@ -89,6 +89,7 @@ public:
   QSpinBox* intervalSpin;
   QGroupBox* groupBox5;
   QCheckBox* useWatcher;
+  QSizePolicy* watchVarPolicy;
   QComboBox* watchVariable;
   QLabel* textLabel1_2;
   QLineEdit* watchValue;

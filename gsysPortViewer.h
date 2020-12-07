@@ -39,6 +39,7 @@
 #include <QtWidgets/qlayout.h>
 #include <QtWidgets/qtooltip.h>
 #include <QtWidgets/qwhatsthis.h>
+#include <QtWidgets/QHeaderView>
 
 #include <vector>
 
