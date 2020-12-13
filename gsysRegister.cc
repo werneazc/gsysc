@@ -103,7 +103,7 @@
   void gsysRegister::insertLVI(Q3ListView *parentLVI, gsysHierarchy* hier)
   {
     gsysMain* mainWdw = new gsysMain();
-    Q3ListView* lvi = (Q3ListView*) new Q3ListViewItem(parentLVI,hier->getName(),"Modul",mainWdw->getSimulator()->asChar((int64_t) hier));
+    Q3ListView* lvi = (Q3ListView*) new Q3ListViewItem(parentLVI,hier->getName(),"Modul",mainWdw->getSimulator()->asChar(reinterpret_cast<int64_t>(hier)));
     listViewElements.push_back( lvi );
     
     int chSize = hier->getChildren().size();

@@ -17,6 +17,7 @@
 */
 
 #include "gsysHierarchyWindow.moc"
+#include "gsysHierarchyWindow.h"
 #include "gsysSignalViewer.h"
 #include "gsysHierarchy.h"
 #include "gsysConnection.h"

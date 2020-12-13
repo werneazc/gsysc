@@ -17,6 +17,7 @@
 */
 
 #include "gsysCanvasView.moc"
+#include "gsysCanvasView.h"
 #include "gsysMain.h"
 #include "gsysPort.h"
 #include "gsysSignal.h"

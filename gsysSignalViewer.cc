@@ -17,6 +17,7 @@
 */
 
 #include "gsysSignalViewer.moc"
+#include "gsysSignalViewer.h"
 
 /* 
  *  Constructs a gsysSignalViewer as a child of 'parent', with the 

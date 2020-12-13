@@ -17,6 +17,7 @@
 */
 
 #include "gsysPortViewer.moc"
+#include "gsysPortViewer.h"
 #include "gsysPort.h"
 #include "gsysMain.h"
 #include "gsysSimulator.h"
@@ -157,7 +158,7 @@ void gsysPortViewer::pushButton1_clicked()
     }
     aktPort = 0;
   }
-  else		// anderen Port hinzufügen
+  else		// anderen Port hinzufÃ¼gen
   {
     int idx = comboBox1->currentItem();
     gsysPort* aktPort = portVec[idx-1];
