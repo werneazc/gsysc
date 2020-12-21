@@ -124,13 +124,13 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
     {
       QGraphicsLineItem* line0 = (QGraphicsLineItem*) lines[0];
       QGraphicsLineItem* line1 = (QGraphicsLineItem*) lines[1];
-      if((line0->scenePos()==line1->startPoint() || 
-	  line0->startPoint()==line1->endPoint()   ||
-	  line0->endPoint()==line1->startPoint()   ||
-	  line0->endPoint()==line1->endPoint())    &&
-	 line0->startPoint().x()+line0->endPoint().x() != line1->startPoint().x()+line1->endPoint().x()  &&
-	 line0->startPoint().y()+line0->endPoint().y() != line1->startPoint().y()+line1->endPoint().y())
-	      lines.erase(++lines.begin());   // zweites Element löschen, da überflüssig
+      if((line0->scenePos()==line1->line().p1()||
+	  line0->line().p1()==line1->line().p2()   ||
+	  line0->line().p2()==line1->line().p1()   ||
+	  line0->line().p2()==line1->line().p2())  &&
+	  line0->line().x1()+line0->line().x2() != line1->line().x1()+line1->line().x2()  &&
+	  line0->line().y1()+line0->line().y2() != line1->line().y1()+line1->line().y2())
+	      lines.erase(++lines.begin());   // zweites Element lï¿½schen, da ï¿½berflï¿½ssig
       line0 = 0;
       line1 = 0;
     }
@@ -199,12 +199,12 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
       {
 	QGraphicsLineItem* line0 = (QGraphicsLineItem*) lines[0];
 	QGraphicsLineItem* line1 = (QGraphicsLineItem*) lines[1];
-	if((line0->startPoint()==line1->startPoint() || 
-	    line0->startPoint()==line1->endPoint()   ||
-	    line0->endPoint()==line1->startPoint()   ||
-	    line0->endPoint()==line1->endPoint())    &&
-	   line0->startPoint().x()+line0->endPoint().x() != line1->startPoint().x()+line1->endPoint().x()  &&
-	   line0->startPoint().y()+line0->endPoint().y() != line1->startPoint().y()+line1->endPoint().y())
+	if((line0->line().p1()==line1->line().p1() ||
+	    line0->line().p1()==line1->line().p2() ||
+	    line0->line().p2()==line1->line().p1() ||
+	    line0->line().p2()==line1->line().p2())&&
+	   line0->line().x1()+line0->line().x2() != line1->line().x1()+line1->line().x2()  &&
+	   line0->line().y1()+line0->line().y2() != line1->line().y1()+line1->line().y2())
 		lines.erase(++lines.begin());   // delete second element, because needless
 	line0 = 0;
 	line1 = 0;
@@ -268,12 +268,12 @@ void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
 	{
 	  QGraphicsLineItem* line0 = (QGraphicsLineItem*) lines[0];
 	  QGraphicsLineItem* line1 = (QGraphicsLineItem*) lines[1];
-	  if((line0->startPoint()==line1->startPoint() || 
-	      line0->startPoint()==line1->endPoint()   ||
-	      line0->endPoint()==line1->startPoint()   ||
-	      line0->endPoint()==line1->endPoint())    &&
-	     line0->startPoint().x()+line0->endPoint().x() != line1->startPoint().x()+line1->endPoint().x()  &&
-	     line0->startPoint().y()+line0->endPoint().y() != line1->startPoint().y()+line1->endPoint().y())
+	  if((line0->line().p1()==line1->line().p1() || 
+	      line0->line().p1()==line1->line().p2()   ||
+	      line0->line().p2()==line1->line().p1()   ||
+	      line0->line().p2()==line1->line().p2())    &&
+	     line0->line().x1()+line0->line().x2() != line1->line().x1()+line1->line().x2()  &&
+	     line0->line().y1()+line0->line().y2() != line1->line().y1()+line1->line().y2())
 		  lines.erase(++lines.begin());   // delete second element, because needless
 	  line0 = 0;
 	  line1 = 0;
