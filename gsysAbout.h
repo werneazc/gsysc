@@ -23,7 +23,7 @@
     Content:
       This file provides an about-dialog giving information about
       the library. Therefore the library gets related to the
-      institute of computer engineering of the university of Lübeck. 
+      institute of computer engineering of the university of Lï¿½beck. 
 
  ***************************************************************************/
 
@@ -61,6 +61,8 @@ protected slots:
 private:
     QPixmap image0;
     QPixmap image1;
+
+    const char* m_name;
 
 };
 
