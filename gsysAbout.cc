@@ -23,8 +23,9 @@
 #include <QtWidgets/qlayout.h>
 #include <QtWidgets/qtooltip.h>
 #include <QtWidgets/qwhatsthis.h>
-#include <QtWidgets/qimage.h>
-#include <QtWidgets/qpixmap.h>
+#include <QtGui/qimage.h>
+#include <QtGui/qpixmap.h>
+#include <QtWidgets/qsizepolicy.h>
 
 // University Logo
 static const char* const image0_data[] = { 
@@ -399,27 +400,34 @@ static const char* const image1_data[] = {
  *  TRUE to construct a modal dialog.
  */
 gsysAbout::gsysAbout( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
-    : QDialog( parent, name, modal, fl )
+    : QDialog( parent, fl )
 ,
       image0( (const char **) image0_data ),
       image1( (const char **) image1_data )
 {
-    if ( !name )
-	setName( "gsysAbout" );
-    setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, sizePolicy().hasHeightForWidth() ) );
+    if ( !name ) {
+        setObjectName("gsysAbout");
+    }
+    else {
+        setObjectName(name);
+    }
+
+    setModal(modal);
+
+    setSizePolicy( QSizePolicy( static_cast<QSizePolicy::Policy>(0), static_cast<QSizePolicy::Policy>(0), QSizePolicy::DefaultType ) );
     setMinimumSize( QSize( 500, 330 ) );
 
-    pixmapLabel1_2 = new QLabel( this, "pixmapLabel1_2" );
+    pixmapLabel1_2 = new QLabel( "pixmapLabel1_2", this );
     pixmapLabel1_2->setGeometry( QRect( 30, 140, 105, 132 ) );
     pixmapLabel1_2->setPixmap( image0 );
-    pixmapLabel1_2->setScaledContents( TRUE );
+    pixmapLabel1_2->setScaledContents( true );
 
-    pixmapLabel1 = new QLabel( this, "pixmapLabel1" );
+    pixmapLabel1 = new QLabel( "pixmapLabel1", this );
     pixmapLabel1->setGeometry( QRect( 30, 36, 105, 104 ) );
     pixmapLabel1->setPixmap( image1 );
-    pixmapLabel1->setScaledContents( TRUE );
+    pixmapLabel1->setScaledContents( true );
 
-    textLabel1 = new QLabel( this, "textLabel1" );
+    textLabel1 = new QLabel( "textLabel1", this );
     textLabel1->setGeometry( QRect( 160, 30, 310, 480 ) );
     languageChange();
     resize( QSize(500, 400).expandedTo(minimumSizeHint()) );
@@ -439,7 +447,7 @@ gsysAbout::~gsysAbout()
  */
 void gsysAbout::languageChange()
 {
-    setCaption( tr( "gSysC" ) );
+    setWindowTitle( tr( "gSysC" ) );
     textLabel1->setText( tr( "<h3><u>gSysC</u></h3><font size='+1'>is a graphical addon for the C++ library SystemC (www.systemc.org).<br>gSysC was created as student project at the<br><br><b>Institute of Computer Engineering</b> of the <br><b>University of L&uuml;beck</b> from<br><b>Christian J. Eibl</b>.<br><br>gSysC provides the possibility to visualize SystemC projects and the improved control of the simulation over graphical frontends. Additionally gSysC provides control windows to watch the used ports and signals. With these windows it is possible to shorten debugger sessons by finding errors much earlier.</font>" ) );
 }
 
