@@ -35,16 +35,23 @@
  *  TRUE to construct a modal dialog.
  */
 gsysBuffer::gsysBuffer( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
-    : QDialog( parent, name, modal, fl )
+    : QDialog( parent, fl )
 {
-    if ( !name )
-	setName( "gsysBuffer" );
+    if ( !name ) {
+        setObjectName("gsysBuffer");
+    }
+    else {
+        setObjectName(name);
+    }
+
+    setModal(modal);
+
     pgList.clear();
     idList.clear();
     gboxList.clear();
     gbLayoutList.clear();
 
-    gsysBufferLayout = new QVBoxLayout("gsysBufferLayout", this);
+    gsysBufferLayout = new QVBoxLayout(this);
     gsysBufferLayout->setMargin(6);
     gsysBufferLayout->setSpacing(11);
 
@@ -53,11 +60,13 @@ gsysBuffer::gsysBuffer( QWidget* parent, const char* name, bool modal, Qt::Windo
     vector<bool> percList = (new gsysMain())->getRegModule()->getBufferPercs();
     for(int i=0; i<idList.size(); i++)
     {
-      QGroupBox* groupBox1 = new QGroupBox( this, "groupBox1" );
-      QVBoxLayout* groupBox1Layout = new QVBoxLayout(groupBox1,11,6,"gsysGroupBoxLayout"); //Top
+      QGroupBox* groupBox1 = new QGroupBox( "groupBox1", this );
+      QVBoxLayout* groupBox1Layout = new QVBoxLayout(groupBox1); //Top
+      groupBox1Layout->setSpacing(6);
+      groupBox1Layout->setMargin(11);
       groupBox1Layout->setAlignment( Qt::AlignTop );
 
-      Q3ProgressBar* progressBar1 = new Q3ProgressBar( groupBox1, "progressBar1" );
+      QProgressBar* progressBar1 = new QProgressBar( groupBox1 );
       
       QSpacerItem* spacer1 = new QSpacerItem(40,20,QSizePolicy::Minimum,QSizePolicy::Expanding);
       QSpacerItem* spacer2 = new QSpacerItem(40,20,QSizePolicy::Minimum,QSizePolicy::Expanding);
@@ -75,9 +84,9 @@ gsysBuffer::gsysBuffer( QWidget* parent, const char* name, bool modal, Qt::Windo
       groupBox1Layout->setAlignment( Qt::AlignTop );
       
       pgList.push_back(progressBar1);
-      progressBar1->setTotalSteps(100);
-      progressBar1->setProgress(0);
-      progressBar1->setPercentageVisible(percList[i]);
+      progressBar1->setMaximum(100);
+      progressBar1->setValue(0);
+      progressBar1->setVisible(percList[i]);
     }
 
     languageChange();
@@ -117,9 +126,9 @@ void gsysBuffer::refreshBuffer(void* id, int value, int maxValue)
   #endif
   if(getBufferIndex(id)>=0)
   {
-    Q3ProgressBar* aktPg = pgList[getBufferIndex(id)];
-    aktPg->setTotalSteps(maxValue);
-    aktPg->setProgress(value);
+    QProgressBar* aktPg = pgList[getBufferIndex(id)];
+    aktPg->setMaximum(maxValue);
+    aktPg->setValue(value);
     aktPg = 0;
   }  
 }
@@ -130,6 +139,6 @@ void gsysBuffer::refreshBuffer(void* id, int value, int maxValue)
  */
 void gsysBuffer::languageChange()
 {
-    setCaption( tr( "Buffer variables" ) );
+    setWindowTitle( tr( "Buffer variables" ) );
 }
 
