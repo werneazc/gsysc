@@ -142,11 +142,6 @@ public slots:
 
 protected:
   QVBoxLayout* gsysSimulatorLayout;
-  QHBoxLayout* groupBox1Layout;
-  QHBoxLayout* groupBox2Layout;
-  QVBoxLayout* groupBox3Layout;
-  QHBoxLayout* groupBox4Layout;
-  QHBoxLayout* groupBox5Layout;
 
 protected slots:
   /*
