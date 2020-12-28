@@ -40,6 +40,7 @@
     gsysHierarchyTreeLayout->setMargin(11);
     
     tree = new QTreeWidget(this);
+    tree->setColumnCount(3);
     tree->setRootIsDecorated(true);
     tree->setHeaderLabel(tr("Module"));
     tree->setHeaderLabel(tr("Type"));
@@ -136,14 +137,15 @@
    */
   void gsysHierarchyTree::openMod_clicked()
   {
-    QTreeWidgetItem* lvi = tree->currentItem();
-    if (lvi != 0)
+    auto val = tree->selectedItems();
+    if (!val.empty())
     {
-      int addr = lvi->text(2).toInt();
+      for(auto& item : val){
+      int addr = item->text(2).toInt();
       openWindow((gsysHierarchy*) addr);
+      }
     }
 
-    lvi = 0;
   }
 
   /*
