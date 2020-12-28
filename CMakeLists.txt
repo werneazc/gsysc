@@ -35,3 +35,6 @@ target_link_libraries(gsysc
     PRIVATE "pthread"
 )
 #####################################################################
+IF(INCLUDE_TESTS)
+    add_subdirectory(test)
+ENDIF(INCLUDE_TESTS)
