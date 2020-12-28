@@ -208,8 +208,6 @@
     if(mmSigPortShow || mmHierConnShow)
     {
       moveInfos = new QGroupBox(this);
-      moveInfos->layout()->setSpacing( 6 );
-      moveInfos->layout()->setMargin( 11 );
       moveInfosLayout = new QHBoxLayout( moveInfos );
       moveInfosLayout->layout()->setSpacing( 6 );
       moveInfosLayout->layout()->setMargin( 11 );
@@ -232,6 +230,7 @@
       moveInfosLayout->addWidget( lineEditTyp );
       moveInfosLayout->addWidget( labelWert );
       moveInfosLayout->addWidget( lineEditWert );
+      moveInfos->setLayout(moveInfosLayout);
     }
     
     saveButton = new QPushButton("saveButton", this);
