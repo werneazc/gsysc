@@ -36,7 +36,7 @@
 #include <vector>
 
 #include <QtWidgets/QGraphicsScene>
-#include <QtWidgets/QListWidgetItem>
+#include <QtWidgets/QTreeWidgetItem>
 
 class gsysConnection;
 class gsysHierarchy;
@@ -59,7 +59,7 @@ class gsysRegister
   vector<gsysPort*> portList;
   vector<gsysPort*> notAssignedPorts;
   vector<gsysSignal*> notAssignedSignals;
-  vector<QListWidget*> listViewElements;
+  QList<QTreeWidgetItem*> listViewElements;
   vector<void*> bufferIDList;
   vector<char*> bufferNameList;
   vector<bool> bufferPercList;
@@ -70,8 +70,8 @@ class gsysRegister
   void regFinished();
   int connExists(gsysHierarchy* h1, gsysHierarchy* h2);
   gsysRegister();
-  QListWidget *rootLVI;
-  void insertLVI(QListWidget *parentLVI, gsysHierarchy* hier);
+  QTreeWidgetItem *rootLVI;
+  void insertLVI(QTreeWidgetItem *parent, gsysHierarchy* hier);
 
 
   public:
