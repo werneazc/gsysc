@@ -1,0 +1,31 @@
+  HOWTO use different languages with gSysC
+============================================
+
+With Qt it's possible to use different languages without the need of recompiling your graphical interfaces.
+gSysC is prepared for this feature. Available are the German (standard) and English language.
+
+To use another than the German language in your gSysC dialoges, copy the appropriate language file
+(gsysc_<LANG>.qm) into the directory your SystemC-design is placed.
+
+Because Qt switches the language dynamically with the language your environment is adjusted to, the LANG 
+environment variable has to be set to an appropriate LANG-abbreviation. This means for German "de", for English "en",
+for French "fr", and so on.
+
+For example to use English language without switching the language of your console environment, start your compiled
+SystemC-design with the command
+	LANG="en" run
+(Assuming 'run' is the binary created through compiling your design.)
+
+
+To create a new language file, follow the steps:
+1) add your language file to the gSysC project file gsysc.pro in the section TRANSLATION in the form gsysc_<LANG>.ts
+2) run the command (for safety backup your other ts-files!)
+	lupdate gsysc.pro
+3) run the QLinguist GUI-tool to translate all found strings of gSysC to your new language
+4) run the command
+	lrelease gsysc_<LANG>.ts
+   to create a qm-file out of your completely translated ts-file. This file will be used in your design.
+
+
+Further information can be taken from the Qt Linguist document from http://doc.trolltech.com 
+

@@ -1,0 +1,25 @@
+=======================================================================
+==   Adjustments to the Makefile                                     ==
+=======================================================================
+
+Please adjust the header of the Makefile to your system. This means
+the paths, where SystemC and Qt can be found have to be adjusted.
+
+Afterward the library can be compiled with simply using the make command.
+No parameter is needed for this.
+
+
+
+
+=======================================================================
+==   In your project ...                                             ==
+=======================================================================
+
+Just add the gSysC path, where file 'libgsysc.a' is placed,
+to the library path searched by your compiler.
+
+Additionally to this, edit your project files to include 
+the file 'gsysc.h'.
+
+After this, gSysC should be usable with your project.
+
