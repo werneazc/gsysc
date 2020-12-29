@@ -15,9 +15,9 @@ add_executable(
                     producer.cc main.cc)
 target_compile_features(gsysc_testproject PRIVATE cxx_std_14)
 target_link_libraries(
-  gsysc_testproject PRIVATE gsysc ${SYSTEMC_LIBRARIES} Qt4::QtCore
-                            Qt4::QtGui Qt4::Qt3Support "pthread")
+  gsysc_testproject PRIVATE gsysc ${SYSTEMC_LIBRARIES} Qt5::Core
+                            Qt5::Gui Qt5::Widgets "pthread")
 target_include_directories(
   gsysc_testproject PRIVATE ${SYSTEMC_INCLUDE_DIRS}
-                            ${CMAKE_CURRENT_SOURCE_DIR} )
+                            ${CMAKE_CURRENT_SOURCE_DIR} Qt5Widget_INCLUDE_DIR)
 target_compile_definitions(gsysc_testproject PRIVATE SC_USE_SC_STRING_OLD)
