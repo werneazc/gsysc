@@ -6,11 +6,6 @@ install:
   - sudo ln -s /usr/bin/make /usr/bin/gmake
   - pushd /tmp/systemc-2.3.3 && mkdir objdir && cd objdir && ../configure --prefix=/tmp/systemc --with-unix-layout --enable-pthreads && gmake && sudo gmake install && popd
 
-branches:
-  only:
-    - master
-    - develop_werneazc
-
 jobs:
   include: 
     os: linux
