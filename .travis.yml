@@ -1,0 +1,35 @@
+language: cpp
+
+install:
+  - wget https://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.3.tar.gz -O /tmp/systemc-2.3.3.tar.gz
+  - tar -C /tmp -xvf /tmp/systemc-2.3.3.tar.gz
+  - sudo ln -s /usr/bin/make /usr/bin/gmake
+  - pushd /tmp/systemc-2.3.3 && mkdir objdir && cd objdir && ../configure --prefix=/tmp/systemc --with-unix-layout --enable-pthreads && gmake && sudo gmake install && popd
+
+branches:
+  only:
+    - master
+
+jobs:
+  include: 
+    os: linux
+    dist: bionic
+    compiler: clang
+    env:
+     - SYSTEMC_ROOT="/tmp/systemc"
+
+    addons:
+      apt:
+        packages:
+          - cmake
+          - doxygen
+          - libqt4-dev
+          - libqtcore4
+          - libqtgui4
+          - libqt4-qt3support
+          - qt4-qmake
+
+script:
+  - mkdir build
+  - cmake -B build -S ./ -DINCLUDE_TESTS=OFF -G "Unix Makefiles"
+  - cmake --build . -- -j2
