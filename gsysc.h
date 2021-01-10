@@ -46,11 +46,11 @@
 #include "gsysReplaced.h"
 #endif
 
-#include <QtGui/qapplication.h>
-#include <QtGui/qwidget.h>
-#include <QtCore/qtranslator.h>
-#include <QtCore/qtextcodec.h>
-#include <QtCore/qlocale.h>
+#include <qt5/QtWidgets/QApplication>
+#include <qt5/QtWidgets/QtWidgets>
+#include <qt5/QtCore/QTranslator>
+#include <qt5/QtCore/QTextCodec>
+#include <qt5/QtCore/QLocale>
 
 
 
