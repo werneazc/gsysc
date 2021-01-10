@@ -9,11 +9,12 @@ install:
 branches:
   only:
     - master
+    - develop_werneazc
 
 jobs:
   include: 
     os: linux
-    dist: bionic
+    dist: focal
     compiler: clang
     env:
      - SYSTEMC_ROOT="/tmp/systemc"
@@ -23,13 +24,9 @@ jobs:
         packages:
           - cmake
           - doxygen
-          - libqt4-dev
-          - libqtcore4
-          - libqtgui4
-          - libqt4-qt3support
-          - qt4-qmake
+          - qt5-default
 
 script:
   - mkdir build
-  - cmake -B build -S ./ -DINCLUDE_TESTS=OFF -G "Unix Makefiles"
-  - cmake --build . -- -j2
+  - cmake -B build -S ./ -DINCLUDE_TESTS=ON -G "Unix Makefiles"
+  - cd build && cmake --build . -- -j2
