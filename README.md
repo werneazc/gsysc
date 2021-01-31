@@ -1,5 +1,7 @@
 # gsysc
 
+[![Build Status](https://travis-ci.org/werneazc/gsysc.svg?branch=master)](https://travis-ci.org/werneazc/gsysc)
+
 ## Introduction
 
 This project is a fork from [GsysC](https://fameibl.de/file.php?doc=content/projects/gsysc&lang=en "GsysC") that was published under the conditions of the GNU General Public License (GPL).
