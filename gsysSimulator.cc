@@ -269,7 +269,6 @@
     {
       // do value-Save for being able to detect changes in the last step
       (new gsysMain())->getRegModule()->saveAllPortValues();
-      sc_start();
       aktStep++;   
       hardStop = true;
       setCaption( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
