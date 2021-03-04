@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION "3.14")
+cmake_minimum_required(VERSION "3.10")
 
 project(
   gSyscTestProject
@@ -13,7 +13,7 @@ find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 add_executable(
   gsysc_testproject consumer.cc fifo.cc
                     producer.cc main.cc)
-target_compile_features(gsysc_testproject PRIVATE cxx_std_14)
+target_compile_features(gsysc_testproject PRIVATE cxx_std_11)
 target_link_libraries(
   gsysc_testproject PRIVATE gsysc ${SYSTEMC_LIBRARIES} Qt5::Core
                             Qt5::Gui Qt5::Widgets "pthread")

@@ -415,7 +415,7 @@ gsysAbout::gsysAbout( QWidget* parent, const char* name, bool modal, Qt::WindowF
     setModal(modal);
 
     setSizePolicy( QSizePolicy( static_cast<QSizePolicy::Policy>(0), static_cast<QSizePolicy::Policy>(0), QSizePolicy::DefaultType ) );
-    setMinimumSize( QSize( 500, 330 ) );
+    setMinimumSize( QSize( 1250, 220 ) );
 
     pixmapLabel1_2 = new QLabel( "pixmapLabel1_2", this );
     pixmapLabel1_2->setGeometry( QRect( 30, 140, 105, 132 ) );
@@ -428,9 +428,9 @@ gsysAbout::gsysAbout( QWidget* parent, const char* name, bool modal, Qt::WindowF
     pixmapLabel1->setScaledContents( true );
 
     textLabel1 = new QLabel( "textLabel1", this );
-    textLabel1->setGeometry( QRect( 160, 30, 310, 480 ) );
+    textLabel1->setGeometry( QRect( 160, -100, 1110, 480 ) );
     languageChange();
-    resize( QSize(500, 400).expandedTo(minimumSizeHint()) );
+    resize( QSize(500, 300).expandedTo(minimumSizeHint()) );
 }
 
 /*
@@ -448,6 +448,6 @@ gsysAbout::~gsysAbout()
 void gsysAbout::languageChange()
 {
     setWindowTitle( tr( "gSysC" ) );
-    textLabel1->setText( tr( "<h3><u>gSysC</u></h3><font size='+1'>is a graphical addon for the C++ library SystemC (www.systemc.org).<br>gSysC was created as student project at the<br><br><b>Institute of Computer Engineering</b> of the <br><b>University of L&uuml;beck</b> from<br><b>Christian J. Eibl</b>.<br><br>gSysC provides the possibility to visualize SystemC projects and the improved control of the simulation over graphical frontends. Additionally gSysC provides control windows to watch the used ports and signals. With these windows it is possible to shorten debugger sessons by finding errors much earlier.</font>" ) );
+    textLabel1->setText( tr( "<h3><u>gSysC</u></h3><font size='+1'>is a graphical addon for the C++ library SystemC (www.systemc.org).<br>gSysC was created as student project at the<br><br><b>Institute of Computer Engineering</b> of the <br><b>University of L&uuml;beck</b> from<br><b>Christian J. Eibl</b>.<br><br>gSysC provides the possibility to visualize SystemC projects and the improved control of the simulation over graphical frontends. <br>Additionally gSysC provides control windows to watch the used ports and signals. <br>With these windows it is possible to shorten debugger sessons by finding errors much earlier.</font>" ) );
 }
 
