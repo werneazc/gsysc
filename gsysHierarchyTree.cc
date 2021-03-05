@@ -42,9 +42,9 @@
     tree = new QTreeWidget(this);
     tree->setColumnCount(3);
     tree->setRootIsDecorated(true);
-    tree->setHeaderLabel(tr("Module"));
-    tree->setHeaderLabel(tr("Type"));
-    tree->setHeaderLabel(tr("Address"));
+    QStringList columnNames;
+    columnNames << "Module" << "Type" << "Address";
+    tree->setHeaderLabels(columnNames);
     gsysHierarchyTreeLayout->addWidget( tree );
     openMod = new QPushButton("openMod", this );
     gsysHierarchyTreeLayout->addWidget( openMod );
