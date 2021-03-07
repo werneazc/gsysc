@@ -37,7 +37,10 @@
   void gsysHierarchyWindow::readConfig()
   {
     FILE *fp;
-    fp = fopen("gsysHViewer.conf","r");
+	std::string filePath = __FILE__;
+	filePath.erase(filePath.find("gsysHierarchyWindow.cc"), 22);
+	filePath.append("gsysHViewer.conf");
+    fp = fopen(filePath.c_str(),"r");
     if(fp!=0)
     {
       backgroundColor=(char*)"#FFFFFF";
@@ -230,7 +233,7 @@
       moveInfosLayout->addWidget( lineEditTyp );
       moveInfosLayout->addWidget( labelWert );
       moveInfosLayout->addWidget( lineEditWert );
-      moveInfos->setLayout(moveInfosLayout);
+      //moveInfos->setLayout(moveInfosLayout);
     }
     
     saveButton = new QPushButton("saveButton", this);
@@ -302,58 +305,48 @@
       fd->setModal(true);
       fd->setFileMode(QFileDialog::AnyFile);
       fd->setViewMode(QFileDialog::List);
-      fd->setNameFilter("BMP (*.bmp *.BMP)");
-      fd->setNameFilter("XBM (*.xbm *.XBM)");
-      fd->setNameFilter("XPM (*.xpm *.XPM)");
-      fd->setNameFilter("SVG (*.svg *.SVG)");
-      fd->setNameFilter("PNM (*.pnm *.PNM)");
-      fd->setNameFilter("PNG (*.png *.PNG)");
       fd->selectFile(tr("Save image"));
-      if(fd->exec() == QDialog::Accepted)
-      {
-        QString filename = fd->getOpenFileName();
-        if((fopen(filename.toLocal8Bit().constData(),"r")!=0 && QMessageBox::warning(this,"gSysC",tr("The chosen file does already exist.\nAre you sure you want to overwrite it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes) || fopen(filename.toLocal8Bit().constData(),"r")==0) 
-	{
-	  QString fileType = fd->selectedNameFilter();
-	  if(fileType == "PNG (*.png *.PNG)") fileType="PNG";
-	  if(fileType == "BMP (*.bmp *.BMP)") fileType="BMP";
-	  if(fileType == "XBM (*.xbm *.XBM)") fileType="XBM";
-	  if(fileType == "XPM (*.xpm *.XPM)") fileType="XPM";
-	  if(fileType == "PNM (*.pnm *.PNM)") fileType="PNM";
-	  if(fileType == "SVG (*.svg *.SVG)")
+	  QString fileTypes = "PNG (*.png *.PNG);;BMP (*.bmp *.BMP);;XBM (*.xbm *.XBM);;XPM (*.xpm *.XPM);;PNM (*.pnm *.PNM);;SVG (*.svg *.SVG)";
+	  QString filename = fd->getSaveFileName(this, tr("Save File"), "/Save image.png", fileTypes);
+      if((fopen(filename.toLocal8Bit().constData(),"r")!=0 && QMessageBox::warning(this,"gSysC",tr("The chosen file does already exist.\nAre you sure you want to overwrite it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes) || fopen(filename.toLocal8Bit().constData(),"r")==0) 
 	  {
-	    cout<<"-- Saving structure graphics in file; SVG-format --"<<endl;
-	    QPicture *pic = new QPicture();
-	    QPainter qp;
-	    qp.begin(pic);
-	    canvasView->scene()->render(&qp, canvasView->scene()->sceneRect());
-	    qp.end();
-	    pic->save(filename,"svg");
-	    cout<<"saving done."<<endl;
-	    delete pic;
-	    pic = 0;
+		std::string type = filename.toStdString().substr(filename.size() - 3).c_str();
+		std::transform(type.begin(), type.end(), type.begin(), [](unsigned char c){ return std::toupper(c); });
+	  	QString fileType = tr(type.c_str());
+	  	if(fileType == "SVG")
+	  	{
+	  	  cout<<"-- Saving structure graphics in file; SVG-format --"<<endl;
+	  	  QPicture *pic = new QPicture();
+	  	  QPainter qp;
+	  	  qp.begin(pic);
+	  	  canvasView->scene()->render(&qp, canvasView->scene()->sceneRect());
+	  	  qp.end();
+	  	  pic->save(filename,"svg");
+	  	  cout<<"saving done."<<endl;
+	  	  delete pic;
+	  	  pic = 0;
+	  	}
+	  	else
+	  	{
+	  	  if(fileType=="PNG" ||
+	  	     fileType=="BMP" ||
+	  	     fileType=="XBM" ||
+	  	     fileType=="XPM" ||
+	  	     fileType=="PNM")
+	  		{   
+	  		  cout<<"-- Saving structure graphics in file; "<<fileType.toLocal8Bit().constData()<<"-format --"<<endl;
+	  		  QPixmap *pm = new QPixmap();
+	  		  *pm = QPixmap::grabWidget(canvasView->viewport());
+	  		  if(pm==0) cout<<"Error: Cannot grab viewport!"<<endl;
+	  		  pm->save(filename,fileType.toLocal8Bit().constData());
+	  		  cout<<"saving done."<<endl;
+	  		  delete pm;
+	  		  pm = 0;
+	  		}
+	  		else QMessageBox::critical(this,"gSysC",tr("You have not given a valid file type. \n\n Please choose a file type of a valid image format!"),QMessageBox::Ok,0);
+	  	}
 	  }
-	  else
-	  {
-	    if(fileType=="PNG" ||
-	       fileType=="BMP" ||
-	       fileType=="XBM" ||
-	       fileType=="XPM" ||
-	       fileType=="PNM")
-	    {   
-	      cout<<"-- Saving structure graphics in file; "<<fileType.toLocal8Bit().constData()<<"-format --"<<endl;
-	      QPixmap *pm = new QPixmap();
-	      *pm = QPixmap::grabWidget(canvasView->viewport());
-	      if(pm==0) cout<<"Error: Cannot grab viewport!"<<endl;
-	      pm->save(filename,fileType.toLocal8Bit().constData());
-	      cout<<"saving done."<<endl;
-	      delete pm;
-	      pm = 0;
-	    }
-	    else QMessageBox::critical(this,"gSysC",tr("You have not given a valid file type. \n\n Please choose a file type of a valid image format!"),QMessageBox::Ok,0);
-	  }
-	}
-      }
+      
       delete fd;
       fd = 0;
     }
@@ -1043,7 +1036,7 @@
       					+((double)dimFactor-1)*(double)verticalSpace 
       					- ownHierarchy->getLeftPorts().size() * 21) 
 			  	  / (double)(ownHierarchy->getLeftPorts().size()+1) );      // distances between ports at equidistant distribution
-      cout<<"AbstandY ist "<<abstandY<<";  Zähler: "<<(2*(double)topMargin+(double)dimFactor*(double)moduleHeight +((double)dimFactor-1)*(double)verticalSpace - ownHierarchy->getLeftPorts().size() * 21)<<" / Nenner: "<<(double)(ownHierarchy->getLeftPorts().size()+1)<<"    <->   getLeftPorts().size()="<<ownHierarchy->getLeftPorts().size()<<endl;		     
+      cout<<"AbstandY ist "<<abstandY<<";  Zï¿½hler: "<<(2*(double)topMargin+(double)dimFactor*(double)moduleHeight +((double)dimFactor-1)*(double)verticalSpace - ownHierarchy->getLeftPorts().size() * 21)<<" / Nenner: "<<(double)(ownHierarchy->getLeftPorts().size()+1)<<"    <->   getLeftPorts().size()="<<ownHierarchy->getLeftPorts().size()<<endl;		     
       for(int i=0; i<ownHierarchy->getLeftPorts().size(); i++)
       {
         cout<<"LeftPorts().size()="<<ownHierarchy->getLeftPorts().size()<<";  i="<<i<<endl;
