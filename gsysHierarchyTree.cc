@@ -28,6 +28,7 @@
    */
   gsysHierarchyTree::gsysHierarchyTree( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl ) : QDialog( parent, fl )
   {
+    setMinimumSize(700, 400);
     windowOpen.clear();
     allHierarchies.clear();
     allConnections.clear();
@@ -41,6 +42,9 @@
     
     tree = new QTreeWidget(this);
     tree->setColumnCount(3);
+    tree->setColumnWidth(0, 225);
+    tree->setColumnWidth(1, 225);
+    tree->setColumnWidth(2, 225);
     tree->setRootIsDecorated(true);
     QStringList columnNames;
     columnNames << "Module" << "Type" << "Address";
@@ -107,7 +111,7 @@
 	  // Initialisieren und Zeichnen der Hierarchie-Ebene
 	  hierWdw = new gsysHierarchyWindow(this);
 
-          #ifdef DEBUG_GSYSC
+    #ifdef DEBUG_GSYSC
 	  if (isRoot) std::cout << "Node is /: " << isRoot << ";  Name of module: Root" << std::endl;
 	  else std::cout << "Node is /: " << isRoot << ";  Name of module: " << hierarchy->getName() << std::endl;
 	  #endif
