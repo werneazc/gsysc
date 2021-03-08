@@ -233,7 +233,6 @@
       moveInfosLayout->addWidget( lineEditTyp );
       moveInfosLayout->addWidget( labelWert );
       moveInfosLayout->addWidget( lineEditWert );
-      //moveInfos->setLayout(moveInfosLayout);
     }
     
     saveButton = new QPushButton("saveButton", this);
@@ -1242,7 +1241,7 @@
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
-	ports[i]->addLineElem(polygons.back());
+		ports[i]->addLineElem(polygons.back());
       }
       
       if(!ports[i]->isEndPort())
@@ -1600,6 +1599,7 @@
 	}
       }
       connLine->show();
+	  canvasView->scene()->addItem(connLine);
       connection->addTraceElem(new QGraphicsPathItem(connLine));               //(connLine);
       return true;
     }
@@ -1657,6 +1657,8 @@
 	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
       if (port->getType() == 1)
       {
@@ -1677,6 +1679,8 @@
 	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
       if (port->getType() == 2)
       {
@@ -1698,6 +1702,8 @@
 	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
     }
     else
@@ -1721,6 +1727,8 @@
 	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
       if (port->getType() == 1)
       {
@@ -1741,6 +1749,8 @@
 	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
       if (port->getType() == 2)
       {
@@ -1762,6 +1772,8 @@
 	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
     }
     polygon = 0;
