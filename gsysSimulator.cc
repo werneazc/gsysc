@@ -226,21 +226,21 @@
       if(autoStep->isChecked())
       {
         setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
-	(new gsysMain())->getMainWindow()->getPortViewer()->refresh();
-        if(useViewer->isChecked())
-          (new gsysMain())->getRegModule()->showChanges();
+	      (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
       }	
+      if(useViewer->isChecked())
+        (new gsysMain())->getRegModule()->showChanges();
       if (useWatcher->isChecked())   // use port observation
       {
         if (strcmp(watchPorts[watchVariable->currentIndex()]->getValue(),watchValue->text().toLocal8Bit().data()) == 0)
-	{
-	  toStop = true;
-	  hardStop = true;
+	      {
+	        toStop = true;
+	        hardStop = true;
           setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
-	  (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
+	        (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
           if(useViewer->isChecked())
             (new gsysMain())->getRegModule()->showChanges();
-	}  
+	      }  
       }
     }
     if (haveToStop() && !hardStop)
