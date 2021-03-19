@@ -93,7 +93,7 @@ char* gsysCanvasView::asChar(int zahl)
  *   it checks, whether something is below the cursor, which can be highlighted
  *   if so, it controls the highlighting job
  */
-void gsysCanvasView::contentsMousePressEvent(QMouseEvent* e)
+void gsysCanvasView::mousePressEvent(QMouseEvent* e)
 {
   if(e->button()==Qt::LeftButton)
   {
@@ -350,7 +350,7 @@ int gsysCanvasView::sidePortExists(vector<gsysPort*> pl, int destNr)
  *   if the cursor is above a port or signal (and mmSigPortShow is set) 
  *   it gives information about the port-/signal-name and -value on bottom of the window
  */
-void gsysCanvasView::contentsMouseMoveEvent(QMouseEvent *e)
+void gsysCanvasView::mouseMoveEvent(QMouseEvent *e)
 {
   #ifdef DEBUG_GSYSC
   cout<<"mouseMoveEvent called. Mouse is on position "<<e->x()<<"/"<<e->y()<<endl;
