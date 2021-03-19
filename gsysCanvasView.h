@@ -23,7 +23,7 @@
     Content:
       This file is a subclass of the Qt implemented class QCanvasView. 
       With deriving this class, overloading and additional 
-      implementation of functions like contentsMousePressEvent is
+      implementation of functions like mousePressEvent is
       possible. Hence event handling for the mouse can be realized.
 
  *************************************************************************/
@@ -68,7 +68,7 @@ class gsysCanvasView : public QGraphicsView
 
   protected:
   // functions for deriving in order to get MouseEvent handling
-  void contentsMousePressEvent(QMouseEvent* e);
-  void contentsMouseMoveEvent(QMouseEvent* e);
+  void mousePressEvent(QMouseEvent* e);
+  void mouseMoveEvent(QMouseEvent* e);
 };
 
