@@ -55,10 +55,10 @@ private:
     ~gsysSignalViewer();
 
     vector<QGroupBox*> groupBoxList;
-    vector<QGridLayout*> gridLayoutList;
     vector<QLabel*> textLabelList;
     vector<QLineEdit*> lineEditList;
 		    
+    QGridLayout* gridLayout;
     QGroupBox* groupBox3;
     QLabel* textLabel3;
     QLabel* textLabel4;

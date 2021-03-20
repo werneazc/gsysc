@@ -38,7 +38,6 @@ gsysSignalViewer::gsysSignalViewer( QWidget* parent, int portCount, const char* 
     gsysSignalViewerLayout->setMargin(11);
 
     groupBoxList.clear();
-    gridLayoutList.clear();
     textLabelList.clear();
     lineEditList.clear();
 
@@ -47,46 +46,56 @@ gsysSignalViewer::gsysSignalViewer( QWidget* parent, int portCount, const char* 
       ostringstream ostr;
       ostr << (i+1) << ends;
       groupBoxList.push_back(new QGroupBox("groupbox",this));
+
+      gridLayout = new QGridLayout();
+      gridLayout->addLayout(groupBoxList.back()->layout(), 0, 0);
+      gridLayout->setAlignment( Qt::AlignTop );
+
+      textLabelList.push_back(new QLabel( "textLabel" ));
+      gridLayout->addWidget(textLabelList.back(), 1, 0);
+
+      textLabelList.push_back(new QLabel( "textLabel" ));
+      gridLayout->addWidget(textLabelList.back(), 2, 0);
+
+      lineEditList.push_back(new QLineEdit( "lineEdit" ));
+      lineEditList.back()->setReadOnly(true);
+      gridLayout->addWidget(lineEditList.back(), 1, 1);
+
+      lineEditList.push_back(new QLineEdit( "lineEdit" ));
+      lineEditList.back()->setReadOnly(true);
+      gridLayout->addWidget(lineEditList.back(), 2, 1);
+
+      groupBoxList.back()->setLayout(gridLayout);
       groupBoxList.back()->layout()->setSpacing( 6 );
       groupBoxList.back()->layout()->setMargin( 11 );
-      groupBoxListLayout = new QGridLayout();
-      groupBoxListLayout->addLayout(groupBoxList.back()->layout(),1,1);
-      gridLayoutList.push_back(groupBoxListLayout);
-      gridLayoutList.back()->setAlignment( Qt::AlignTop );
-      textLabelList.push_back(new QLabel("textLabel",groupBoxList.back()));
-      gridLayoutList.back()->addWidget(textLabelList.back(),0,0 );
-      textLabelList.push_back(new QLabel("textLabel",groupBoxList.back()));
-      gridLayoutList.back()->addWidget(textLabelList.back(),1,0);
-      lineEditList.push_back(new QLineEdit("lineEdit",groupBoxList.back()));
-      lineEditList.back()->setReadOnly(true);
-      gridLayoutList.back()->addWidget(lineEditList.back(),0,1);
-      lineEditList.push_back(new QLineEdit("lineEdit",groupBoxList.back()));
-      lineEditList.back()->setReadOnly(true);
-      gridLayoutList.back()->addWidget(lineEditList.back(),1,1);
       gsysSignalViewerLayout->addWidget(groupBoxList.back());
     }
 
     groupBox3 = new QGroupBox( "groupBox3", this );
-    groupBox3->layout()->setSpacing( 6 );
-    groupBox3->layout()->setMargin( 11 );
+    
     groupBox3Layout = new QGridLayout();
-    groupBox3Layout->addLayout(groupBox3->layout(), 1, 1);
+    groupBox3Layout->addLayout(groupBox3->layout(), 0, 0);
     groupBox3Layout->setAlignment( Qt::AlignTop );
 
-    textLabel3 = new QLabel( "textLabel3", groupBox3 );
-    groupBox3Layout->addWidget( textLabel3, 0, 0 );
+    textLabel3 = new QLabel( "textLabel3" );
+    groupBox3Layout->addWidget( textLabel3, 1, 0 );
 
-    textLabel4 = new QLabel( "textLabel4", groupBox3 );
-    groupBox3Layout->addWidget( textLabel4, 1, 0 );
+    textLabel4 = new QLabel( "textLabel4" );
+    groupBox3Layout->addWidget( textLabel4, 2, 0 );
 
-    lineEdit3 = new QLineEdit( "lineEdit3", groupBox3 );
+    lineEdit3 = new QLineEdit( "lineEdit3" );
     lineEdit3->setReadOnly(true);
-    groupBox3Layout->addWidget( lineEdit3, 0, 1 );
+    groupBox3Layout->addWidget( lineEdit3, 1, 1 );
 
-    lineEdit4 = new QLineEdit( "lineEdit4", groupBox3 );
+    lineEdit4 = new QLineEdit( "lineEdit4" );
     lineEdit4->setReadOnly(true);
-    groupBox3Layout->addWidget( lineEdit4, 1, 1 );
+    groupBox3Layout->addWidget( lineEdit4, 2, 1 );
+
+    groupBox3->setLayout(groupBox3Layout);
+    groupBox3->layout()->setSpacing( 6 );
+    groupBox3->layout()->setMargin( 11 );
     gsysSignalViewerLayout->addWidget( groupBox3 );
+
     languageChange();
     resize( QSize(250, 264).expandedTo(minimumSizeHint()) );
 }
@@ -123,4 +132,3 @@ void gsysSignalViewer::languageChange()
     textLabel3->setText( tr( "Name:" ) );
     textLabel4->setText( tr( "Value:" ) );
 }
-
