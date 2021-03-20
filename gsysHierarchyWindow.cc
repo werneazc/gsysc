@@ -439,14 +439,14 @@
       {
 	if( (allConnections[i]->getHier1()==ownHierarchy && thisLevel(allConnections[i]->getHier2())) ||
 	    (allConnections[i]->getHier2()==ownHierarchy && thisLevel(allConnections[i]->getHier1())) )
-	{
-          #ifdef DEBUG_GSYSC
-	  cout<<allConnections[i]->getHier1()->getName()<<" OR "<<allConnections[i]->getHier2()->getName()<<" is in this level!"<<endl;
-	  #endif
-	  for(int u=0; u<sideConnList.size(); u++)
-	    if(sideConnList[u]==allConnections[i]) found=true;
-          if (!found) sideConnList.push_back(allConnections[i]);
-	}
+		{
+    	    #ifdef DEBUG_GSYSC
+		  	cout<<allConnections[i]->getHier1()->getName()<<" OR "<<allConnections[i]->getHier2()->getName()<<" is in this level!"<<endl;
+		  	#endif
+		  	for(int u=0; u<sideConnList.size(); u++)
+		    if(sideConnList[u]==allConnections[i]) found=true;
+    	    if (!found) sideConnList.push_back(allConnections[i]);
+		}
       }
     }
 
@@ -455,7 +455,8 @@
     dimFactor = (int) (ceil(sqrt((double) hierarchyList.size())));
     canvasView->resize(dimFactor*moduleWidth+2*sideMargin+(dimFactor-1)*horizontalSpace+10,dimFactor*moduleHeight+(dimFactor-1)*verticalSpace+2*topMargin+10);
     canvasView->scene()->setSceneRect(0, 0, dimFactor*moduleWidth+2*sideMargin+(dimFactor-1)*horizontalSpace,dimFactor*moduleHeight+(dimFactor-1)*verticalSpace+2*topMargin);
-    QPalette palette;
+	canvasView->setAlignment(Qt::AlignTop|Qt::AlignLeft);
+	QPalette palette;
     palette.setColor(canvasView->backgroundRole(), backgroundColor);
     canvasView->setPalette(palette);
 
@@ -497,7 +498,7 @@
       modText[i]->setZValue(240);
       modText[i]->show(); 
 
-	  canvasView->scene()->addItem(modText[i]);
+	  canvasView->scene()->addItem(modText[i]);	
 	  canvasView->scene()->addItem(modRect[i]);
 
       // Coordinates of the next module
