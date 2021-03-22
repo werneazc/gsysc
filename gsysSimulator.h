@@ -72,11 +72,13 @@ class gsysSimulator : public QDialog
 public:
 
   QGroupBox* groupBox1;
+  QGridLayout* groupLayout1;
   QLabel* textLabel1;
   QSpinBox* stepSpin;
   QLabel* textLabel2;
   QSpinBox* maxSpin;
   QGroupBox* groupBox2;
+  QGridLayout* groupLayout2;
   QPushButton* stepButton;
   QPushButton* startButton;
   QPushButton* stopButton;

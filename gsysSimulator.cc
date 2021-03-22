@@ -53,44 +53,51 @@
     hierTree = 0;
 	
     groupBox1 = new QGroupBox( "groupBox1", this );
-    groupBox1->setLayout(new QVBoxLayout( groupBox1 ));
-    groupBox1->layout()->setSpacing( 6 );
-    groupBox1->layout()->setMargin( 11 );
-    textLabel1 = new QLabel( "textLabel1", groupBox1 );
-    groupBox1->layout()->addWidget( textLabel1 );
+    groupLayout1 = new QGridLayout();
+    groupLayout1->addLayout(groupBox1->layout(), 0, 0);
+    groupLayout1->setAlignment( Qt::AlignTop );
 
-    stepSpin = new QSpinBox( groupBox1 );
+    textLabel1 = new QLabel( "textLabel1" );
+    groupLayout1->addWidget( textLabel1, 0, 0 );
+
+    stepSpin = new QSpinBox();
     stepSpin->setObjectName( "stepSpin" );
     stepSpin->setMaximum( 1000 );
     stepSpin->setMinimum( 1 );
-    groupBox1->layout()->addWidget( stepSpin );
+    groupLayout1->addWidget( stepSpin, 0, 1 );
 
-    textLabel2 = new QLabel( "textLabel2", groupBox1 );
-    groupBox1->layout()->addWidget( textLabel2 );
+    textLabel2 = new QLabel( "textLabel2" );
+    groupLayout1->addWidget( textLabel2, 0, 2 );
 
-    maxSpin = new QSpinBox( groupBox1 );
+    maxSpin = new QSpinBox();
     stepSpin->setObjectName( "maxSpin" );
     maxSpin->setMaximum( 999999999 );
     maxSpin->setMinimum( 1 );
     maxSpin->setValue( 1000 );
-    groupBox1->layout()->addWidget( maxSpin );
+    groupLayout1->addWidget( maxSpin, 0, 3 );
 
+    groupBox1->setLayout(groupLayout1);
+    groupBox1->layout()->setSpacing( 6 );
+    groupBox1->layout()->setMargin( 11 );
     gsysSimulatorLayout->addWidget( groupBox1 );
 
     groupBox2 = new QGroupBox( "groupBox2", this );
-    groupBox2->setLayout(new QVBoxLayout(groupBox2));
+    groupLayout2 = new QGridLayout();
+    groupLayout2->addLayout(groupBox2->layout(), 0, 0);
+    groupLayout2->setAlignment( Qt::AlignTop );
+
+    stepButton = new QPushButton( "stepButton" );
+    groupLayout2->addWidget( stepButton, 0, 0 );
+    
+    startButton = new QPushButton( "startButton" );
+    groupLayout2->addWidget( startButton, 0, 1 );
+
+    stopButton = new QPushButton( "stopButton" );
+    groupLayout2->addWidget( stopButton, 0, 2 );
+
+    groupBox2->setLayout(groupLayout2);
     groupBox2->layout()->setSpacing( 6 );
     groupBox2->layout()->setMargin( 11 );
-
-    stepButton = new QPushButton( "stepButton", groupBox2 );
-    groupBox2->layout()->addWidget( stepButton );
-    
-    startButton = new QPushButton( "startButton", groupBox2 );
-    groupBox2->layout()->addWidget( startButton );
-
-    stopButton = new QPushButton( "stopButton", groupBox2 );
-    groupBox2->layout()->addWidget( stopButton );
-
     gsysSimulatorLayout->addWidget( groupBox2 );
 
     groupBox3 = new QGroupBox( "groupBox3", this );
@@ -227,9 +234,10 @@
       {
         setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
 	      (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
+        if(useViewer->isChecked())
+          (new gsysMain())->getRegModule()->showChanges();
       }	
-      if(useViewer->isChecked())
-        (new gsysMain())->getRegModule()->showChanges();
+      
       if (useWatcher->isChecked())   // use port observation
       {
         if (strcmp(watchPorts[watchVariable->currentIndex()]->getValue(),watchValue->text().toLocal8Bit().data()) == 0)
