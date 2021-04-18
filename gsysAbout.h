@@ -23,7 +23,7 @@
     Content:
       This file provides an about-dialog giving information about
       the library. Therefore the library gets related to the
-      institute of computer engineering of the university of Lübeck. 
+      institute of computer engineering of the university of Lï¿½beck. 
 
  ***************************************************************************/
 
@@ -33,7 +33,7 @@
 
 #include <QtCore/qvariant.h>
 #include <QtGui/qpixmap.h>
-#include <QtGui/qdialog.h>
+#include <QtWidgets/qdialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -47,7 +47,7 @@ class gsysAbout : public QDialog
     Q_OBJECT
 
 private:
-    gsysAbout( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
+    gsysAbout( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     ~gsysAbout();
 
     QLabel* pixmapLabel1_2;
@@ -61,6 +61,8 @@ protected slots:
 private:
     QPixmap image0;
     QPixmap image1;
+
+    const char* m_name;
 
 };
 

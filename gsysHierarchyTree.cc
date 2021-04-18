@@ -28,6 +28,7 @@
    */
   gsysHierarchyTree::gsysHierarchyTree( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl ) : QDialog( parent, fl )
   {
+    setMinimumSize(700, 400);
     windowOpen.clear();
     allHierarchies.clear();
     allConnections.clear();
@@ -39,11 +40,15 @@
     gsysHierarchyTreeLayout->setSpacing(6);
     gsysHierarchyTreeLayout->setMargin(11);
     
-    tree = new Q3ListView(this,"tree");
+    tree = new QTreeWidget(this);
+    tree->setColumnCount(3);
+    tree->setColumnWidth(0, 225);
+    tree->setColumnWidth(1, 225);
+    tree->setColumnWidth(2, 225);
     tree->setRootIsDecorated(true);
-    tree->addColumn(tr("Module"));
-    tree->addColumn(tr("Type"));
-    tree->addColumn(tr("Address"));
+    QStringList columnNames;
+    columnNames << "Module" << "Type" << "Address";
+    tree->setHeaderLabels(columnNames);
     gsysHierarchyTreeLayout->addWidget( tree );
     openMod = new QPushButton("openMod", this );
     gsysHierarchyTreeLayout->addWidget( openMod );
@@ -106,12 +111,12 @@
 	  // Initialisieren und Zeichnen der Hierarchie-Ebene
 	  hierWdw = new gsysHierarchyWindow(this);
 
-          #ifdef DEBUG_GSYSC
+    #ifdef DEBUG_GSYSC
 	  if (isRoot) std::cout << "Node is /: " << isRoot << ";  Name of module: Root" << std::endl;
 	  else std::cout << "Node is /: " << isRoot << ";  Name of module: " << hierarchy->getName() << std::endl;
 	  #endif
 
-	  hierWdw->setCaption(isRoot?"Root":hierarchy->getName());
+	  hierWdw->setWindowTitle(isRoot?"Root":hierarchy->getName());
 	  if (!isRoot) hierWdw->initializeWdw(hierarchy,allHierarchies,allConnections,false);
 	  else hierWdw->initializeWdw(0,allHierarchies,allConnections,false);
 	  
@@ -136,14 +141,15 @@
    */
   void gsysHierarchyTree::openMod_clicked()
   {
-    Q3ListViewItem* lvi = tree->currentItem();
-    if (lvi != 0)
+    auto val = tree->selectedItems();
+    if (!val.empty())
     {
-      int addr = lvi->text(2).toInt();
+      for(auto& item : val){
+      int addr = item->text(2).toInt();
       openWindow((gsysHierarchy*) addr);
+      }
     }
 
-    lvi = 0;
   }
 
   /*
@@ -151,7 +157,7 @@
    */
   void gsysHierarchyTree::languageChanged()
   {
-    setCaption("HierarchyTree");
+    setWindowTitle("HierarchyTree");
     openMod->setText( tr("&Open module") );
   }
 

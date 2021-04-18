@@ -31,14 +31,15 @@
 #define GSYS_PORTVIEWER_H
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
-#include <QtGui/qcombobox.h>
-#include <QtGui/qframe.h>
-#include <QtGui/qpushbutton.h>
-#include <Qt3Support/q3table.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
+#include <QtWidgets/qdialog.h>
+#include <QtWidgets/qcombobox.h>
+#include <QtWidgets/qframe.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/qlayout.h>
+#include <QtWidgets/qtooltip.h>
+#include <QtWidgets/qwhatsthis.h>
+#include <QtWidgets/QHeaderView>
 
 #include <vector>
 
@@ -57,10 +58,10 @@ private:
     vector<gsysPort*> portVec;
 
 public:
-    gsysPortViewer( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
+    gsysPortViewer( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     ~gsysPortViewer();
 
-    Q3Table* table1;
+    QTableWidget* table1;
     QFrame* frame4;
     QComboBox* comboBox1;
     QPushButton* pushButton1;

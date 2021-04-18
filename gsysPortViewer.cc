@@ -30,40 +30,48 @@
  *  TRUE to construct a modal dialog.
  */
 gsysPortViewer::gsysPortViewer( QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl )
-    : QDialog( parent, name, modal, fl )
+    : QDialog( parent, fl )
 
 {
-    if ( !name )
-	setName( "gsysPortViewer" );
-    gsysPortViewerLayout = new QVBoxLayout( this, 11, 6, "gsysPortViewerLayout"); 
+    setModal(modal);
+    if ( !name ) setObjectName( "gsysPortViewer" );
+    gsysPortViewerLayout = new QVBoxLayout( this ); 
+    gsysPortViewerLayout->setObjectName("gsysPortViewerLayout");
+    gsysPortViewerLayout->setSpacing(6);
+    gsysPortViewerLayout->setMargin(11);
 
     portVec.clear();
 
-    table1 = new Q3Table( this, "table1" );
-    table1->setNumRows( 0 );
-    table1->setNumCols( 3 );
-    table1->horizontalHeader()->setLabel( 0, tr( "Port name" ) );
-    table1->horizontalHeader()->setLabel( 1, tr( "Value" ) );
-    table1->horizontalHeader()->setLabel( 2, tr( "ID" ) );
-    table1->setReadOnly( true );
-    table1->setSelectionMode((Q3Table::SelectionMode) 2);	// SingleRow
+    table1 = new QTableWidget( this );
+    table1->setObjectName("table1");
+    table1->setRowCount( 0 );
+    table1->setColumnCount( 3 );
+    table1->setHorizontalHeaderLabels(QStringList(QList<QString> {"Port name", "Value", "ID"}));
+    table1->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    table1->setSelectionMode((QTableWidget::SelectionMode) 2);	// SingleRow
     gsysPortViewerLayout->addWidget( table1 );
 
-    frame4 = new QFrame( this, "frame4" );
+    frame4 = new QFrame( this );
+    frame4->setObjectName("frame4");
     frame4->setFrameShape( QFrame::StyledPanel );
     frame4->setFrameShadow( QFrame::Raised );
-    frame4Layout = new QHBoxLayout( frame4, 11, 6, "frame4Layout"); 
+    frame4Layout = new QHBoxLayout( frame4); 
+    frame4Layout->setObjectName("frame4Layout");
+    frame4Layout->setSpacing(6);
+    frame4Layout->setMargin(11);
 
-    comboBox1 = new QComboBox( FALSE, frame4, "comboBox1" );
-    comboBox1->insertItem( tr("all") );
+
+    comboBox1 = new QComboBox( frame4 );
+    comboBox1->setObjectName("comboBox1");
+    comboBox1->insertItem(0, tr("all") );
     frame4Layout->addWidget( comboBox1 );
 
-    pushButton1 = new QPushButton( frame4, "pushButton1" );
+    pushButton1 = new QPushButton( "pushButton1", frame4 );
     frame4Layout->addWidget( pushButton1 );
     QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum );
     frame4Layout->addItem( spacer );
 
-    pushButton2 = new QPushButton( frame4, "pushButton2" );
+    pushButton2 = new QPushButton( "pushButton2", frame4 );
     frame4Layout->addWidget( pushButton2 );
     gsysPortViewerLayout->addWidget( frame4 );
     languageChange();
@@ -89,7 +97,7 @@ gsysPortViewer::~gsysPortViewer()
  */
 void gsysPortViewer::addPort(gsysPort* port)
 {
-  comboBox1->insertItem(port->getName());
+  comboBox1->insertItem(0, port->getName());
   portVec.push_back(port);
 }
 
@@ -104,10 +112,10 @@ void gsysPortViewer::refresh()
   if(this->isVisible())
   {
     gsysPort* aktPort;
-    for(int i=0; i<table1->numRows(); i++)
+    for(int i=0; i<table1->rowCount(); i++)
     {
-      aktPort = (gsysPort*) atoi(table1->text(i,2));
-      table1->setText(i,1,aktPort->getValue());
+      aktPort = (gsysPort*) atoi(table1->item(i,2)->text().toStdString().c_str());
+      table1->setItem(i,1,new QTableWidgetItem( QString( aktPort->getValue() ) ) );
       #ifdef DEBUG_GSYSC
       cout<<"REFRESH => Port "<<aktPort->getName()<<" ("<<aktPort<<") has value "<<aktPort->getValue()<<endl;
       #endif
@@ -125,12 +133,11 @@ void gsysPortViewer::refresh()
  */
 void gsysPortViewer::languageChange()
 {
-    setCaption( tr( "Port observation" ) );
-    table1->horizontalHeader()->setLabel( 0, tr( "Port name" ) );
-    table1->horizontalHeader()->setLabel( 1, tr( "Value" ) );
+    setWindowTitle( tr( "Port observation" ) );
+    table1->setHorizontalHeaderLabels(QStringList(QList<QString> {"Port name", "Value"}));
     pushButton1->setText( tr( "&Add" ) );
     pushButton2->setText( tr( "&Remove" ) );
-    comboBox1->changeItem( tr("all"), 0 );
+    comboBox1->setItemText( 0, tr("all") );
 }
 
 
@@ -139,7 +146,7 @@ void gsysPortViewer::languageChange()
  */
 void gsysPortViewer::pushButton1_clicked()
 {
-  if(comboBox1->currentItem() == 0)	// add all ports, if wanted
+  if(comboBox1->currentIndex() == 0)	// add all ports, if wanted
   {
     #ifdef DEBUG_GSYSC
     cout << "Add all items in the table. That means "<<portVec.size()<<" elements!"<<endl;
@@ -150,23 +157,23 @@ void gsysPortViewer::pushButton1_clicked()
     {
       aktPort = portVec.front();
       comboBox1->removeItem(1);
-      table1->setNumRows( table1->numRows() + 1 );
-      table1->setText(table1->numRows()-1, 0, aktPort->getName());
-      table1->setText(table1->numRows()-1, 1, aktPort->getValue());
-      table1->setText(table1->numRows()-1, 2, (new gsysMain())->getSimulator()->asChar((int64_t)aktPort));
+      table1->setRowCount( table1->rowCount() + 1 );
+      table1->setItem(table1->rowCount()-1, 0, new QTableWidgetItem( QString( aktPort->getName() ) ) );
+      table1->setItem(table1->rowCount()-1, 1, new QTableWidgetItem( QString( aktPort->getValue() ) ) );
+      table1->setItem(table1->rowCount()-1, 2, new QTableWidgetItem( QString( (new gsysMain())->getSimulator()->asChar((int64_t)aktPort))));
       portVec.erase(portVec.begin());
     }
     aktPort = 0;
   }
   else		// anderen Port hinzufügen
   {
-    int idx = comboBox1->currentItem();
+    int idx = comboBox1->currentIndex();
     gsysPort* aktPort = portVec[idx-1];
     comboBox1->removeItem(idx);
-    table1->setNumRows( table1->numRows() + 1 );
-    table1->setText(table1->numRows()-1, 0, aktPort->getName());
-    table1->setText(table1->numRows()-1, 1, aktPort->getValue());
-    table1->setText(table1->numRows()-1, 2, (new gsysMain())->getSimulator()->asChar((int64_t)aktPort));
+    table1->setRowCount( table1->rowCount() + 1 );
+    table1->setItem(table1->rowCount()-1, 0, new QTableWidgetItem( QString( aktPort->getName() ) ) );
+    table1->setItem(table1->rowCount()-1, 1, new QTableWidgetItem( QString( aktPort->getValue() ) ) );
+    table1->setItem(table1->rowCount()-1, 2, new QTableWidgetItem( QString( (new gsysMain())->getSimulator()->asChar((int64_t)aktPort) ) ) );
     portVec.erase(portVec.begin()+idx-1);
   }
 }
@@ -177,11 +184,11 @@ void gsysPortViewer::pushButton1_clicked()
 void gsysPortViewer::pushButton2_clicked()
 {
   #ifdef DEBUG_GSYSC
-  cout<<"Removal in row "<<table1->currentRow()<<";  Name: "<<table1->text(table1->currentRow(),0)<<";  ID: "<<table1->text(table1->currentRow(),2)<<endl;
+  cout<<"Removal in row "<<table1->currentRow()<<";  Name: "<<(QString) table1->item(table1->currentRow(),0)<<";  ID: "<<(QString) table1->item(table1->currentRow(),2)<<endl;
   #endif
   gsysPort* aktPort;
-  int addr = atoi((const char*) table1->text(table1->currentRow(),2));
-  comboBox1->insertItem(table1->text(table1->currentRow(),0));
+  int addr = atoi(table1->item(table1->currentRow(),2)->text().toStdString().c_str());
+  comboBox1->insertItem(0, table1->item(table1->currentRow(),0)->text());
   aktPort = (gsysPort*)addr;
   portVec.push_back(aktPort);
   table1->removeRow(table1->currentRow());

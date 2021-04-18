@@ -46,9 +46,11 @@
 #include "gsysReplaced.h"
 #endif
 
-#include <Qt/qapplication.h>
-#include <Qt/qtranslator.h>
-#include <Qt/qtextcodec.h>
+#include <qt5/QtWidgets/QApplication>
+#include <qt5/QtWidgets/QtWidgets>
+#include <qt5/QtCore/QTranslator>
+#include <qt5/QtCore/QTextCodec>
+#include <qt5/QtCore/QLocale>
 
 
 
@@ -67,20 +69,18 @@
   #define gsys_start(stepcount) \
 	QApplication app(argc,argv); \
 	QTranslator translator( 0 ); \
-	translator.load( QString("gsysc_") + QTextCodec::locale(), "."); \
+	translator.load( QString("gsysc_") + QLocale::system().name(), "."); \
 	app.installTranslator( &translator ); \
 	gsysMainGUI* wdw = (new gsysMain())->getMainWindow(); \
-	app.setMainWidget(wdw); \
 	wdw->show(); \
 	wdw->startSimulator(stepcount); \
 	app.exec();
   #define sc_start(stepcount) \
 	QApplication app(argc,argv); \
 	QTranslator translator( 0 ); \
-	translator.load( QString("gsysc_") + QTextCodec::locale(), "."); \
+	translator.load( QString("gsysc_") + QLocale::system().name(), "."); \
 	app.installTranslator( &translator ); \
 	gsysMainGUI* wdw = (new gsysMain())->getMainWindow(); \
-	app.setMainWidget(wdw); \
 	wdw->show(); \
 	wdw->startSimulator(stepcount); \
 	app.exec();
@@ -102,7 +102,6 @@
   #define gsys_open \
 	QApplication app(argc,argv); \
 	gsysMainGUI* wdw = (new gsysMain())->getMainWindow(); \
-	app.setMainWidget(wdw); \
 	wdw->show(); \
   	wdw->openMainWdw(); \
 	app.exec();

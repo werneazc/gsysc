@@ -31,12 +31,12 @@
 #define GSYS_MAINGUI_H
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
+#include <QtWidgets/qdialog.h>
 
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qlayout.h>
+#include <QtWidgets/qtooltip.h>
+#include <QtWidgets/qwhatsthis.h>
 
 class gsysSimulator;
 class gsysHierarchyTree;

@@ -23,7 +23,7 @@
     Content:
       This file is a subclass of the Qt implemented class QCanvasView. 
       With deriving this class, overloading and additional 
-      implementation of functions like contentsMousePressEvent is
+      implementation of functions like mousePressEvent is
       possible. Hence event handling for the mouse can be realized.
 
  *************************************************************************/
@@ -31,8 +31,8 @@
 
 #include <iostream>
 #include <vector>
-#include <Qt3Support/q3canvas.h>
-#include <Qt3Support/Q3CanvasView>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QGraphicsView>
 #include <QtGui/QMouseEvent>
 
 #include <stdio.h>
@@ -43,7 +43,7 @@ class gsysPort;
 
 using namespace std;
 
-class gsysCanvasView : public Q3CanvasView
+class gsysCanvasView : public QGraphicsView
 {
   // Objects can only be instatiated over friend classes
   friend class gsysHierarchyWindow;
@@ -61,14 +61,14 @@ class gsysCanvasView : public Q3CanvasView
   char* mmHierConnColor;
   int sidePortExists(vector<gsysPort*> pl, int destNr);
   
-  gsysCanvasView(Q3Canvas* viewing, QWidget* parent, const char* name=0, Qt::WindowFlags f=0);
+  gsysCanvasView(QGraphicsScene* viewing, QWidget* parent, const char* name=0, Qt::WindowFlags f=0);
   ~gsysCanvasView();
   char* asChar(int zahl);
   void setMM(bool sigShow, bool hcShow, char* hcColor, char* modColor, char* modWithColor);
 
   protected:
   // functions for deriving in order to get MouseEvent handling
-  void contentsMousePressEvent(QMouseEvent* e);
-  void contentsMouseMoveEvent(QMouseEvent* e);
+  void mousePressEvent(QMouseEvent* e);
+  void mouseMoveEvent(QMouseEvent* e);
 };
 

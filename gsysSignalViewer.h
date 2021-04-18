@@ -30,17 +30,15 @@
 #define GSYS_SIGNALVIEWER_H
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
-
 #include <QtCore/qvariant.h>
-#include <QtGui/qgroupbox.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
-#include <Qt3Support/Q3GroupBox>
+#include <QtWidgets/qdialog.h>
+#include <QtWidgets/qlabel.h>
+#include <QtWidgets/qlineedit.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qlayout.h>
+#include <QtWidgets/qtooltip.h>
+#include <QtWidgets/qwhatsthis.h>
+#include <QtWidgets/QGroupBox>
 
 #include <stdio.h>
 #include <sstream>
@@ -53,15 +51,15 @@ class gsysSignalViewer : public QDialog
     Q_OBJECT
 
 private:
-    gsysSignalViewer( QWidget* parent, int portCount=2, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
+    gsysSignalViewer( QWidget* parent, int portCount=2, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     ~gsysSignalViewer();
 
-    vector<Q3GroupBox*> groupBoxList;
-    vector<QGridLayout*> gridLayoutList;
+    vector<QGroupBox*> groupBoxList;
     vector<QLabel*> textLabelList;
     vector<QLineEdit*> lineEditList;
 		    
-    Q3GroupBox* groupBox3;
+    QGridLayout* gridLayout;
+    QGroupBox* groupBox3;
     QLabel* textLabel3;
     QLabel* textLabel4;
     QLineEdit* lineEdit3;
@@ -70,6 +68,7 @@ private:
 protected:
     QVBoxLayout* gsysSignalViewerLayout;
     QGridLayout* groupBox3Layout;
+    QGridLayout* groupBoxListLayout;
 
 protected slots:
     virtual void languageChange();

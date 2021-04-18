@@ -96,10 +96,10 @@
    */
   bool gsysConnection::rectHasColor(QRect rect,QColor col)
   {
-    Q3CanvasItemList ceil = parentWindow->canvasView->canvas()->collisions(rect);
+    QList<QGraphicsItem*> ceil = parentWindow->canvasView->scene()->items(rect);
     for(int i=0; i<ceil.count(); i++)
-      if(ceil[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
-        if(((Q3CanvasLine*)ceil[i])->brush().color().rgb() == col.rgb()) return true;
+      if(ceil[i]->type() == (new QGraphicsLineItem())->type())
+        if(((QGraphicsLineItem*)ceil[i])->pen().color().rgb() == col.rgb()) return true;
     return false;  
   }
   
@@ -111,19 +111,18 @@
   {
     if(!activated)
     {
-      Q3CanvasRectangle* aktRect = 0;
-      Q3CanvasLine* aktLine = 0;
+      QGraphicsRectItem* aktRect = 0;
+      QGraphicsLineItem* aktLine = 0;
       for(int i=0; i<verlauf.size(); i++)
       {
-	if(verlauf[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
+	if(verlauf[i]->type() == (new QGraphicsLineItem(0, 0, 0, 0))->type())
 	{
-	  aktLine = (Q3CanvasLine*) verlauf[i];
+	  aktLine = (QGraphicsLineItem*) verlauf[i];
 	  if(highlighted)
 	  {
 	    if(parentWindow!=0)
 	    {
-	      aktLine->setZ(80);
-	      aktLine->setBrush(QColor(parentWindow->activeChangedSig));
+	      aktLine->setZValue(80);
 	      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
 	    }
 	    else
@@ -135,8 +134,7 @@
 	  {
 	    if(parentWindow!=0)
 	    {
-	      aktLine->setZ(60);
-	      aktLine->setBrush(QColor(parentWindow->activeSignal));
+	      aktLine->setZValue(60);
 	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal),3));
 	    }
 	    else
@@ -145,22 +143,22 @@
 	    }
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();  
+	  aktLine->scene()->update();  
 	}
-	if(verlauf[i]->rtti() == (new Q3CanvasRectangle(new Q3Canvas()))->rtti())
+	if(verlauf[i]->type() == (new QGraphicsRectItem(0,0,0,0))->type())
 	{
-	  aktRect = (Q3CanvasRectangle*) verlauf[i];
+	  aktRect = (QGraphicsRectItem*) verlauf[i];
 	  if(parentWindow != 0)
 	  {	  
-  	    if(aktRect->brush().color().rgb() == QColor(parentWindow->changedSignal).rgb()) 
+  	    if(aktRect->pen().color().rgb() == QColor(parentWindow->changedSignal).rgb()) 
 	    {
-	      aktRect->setZ(160);
+	      aktRect->setZValue(160);
 	      aktRect->setBrush(QColor(parentWindow->activeChangedSig));
 	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
 	    }
 	    else
 	    {
-	      aktRect->setZ(140);
+	      aktRect->setZValue(140);
 	      aktRect->setBrush(QColor(parentWindow->activeSignal));
 	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
 	    }
@@ -170,7 +168,7 @@
 	    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
 	  }  
 	  aktRect->setActive(true);
-	  aktRect->canvas()->update();  
+	  aktRect->scene()->update();  
 	}
       }
       aktRect = 0;
@@ -188,20 +186,18 @@
     {
       for(int i=0; i<verlauf.size(); i++)
       {
-	if(verlauf[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
+	if(verlauf[i]->type() == (new QGraphicsLineItem(0,0,0,0))->type())
 	{
-	  Q3CanvasLine* aktLine = (Q3CanvasLine*) verlauf[i];
+	  QGraphicsLineItem* aktLine = (QGraphicsLineItem*) verlauf[i];
 	  if(parentWindow != 0)
 	    if(highlighted)
 	    {
-	      aktLine->setZ(40);
-	      aktLine->setBrush(QColor(parentWindow->changedSignal));
+	      aktLine->setZValue(40);
 	      aktLine->setPen(QPen(QColor(parentWindow->changedSignal),3));
 	    }
 	    else
 	    {
-	      aktLine->setZ(20);
-	      aktLine->setBrush(QColor(parentWindow->normalSignal));
+	      aktLine->setZValue(20);
 	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal),3));
 	    }
 	  else  
@@ -209,34 +205,34 @@
 	    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();  
+	  aktLine->scene()->update();  
 	  aktLine = 0;
 	}
-	if(verlauf[i]->rtti() == (new Q3CanvasRectangle(new Q3Canvas()))->rtti())
+	if(verlauf[i]->type() == (new QGraphicsRectItem(0,0,0,0))->type())
 	{
-	  Q3CanvasRectangle* aktRect = (Q3CanvasRectangle*) verlauf[i];
+	  QGraphicsRectItem* aktRect = (QGraphicsRectItem*) verlauf[i];
 	  
 	  if(parentWindow != 0)
 	  {	  
 	    // Check whether any signal is highlighted (through click) and/or changed
-            Q3CanvasItemList cil = parentWindow->canvasView->canvas()->collisions(aktRect->rect());
+            QList<QGraphicsItem*> cil = parentWindow->canvasView->scene()->items(aktRect->rect());
 	    bool rectActivated = false;
 	    bool rectHighlighted = false;
             for(int i=0; i<cil.count(); i++)
 	    {	    
-              if(cil[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
+              if(cil[i]->type() == (new QGraphicsLineItem(0,0,0,0))->type())
 	      {	      
-                if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
+                if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
 		{
 		  rectActivated = true;
 		  rectHighlighted = true;
 		  break;
 		}
-		else if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeSignal).rgb())
+		else if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->activeSignal).rgb())
 		     {
 		       rectActivated = true;
 		     }
-		     else if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->changedSignal).rgb())
+		     else if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->changedSignal).rgb())
 			  {
 		            rectHighlighted = true;
 			  }
@@ -244,28 +240,28 @@
 	    }  
 	    if(rectActivated && rectHighlighted)
 	    {
-	      aktRect->setZ(160);
+	      aktRect->setZValue(160);
 	      aktRect->setBrush(QColor(parentWindow->activeChangedSig));
 	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
 	    }
 	    else
 	      if(rectHighlighted)
 	      {
-		aktRect->setZ(120);
-	        aktRect->setBrush(QColor(parentWindow->changedSignal));
+		aktRect->setZValue(120);
+		aktRect->setBrush(QColor(parentWindow->changedSignal));
 	        aktRect->setPen(QPen(QColor(parentWindow->changedSignal),3));
 	      }	
 	      else
 	        if(rectActivated)
 	        {
-		  aktRect->setZ(140);
-	          aktRect->setBrush(QColor(parentWindow->activeSignal));
+		  aktRect->setZValue(140);
+		  aktRect->setBrush(QColor(parentWindow->activeSignal));
 	          aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
 	        }	
 	        else
 		{
-		  aktRect->setZ(100);
-	          aktRect->setBrush(QColor(parentWindow->normalNode));
+		  aktRect->setZValue(100);
+		  aktRect->setBrush(QColor(parentWindow->normalNode));
 	          aktRect->setPen(QPen(QColor(parentWindow->normalNode),3));
 	        } 
 	  }
@@ -274,7 +270,7 @@
 	    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
 	  }  
 	  aktRect->setActive(true);
-	  aktRect->canvas()->update();  
+	  aktRect->scene()->update();  
 	  aktRect = 0;
 	}
       }
@@ -292,25 +288,23 @@
       #ifdef DEBUG_GSYSC
       cout << "CONN-highlight in " << this << ": \t parentWindow=" << parentWindow << endl << endl;
       #endif
-      Q3CanvasRectangle* aktRect = 0;
-      Q3CanvasLine* aktLine = 0;
+      QGraphicsRectItem* aktRect = 0;
+      QGraphicsLineItem* aktLine = 0;
       for(int i=0; i<verlauf.size(); i++)
       {
-	if(verlauf[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
+	if(verlauf[i]->type() == (new QGraphicsLineItem(0,0,0,0))->type())
 	{
-	  aktLine = (Q3CanvasLine*) verlauf[i];
+	  aktLine = (QGraphicsLineItem*) verlauf[i];
 	  if (parentWindow != 0)
 	  { 
 	    if(activated)
 	    {
-	      aktLine->setZ(80);
-	      aktLine->setBrush(QColor(parentWindow->activeChangedSig));
+	      aktLine->setZValue(80);
 	      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
 	    }
 	    else
 	    {
-	      aktLine->setZ(40);
-	      aktLine->setBrush(QColor(parentWindow->changedSignal));
+	      aktLine->setZValue(40);
 	      aktLine->setPen(QPen(QColor(parentWindow->changedSignal),3));
 	    }
 	  }
@@ -319,35 +313,35 @@
 	    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
           }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();  
+	  aktLine->scene()->update();  
 	}
-	if(verlauf[i]->rtti() == (new Q3CanvasRectangle(new Q3Canvas()))->rtti())
+	if(verlauf[i]->type() == (new QGraphicsRectItem(0,0,0,0))->type())
 	{
-	  aktRect = (Q3CanvasRectangle*) verlauf[i];
+	  aktRect = (QGraphicsRectItem*) verlauf[i];
 	  #ifdef DEBUG_GSYSC
-	  cout << "RECT(high) i=" << i << ";  Coords: (" << aktRect->rect().x() << "," << aktRect->rect().y() << ");  Color=" << aktRect->brush().color().rgb() << "  (activeSignal-color: " << QColor(parentWindow->activeSignal).rgb() << ")" << endl;
+	  cout << "RECT(high) i=" << i << ";  Coords: (" << aktRect->rect().x() << "," << aktRect->rect().y() << ");  Color=" << aktRect->pen().color().rgb() << "  (activeSignal-color: " << QColor(parentWindow->activeSignal).rgb() << ")" << endl;
 	  #endif
 	  if(parentWindow != 0)
 	  {
 	    // Check whether any signal is highlighted (through click) and/or changed
-            Q3CanvasItemList cil = parentWindow->canvasView->canvas()->collisions(aktRect->rect());
+            QList<QGraphicsItem*> cil = parentWindow->canvasView->scene()->items(aktRect->rect());
 	    bool rectActivated = false;
 	    bool rectHighlighted = false;
             for(int i=0; i<cil.count(); i++)
 	    {	    
-              if(cil[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
+              if(cil[i]->type() == (new QGraphicsLineItem(0,0,0,0))->type())
 	      {	      
-                if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
+                if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
 		{
 		  rectActivated = true;
 		  rectHighlighted = true;
 		  break;
 		}
-		else if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->activeSignal).rgb())
+		else if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->activeSignal).rgb())
 		     {
 		       rectActivated = true;
 		     }
-		     else if(((Q3CanvasLine*)cil[i])->brush().color().rgb() == QColor(parentWindow->changedSignal).rgb())
+		     else if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->changedSignal).rgb())
 			  {
 		            rectHighlighted = true;
 			  }
@@ -355,28 +349,28 @@
 	    }  
 	    if(rectActivated && rectHighlighted)
 	    {
-	      aktRect->setZ(160);
+	      aktRect->setZValue(160);
 	      aktRect->setBrush(QColor(parentWindow->activeChangedSig));
 	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
 	    }
 	    else
 	      if(rectHighlighted)
 	      {
-		aktRect->setZ(120);
-	        aktRect->setBrush(QColor(parentWindow->changedSignal));
+		aktRect->setZValue(120);
+		aktRect->setBrush(QColor(parentWindow->changedSignal));
 	        aktRect->setPen(QPen(QColor(parentWindow->changedSignal),3));
 	      }	
 	      else
 	        if(rectActivated)
 	        {
-		  aktRect->setZ(140);
-	          aktRect->setBrush(QColor(parentWindow->activeSignal));
+		  aktRect->setZValue(140);
+		  aktRect->setBrush(QColor(parentWindow->activeSignal));
 	          aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
 	        }	
 	        else
 		{
-		  aktRect->setZ(100);
-	          aktRect->setBrush(QColor(parentWindow->normalNode));
+		  aktRect->setZValue(100);
+		  aktRect->setBrush(QColor(parentWindow->normalNode));
 	          aktRect->setPen(QPen(QColor(parentWindow->normalNode),3));
 	        } 
 	  }
@@ -385,7 +379,7 @@
 	    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
 	  }
 	  aktRect->setActive(true);
-	  aktRect->canvas()->update();  
+	  aktRect->scene()->update();  
 	}
       }
       aktRect = 0;
@@ -407,25 +401,23 @@
       #endif
       for(int i=0; i<verlauf.size(); i++)
       {
-	if(verlauf[i]->rtti() == (new Q3CanvasLine(new Q3Canvas()))->rtti())
+	if(verlauf[i]->type() == (new QGraphicsLineItem(0,0,0,0))->type())
 	{
-	  Q3CanvasLine* aktLine = (Q3CanvasLine*) verlauf[i];
+	  QGraphicsLineItem* aktLine = (QGraphicsLineItem*) verlauf[i];
 	  if(parentWindow != 0 && aktLine != 0)
 	  {
 	    if(activated)
 	    {
-	      aktLine->setZ(60);
-	      aktLine->setBrush(QColor(parentWindow->activeSignal));
+	      aktLine->setZValue(60);
 	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal),3));
 	    }
 	    else
 	    {
-	      aktLine->setZ(20);
-	      aktLine->setBrush(QColor(parentWindow->normalSignal));
+	      aktLine->setZValue(20);
 	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal),3));
 	    }
 	    aktLine->setActive(true);
-	    aktLine->canvas()->update();  
+	    aktLine->scene()->update();  
 	    aktLine = 0;
 	  }
 	  else
@@ -433,28 +425,28 @@
 	    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
 	  }
 	}
-	if(verlauf[i]->rtti() == (new Q3CanvasRectangle(new Q3Canvas()))->rtti())
+	if(verlauf[i]->type() == (new QGraphicsRectItem(0,0,0,0))->type())
 	{
-	  Q3CanvasRectangle* aktRect = (Q3CanvasRectangle*) verlauf[i];
+	  QGraphicsRectItem* aktRect = (QGraphicsRectItem*) verlauf[i];
 	  #ifdef DEBUG_GSYSC
-	  cout << "RECT(deHi) i=" << i << ";  Coords: (" << aktRect->rect().x() << "," << aktRect->rect().y() << ");  Color=" << aktRect->brush().color().rgb() << "  (activeChangedSig-color: " << QColor(parentWindow->activeChangedSig).rgb() << ")" << endl;
+	  cout << "RECT(deHi) i=" << i << ";  Coords: (" << aktRect->rect().x() << "," << aktRect->rect().y() << ");  Color=" << aktRect->pen().color().rgb() << "  (activeChangedSig-color: " << QColor(parentWindow->activeChangedSig).rgb() << ")" << endl;
 	  #endif
 	  if(parentWindow != 0 && aktRect != 0)
 	  {
-	    if(verlauf[i]->brush().color().rgb() == QColor(parentWindow->activeChangedSig).rgb())
+	    if(verlauf[i]->pen().color().rgb() == QColor(parentWindow->activeChangedSig).rgb())
 	    {
-	      aktRect->setZ(140);
+	      aktRect->setZValue(140);
 	      aktRect->setBrush(QColor(parentWindow->activeSignal));
 	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
 	    }
 	    else
 	    {
-	      aktRect->setZ(100);
+	      aktRect->setZValue(100);
 	      aktRect->setBrush(QColor(parentWindow->normalNode));
 	      aktRect->setPen(QPen(QColor(parentWindow->normalNode),3));
 	    }
 	    aktRect->setActive(true);
-	    aktRect->canvas()->update();  
+	    aktRect->scene()->update();  
 	    aktRect = 0;
 	  }
 	  else
@@ -506,7 +498,7 @@
    *   That is because in this way gSysC can determine to which connection a
    *   clicked picture element belongs.
    */
-  void gsysConnection::addTraceElem(Q3CanvasPolygonalItem* powl)
+  void gsysConnection::addTraceElem(QAbstractGraphicsShapeItem* powl)
   {
     verlauf.push_back(powl);
   }

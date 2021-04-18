@@ -223,7 +223,7 @@
    *   add an graphical element to the list of all drawn elements,
    *   that represent the port an its connection to the routing nodes
    */
-  void gsysPort::addLineElem(Q3CanvasPolygonalItem* line)
+  void gsysPort::addLineElem(QAbstractGraphicsShapeItem* line)
   {
     lines.push_back(line);
   }
@@ -231,7 +231,7 @@
   /*
    *   get the list of graphical representations
    */
-  vector<Q3CanvasPolygonalItem*> gsysPort::getCanvasItems()
+  vector<QAbstractGraphicsShapeItem*> gsysPort::getCanvasItems()
   {
     return lines;
   }
@@ -244,39 +244,35 @@
     if(!activated)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::Type)
         {
-          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
+          QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(highlighted)
 	  {
-	    aktLine->setZ(80);
+	    aktLine->setZValue(80);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->activeChangedSig));   // violet
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->activeChangedSig));   // violet
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF00FF"));   // violet
 	      aktLine->setPen(QColor("#FF00FF"));   // violet
 	    }
 	  }
 	  else
 	  {
-	    aktLine->setZ(60);
+	    aktLine->setZValue(60);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->activeSignal));   // dark orange
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->activeSignal));   // dark orange
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF7F00"));   // dark orange
 	      aktLine->setPen(QColor("#FF7F00"));   // dark orange
 	    }
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();
+	  aktLine->scene()->update();
 	  aktLine = 0;
         }
       activated = true;
@@ -291,39 +287,35 @@
     if(activated)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::Type)
         {
-          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
+          QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(highlighted)
 	  {
-  	    aktLine->setZ(40);
+  	    aktLine->setZValue(40);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->changedSignal));   // red
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->changedSignal));   // red
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF0000"));   // red
 	      aktLine->setPen(QColor("#FF0000"));   // red
 	    }
 	  }
 	  else
 	  {
-  	    aktLine->setZ(20);
+  	    aktLine->setZValue(20);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->normalSignal));   // black
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->normalSignal));   // black
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#000000"));   // black
 	      aktLine->setPen(QColor("#000000"));   // black
 	    }
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();
+	  aktLine->scene()->update();
 	  aktLine = 0;
         }
       activated = false;
@@ -338,39 +330,35 @@
     if(!highlighted)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::Type)
         {
-          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
+          QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(activated)
 	  {
-	    aktLine->setZ(80);
+	    aktLine->setZValue(80);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->activeChangedSig));   // violet
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->activeChangedSig));   // violet
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF00FF"));   // violet
 	      aktLine->setPen(QColor("#FF00FF"));   // violet
 	    }
 	  }
 	  else
 	  {
-	    aktLine->setZ(40);
+	    aktLine->setZValue(40);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->changedSignal));   // red
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->changedSignal));   // red
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF0000"));   // red
 	      aktLine->setPen(QColor("#FF0000"));   // red
 	    }
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();
+	  aktLine->scene()->update();
 	  aktLine = 0;
         }
       highlighted = true;
@@ -385,39 +373,35 @@
     if(highlighted)
     {
       for(int i=0; i<lines.size(); i++)
-        if(lines[i]->rtti() == Q3CanvasLine::RTTI)
+        if(lines[i]->type() == QGraphicsLineItem::Type)
         {
-          Q3CanvasLine* aktLine = (Q3CanvasLine*)lines[i];
+          QGraphicsLineItem* aktLine = (QGraphicsLineItem*)lines[i];
 	  if(activated)
 	  {
-  	    aktLine->setZ(60);
+  	    aktLine->setZValue(60);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->activeSignal));   // orange
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->activeSignal));   // orange
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#FF7F00"));   // orange
 	      aktLine->setPen(QColor("#FF7F00"));   // orange
 	    }
 	  }
 	  else
 	  {
-  	    aktLine->setZ(20);
+  	    aktLine->setZValue(20);
 	    if(connSignal!=0 && connSignal->getConn()!=0 && connSignal->getConn()->getParentWindow())
 	    {
-	      aktLine->setBrush(QColor(connSignal->getConn()->getParentWindow()->normalSignal));   // black
 	      aktLine->setPen(QColor(connSignal->getConn()->getParentWindow()->normalSignal));   // black
 	    }
 	    else
 	    {
-	      aktLine->setBrush(QColor("#000000"));   // black
 	      aktLine->setPen(QColor("#000000"));   // black
 	    }
 	  }
 	  aktLine->setActive(true);
-	  aktLine->canvas()->update();
+	  aktLine->scene()->update();
 	  aktLine = 0;
         }
       highlighted = false;	

@@ -35,7 +35,7 @@
 
 #include "systemc.h"
 
-#include <QtGui/qlistview.h>
+#include <QtWidgets/qlistview.h>
 #include <vector>
 
 class gsysConnection;

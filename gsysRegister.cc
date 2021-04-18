@@ -27,7 +27,6 @@
 #include "gsysSignal.h"
 #include "gsysPort.h"
 #include "gsysPortViewer.h"
-#include "Qt3Support/q3canvas.h"
 
   /*
    *   constructor
@@ -100,11 +99,14 @@
  
   // recursive function for insertion of the hierarchies according to their parent-/child-structure
   // WARNING: It is assumed, that the Root node is already inserted!           =>  hier!=0 (always!)
-  void gsysRegister::insertLVI(Q3ListView *parentLVI, gsysHierarchy* hier)
+  void gsysRegister::insertLVI(QTreeWidgetItem *parent, gsysHierarchy* hier)
   {
     gsysMain* mainWdw = new gsysMain();
-    Q3ListView* lvi = (Q3ListView*) new Q3ListViewItem(parentLVI,hier->getName(),"Modul",mainWdw->getSimulator()->asChar(reinterpret_cast<int64_t>(hier)));
-    listViewElements.push_back( lvi );
+    QTreeWidgetItem* lvi = new QTreeWidgetItem (parent);
+    lvi->setText(0,hier->getName());
+    lvi->setText(1,"Modul");
+    lvi->setText(2, mainWdw->getSimulator()->asChar(reinterpret_cast<int64_t>(hier)));
+    listViewElements.append( lvi );
     
     int chSize = hier->getChildren().size();
     for (int i=0; i<chSize; i++)
@@ -220,8 +222,11 @@
     vector<gsysPort*> ports;
     gsysMain* mainWdw = new gsysMain();
     gsysPortViewer* pv = mainWdw->getMainWindow()->getPortViewer();
-    rootLVI = (Q3ListView*) new Q3ListViewItem(mainWdw->getHierarchyTree()->tree,"/","Root","0");
-    listViewElements.push_back( rootLVI );
+    rootLVI = new QTreeWidgetItem(mainWdw->getHierarchyTree()->tree);
+    rootLVI->setText(0,"/");
+    rootLVI->setText(1,"Root");
+    rootLVI->setText(2,"0");
+    listViewElements.append( rootLVI );
     
     for (int i=0; i<hierarchyList.size(); i++)
     {
@@ -235,6 +240,7 @@
     }
     
     mainWdw->getHierarchyTree()->setInfoVectors(hierarchyList,connList);
+    mainWdw->getHierarchyTree()->tree->addTopLevelItem(rootLVI);
 
     mainWdw = 0;
     pv = 0;

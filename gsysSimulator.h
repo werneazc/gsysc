@@ -41,18 +41,17 @@ class gsysRegister;
 class gsysPort;
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
-#include <QtGui/qcheckbox.h>
-#include <QtGui/qgroupbox.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qspinbox.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qcombobox.h>
-#include <Qt3Support/Q3GroupBox>
+#include <QtWidgets/qdialog.h>
+#include <QtWidgets/qcheckbox.h>
+#include <QtWidgets/qlabel.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qspinbox.h>
+#include <QtWidgets/qlayout.h>
+#include <QtWidgets/qtooltip.h>
+#include <QtWidgets/qwhatsthis.h>
+#include <QtWidgets/qlineedit.h>
+#include <QtWidgets/qcombobox.h>
+#include <QtWidgets/QGroupBox>
 
 #include <stdio.h>
 #include <sstream>
@@ -72,24 +71,27 @@ class gsysSimulator : public QDialog
 
 public:
 
-  Q3GroupBox* groupBox1;
+  QGroupBox* groupBox1;
+  QGridLayout* groupLayout1;
   QLabel* textLabel1;
   QSpinBox* stepSpin;
   QLabel* textLabel2;
   QSpinBox* maxSpin;
-  Q3GroupBox* groupBox2;
+  QGroupBox* groupBox2;
+  QGridLayout* groupLayout2;
   QPushButton* stepButton;
   QPushButton* startButton;
   QPushButton* stopButton;
-  Q3GroupBox* groupBox3;
+  QGroupBox* groupBox3;
   QCheckBox* useViewer;
   QCheckBox* autoStep;
-  Q3GroupBox* groupBox4;
+  QGroupBox* groupBox4;
   QLabel* textLabel3;
   QLabel* textLabel3_2;
   QSpinBox* intervalSpin;
-  Q3GroupBox* groupBox5;
+  QGroupBox* groupBox5;
   QCheckBox* useWatcher;
+  QSizePolicy* watchVarPolicy;
   QComboBox* watchVariable;
   QLabel* textLabel1_2;
   QLineEdit* watchValue;
@@ -111,7 +113,7 @@ private:
    *  The dialog will by default be modeless, unless you set 'modal' to
    *  TRUE to construct a modal dialog.
    */
-  gsysSimulator( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
+  gsysSimulator( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
   
   bool haveToStop();
 
@@ -142,11 +144,6 @@ public slots:
 
 protected:
   QVBoxLayout* gsysSimulatorLayout;
-  QHBoxLayout* groupBox1Layout;
-  QHBoxLayout* groupBox2Layout;
-  QVBoxLayout* groupBox3Layout;
-  QHBoxLayout* groupBox4Layout;
-  QHBoxLayout* groupBox5Layout;
 
 protected slots:
   /*

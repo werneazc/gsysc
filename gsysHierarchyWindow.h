@@ -39,19 +39,19 @@
 #include <stdio.h>
 #include <string>
 
-#include <Qt/qvariant.h>
+#include <QtCore/qvariant.h>
 #include <QtCore/qrect.h>
-#include <QtGui/qdialog.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qgroupbox.h>
-#include <Qt3Support/q3canvas.h>
-#include <Qt3Support/Q3GroupBox>
+#include <QtWidgets/qdialog.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qtooltip.h>
+#include <QtWidgets/qwhatsthis.h>
+#include <QtWidgets/qlayout.h>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/qlineedit.h>
+#include <QtWidgets/qlabel.h>
+#include <QtWidgets/qgroupbox.h>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QGroupBox>
 
 class gsysSignalViewer;
 class gsysPort;
@@ -93,7 +93,7 @@ class gsysHierarchyWindow : public QDialog
   vector<gsysHierarchy*> hierarchyList;
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
-  gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
+  gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
   gsysHierarchy* parent;
   gsysHierarchy* ownHierarchy;
   int dimFactor;
@@ -126,7 +126,7 @@ class gsysHierarchyWindow : public QDialog
   void readConfig();
  
   QPushButton *saveButton;
-  Q3GroupBox* moveInfos;
+  QGroupBox* moveInfos;
   QLabel* labelKoordinaten;
   QLineEdit* coord;
   QLabel* labelTyp;

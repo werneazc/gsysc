@@ -35,8 +35,8 @@
 #include "systemc.h"
 #include <vector>
 
-#include <Qt3Support/Q3ListView>
-#include <Qt3Support/Q3ListViewItem>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QTreeWidgetItem>
 
 class gsysConnection;
 class gsysHierarchy;
@@ -59,7 +59,7 @@ class gsysRegister
   vector<gsysPort*> portList;
   vector<gsysPort*> notAssignedPorts;
   vector<gsysSignal*> notAssignedSignals;
-  vector<Q3ListView*> listViewElements;
+  QList<QTreeWidgetItem*> listViewElements;
   vector<void*> bufferIDList;
   vector<char*> bufferNameList;
   vector<bool> bufferPercList;
@@ -70,8 +70,8 @@ class gsysRegister
   void regFinished();
   int connExists(gsysHierarchy* h1, gsysHierarchy* h2);
   gsysRegister();
-  Q3ListView *rootLVI;
-  void insertLVI(Q3ListView *parentLVI, gsysHierarchy* hier);
+  QTreeWidgetItem *rootLVI;
+  void insertLVI(QTreeWidgetItem *parent, gsysHierarchy* hier);
 
 
   public:

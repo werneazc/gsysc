@@ -27,9 +27,8 @@
 #include "gsysRegister.h"
 #include "QtGui/qpicture.h"
 #include "QtGui/qpainter.h"
-#include <QtGui/qfiledialog.h>
-#include <QtGui/qmessagebox.h>
-#include <Qt3Support/Q3FileDialog>
+#include <QtWidgets/qfiledialog.h>
+#include <QtWidgets/qmessagebox.h>
 
   /*
    *   method to read the config file gsysHViewer.conf
@@ -38,7 +37,10 @@
   void gsysHierarchyWindow::readConfig()
   {
     FILE *fp;
-    fp = fopen("gsysHViewer.conf","r");
+	std::string filePath = __FILE__;
+	filePath.erase(filePath.find("gsysHierarchyWindow.cc"), 22);
+	filePath.append("gsysHViewer.conf");
+    fp = fopen(filePath.c_str(),"r");
     if(fp!=0)
     {
       backgroundColor=(char*)"#FFFFFF";
@@ -195,7 +197,7 @@
     parent = 0;
     ownHierarchy = 0;
 
-    canvasView = new gsysCanvasView(new Q3Canvas(300,300),this,"Canvas");
+    canvasView = new gsysCanvasView(new QGraphicsScene(0,0,300,300),this,"Canvas");
     /* Size- and color properties for the structure graphic read out of the configuration file */
     readConfig();
     canvasView->setMM(mmSigPortShow, mmHierConnShow, mmHierConnColor, moduleColor, moduleWithChild);
@@ -208,10 +210,7 @@
 
     if(mmSigPortShow || mmHierConnShow)
     {
-      moveInfos = new Q3GroupBox(this,"moveInfos");
-      moveInfos->setColumnLayout(0, Qt::Vertical );
-      moveInfos->layout()->setSpacing( 6 );
-      moveInfos->layout()->setMargin( 11 );
+      moveInfos = new QGroupBox(this);
       moveInfosLayout = new QHBoxLayout( moveInfos );
       moveInfosLayout->layout()->setSpacing( 6 );
       moveInfosLayout->layout()->setMargin( 11 );
@@ -301,61 +300,52 @@
   void gsysHierarchyWindow::saveButton_clicked()
   { 
     try {
-      Q3FileDialog *fd = new Q3FileDialog(this,tr("Save file").toLocal8Bit().constData(),true);
-      fd->setMode(Q3FileDialog::AnyFile);
-      fd->setPreviewMode(Q3FileDialog::NoPreview);
-      fd->addFilter("BMP (*.bmp *.BMP)");
-      fd->addFilter("XBM (*.xbm *.XBM)");
-      fd->addFilter("XPM (*.xpm *.XPM)");
-      fd->addFilter("SVG (*.svg *.SVG)");
-      fd->addFilter("PNM (*.pnm *.PNM)");
-      fd->addFilter("PNG (*.png *.PNG)");
-      fd->setSelection(tr("Save image"));
-      if(fd->exec() == QDialog::Accepted)
-      {
-        QString filename = fd->selectedFile();
-        if((fopen(filename.toLocal8Bit().constData(),"r")!=0 && QMessageBox::warning(this,"gSysC",tr("The chosen file does already exist.\nAre you sure you want to overwrite it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes) || fopen(filename.toLocal8Bit().constData(),"r")==0) 
-	{
-	  QString fileType = fd->selectedFilter();
-	  if(fileType == "PNG (*.png *.PNG)") fileType="PNG";
-	  if(fileType == "BMP (*.bmp *.BMP)") fileType="BMP";
-	  if(fileType == "XBM (*.xbm *.XBM)") fileType="XBM";
-	  if(fileType == "XPM (*.xpm *.XPM)") fileType="XPM";
-	  if(fileType == "PNM (*.pnm *.PNM)") fileType="PNM";
-	  if(fileType == "SVG (*.svg *.SVG)")
+      QFileDialog *fd = new QFileDialog(this,tr("Save file"));
+      fd->setModal(true);
+      fd->setFileMode(QFileDialog::AnyFile);
+      fd->setViewMode(QFileDialog::List);
+      fd->selectFile(tr("Save image"));
+	  QString fileTypes = "PNG (*.png *.PNG);;BMP (*.bmp *.BMP);;XBM (*.xbm *.XBM);;XPM (*.xpm *.XPM);;PNM (*.pnm *.PNM);;SVG (*.svg *.SVG)";
+	  QString filename = fd->getSaveFileName(this, tr("Save File"), "/Save image.png", fileTypes);
+      if((fopen(filename.toLocal8Bit().constData(),"r")!=0 && QMessageBox::warning(this,"gSysC",tr("The chosen file does already exist.\nAre you sure you want to overwrite it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes) || fopen(filename.toLocal8Bit().constData(),"r")==0) 
 	  {
-	    cout<<"-- Saving structure graphics in file; SVG-format --"<<endl;
-	    QPicture *pic = new QPicture();
-	    QPainter qp;
-	    qp.begin(pic);
-	    canvasView->canvas()->drawArea(canvasView->canvas()->rect(), &qp);
-	    qp.end();
-	    pic->save(filename,"svg");
-	    cout<<"saving done."<<endl;
-	    delete pic;
-	    pic = 0;
+		std::string type = filename.toStdString().substr(filename.size() - 3).c_str();
+		std::transform(type.begin(), type.end(), type.begin(), [](unsigned char c){ return std::toupper(c); });
+	  	QString fileType = tr(type.c_str());
+	  	if(fileType == "SVG")
+	  	{
+	  	  cout<<"-- Saving structure graphics in file; SVG-format --"<<endl;
+	  	  QPicture *pic = new QPicture();
+	  	  QPainter qp;
+	  	  qp.begin(pic);
+	  	  canvasView->scene()->render(&qp, canvasView->scene()->sceneRect());
+	  	  qp.end();
+	  	  pic->save(filename,"svg");
+	  	  cout<<"saving done."<<endl;
+	  	  delete pic;
+	  	  pic = 0;
+	  	}
+	  	else
+	  	{
+	  	  if(fileType=="PNG" ||
+	  	     fileType=="BMP" ||
+	  	     fileType=="XBM" ||
+	  	     fileType=="XPM" ||
+	  	     fileType=="PNM")
+	  		{   
+	  		  cout<<"-- Saving structure graphics in file; "<<fileType.toLocal8Bit().constData()<<"-format --"<<endl;
+	  		  QPixmap *pm = new QPixmap();
+	  		  *pm = QPixmap::grabWidget(canvasView->viewport());
+	  		  if(pm==0) cout<<"Error: Cannot grab viewport!"<<endl;
+	  		  pm->save(filename,fileType.toLocal8Bit().constData());
+	  		  cout<<"saving done."<<endl;
+	  		  delete pm;
+	  		  pm = 0;
+	  		}
+	  		else QMessageBox::critical(this,"gSysC",tr("You have not given a valid file type. \n\n Please choose a file type of a valid image format!"),QMessageBox::Ok,0);
+	  	}
 	  }
-	  else
-	  {
-	    if(fileType=="PNG" ||
-	       fileType=="BMP" ||
-	       fileType=="XBM" ||
-	       fileType=="XPM" ||
-	       fileType=="PNM")
-	    {   
-	      cout<<"-- Saving structure graphics in file; "<<fileType.toLocal8Bit().constData()<<"-format --"<<endl;
-	      QPixmap *pm = new QPixmap();
-	      *pm = QPixmap::grabWidget(canvasView->viewport());
-	      if(pm==0) cout<<"Error: Cannot grab viewport!"<<endl;
-	      pm->save(filename,fileType.toLocal8Bit().constData());
-	      cout<<"saving done."<<endl;
-	      delete pm;
-	      pm = 0;
-	    }
-	    else QMessageBox::critical(this,"gSysC",tr("You have not given a valid file type. \n\n Please choose a file type of a valid image format!"),QMessageBox::Ok,0);
-	  }
-	}
-      }
+      
       delete fd;
       fd = 0;
     }
@@ -449,14 +439,14 @@
       {
 	if( (allConnections[i]->getHier1()==ownHierarchy && thisLevel(allConnections[i]->getHier2())) ||
 	    (allConnections[i]->getHier2()==ownHierarchy && thisLevel(allConnections[i]->getHier1())) )
-	{
-          #ifdef DEBUG_GSYSC
-	  cout<<allConnections[i]->getHier1()->getName()<<" OR "<<allConnections[i]->getHier2()->getName()<<" is in this level!"<<endl;
-	  #endif
-	  for(int u=0; u<sideConnList.size(); u++)
-	    if(sideConnList[u]==allConnections[i]) found=true;
-          if (!found) sideConnList.push_back(allConnections[i]);
-	}
+		{
+    	    #ifdef DEBUG_GSYSC
+		  	cout<<allConnections[i]->getHier1()->getName()<<" OR "<<allConnections[i]->getHier2()->getName()<<" is in this level!"<<endl;
+		  	#endif
+		  	for(int u=0; u<sideConnList.size(); u++)
+		    if(sideConnList[u]==allConnections[i]) found=true;
+    	    if (!found) sideConnList.push_back(allConnections[i]);
+		}
       }
     }
 
@@ -464,21 +454,22 @@
     //     For simplicity X-Y-routing is used as placement strategy!!!
     dimFactor = (int) (ceil(sqrt((double) hierarchyList.size())));
     canvasView->resize(dimFactor*moduleWidth+2*sideMargin+(dimFactor-1)*horizontalSpace+10,dimFactor*moduleHeight+(dimFactor-1)*verticalSpace+2*topMargin+10);
-    canvasView->canvas()->resize(dimFactor*moduleWidth+2*sideMargin+(dimFactor-1)*horizontalSpace,dimFactor*moduleHeight+(dimFactor-1)*verticalSpace+2*topMargin);
-    QPalette palette;
+    canvasView->scene()->setSceneRect(0, 0, dimFactor*moduleWidth+2*sideMargin+(dimFactor-1)*horizontalSpace,dimFactor*moduleHeight+(dimFactor-1)*verticalSpace+2*topMargin);
+	canvasView->setAlignment(Qt::AlignTop|Qt::AlignLeft);
+	QPalette palette;
     palette.setColor(canvasView->backgroundRole(), backgroundColor);
     canvasView->setPalette(palette);
 
-    vector<Q3CanvasRectangle*> modRect;
-    vector<Q3CanvasText*> modText;
-    QRect textRect;
+    vector<QGraphicsRectItem*> modRect;
+    vector<QGraphicsSimpleTextItem*> modText;
+    QRectF textRect;
     int x=sideMargin;
     int y=topMargin;
     for (int i=0; i<hierarchyList.size(); i++)
     {
-      modRect.push_back(new Q3CanvasRectangle(0,0,moduleWidth,moduleHeight,canvasView->canvas()));
+      modRect.push_back(new QGraphicsRectItem(0,0,moduleWidth,moduleHeight));
       hierarchyList[i]->setHierRect(modRect.back());
-      modText.push_back(new Q3CanvasText(canvasView->canvas()));
+      modText.push_back(new QGraphicsSimpleTextItem());
       
       // draw module
       if(hierarchyList[i]->getChildren().size()>0)
@@ -491,26 +482,31 @@
         modRect[i]->setBrush(QColor(moduleColor));
         modRect[i]->setPen(QPen(QColor(moduleColor)));
       }
-      modRect[i]->move(x,y);
-      modRect[i]->setZ(210);
+      modRect[i]->setX(x);
+      modRect[i]->setY(y);
+      modRect[i]->setZValue(210);
       modRect[i]->show();
       hierarchyList[i]->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)moduleWidth)-1,y+(int) ceil(0.5*(double)moduleHeight)-1));
       #ifdef DEBUG_GSYSC
       std::cout << "Module "<<hierarchyList[i]->getName()<<" has center point "<<hierarchyList[i]->getCenterPoint()->x()<<"/"<<hierarchyList[i]->getCenterPoint()->y()<<std::endl;
       #endif
       modText[i]->setText(hierarchyList[i]->getName());
-      modText[i]->setColor(textColor);
+      modText[i]->setBrush(QBrush(textColor));
       textRect = modText[i]->boundingRect();
-      modText[i]->move(x+(int) (0.5*(double)moduleWidth-0.5*(double)textRect.width()),y+ (int) (0.5*(double)moduleHeight-0.5*(double)textRect.height()));
-      modText[i]->setZ(240);
+      modText[i]->setX(x+(int) (0.5*(double)moduleWidth-0.5*(double)textRect.width()));
+      modText[i]->setY(y+ (int) (0.5*(double)moduleHeight-0.5*(double)textRect.height()));
+      modText[i]->setZValue(240);
       modText[i]->show(); 
+
+	  canvasView->scene()->addItem(modText[i]);	
+	  canvasView->scene()->addItem(modRect[i]);
 
       // Coordinates of the next module
       x = x+horizontalSpace+moduleWidth;
       if (x > sideMargin+(dimFactor-1)*moduleWidth+(dimFactor-1)*horizontalSpace) 
       {
         x = sideMargin;
-	y = y+verticalSpace+moduleHeight; 
+		y = y+verticalSpace+moduleHeight; 
       }
     }
 
@@ -1043,7 +1039,7 @@
       					+((double)dimFactor-1)*(double)verticalSpace 
       					- ownHierarchy->getLeftPorts().size() * 21) 
 			  	  / (double)(ownHierarchy->getLeftPorts().size()+1) );      // distances between ports at equidistant distribution
-      cout<<"AbstandY ist "<<abstandY<<";  Zähler: "<<(2*(double)topMargin+(double)dimFactor*(double)moduleHeight +((double)dimFactor-1)*(double)verticalSpace - ownHierarchy->getLeftPorts().size() * 21)<<" / Nenner: "<<(double)(ownHierarchy->getLeftPorts().size()+1)<<"    <->   getLeftPorts().size()="<<ownHierarchy->getLeftPorts().size()<<endl;		     
+      cout<<"AbstandY ist "<<abstandY<<";  Zaehler: "<<(2*(double)topMargin+(double)dimFactor*(double)moduleHeight +((double)dimFactor-1)*(double)verticalSpace - ownHierarchy->getLeftPorts().size() * 21)<<" / Nenner: "<<(double)(ownHierarchy->getLeftPorts().size()+1)<<"    <->   getLeftPorts().size()="<<ownHierarchy->getLeftPorts().size()<<endl;		     
       for(int i=0; i<ownHierarchy->getLeftPorts().size(); i++)
       {
         cout<<"LeftPorts().size()="<<ownHierarchy->getLeftPorts().size()<<";  i="<<i<<endl;
@@ -1063,7 +1059,7 @@
 	if (i % dimFactor == dimFactor-1)
 	{
 	  for (int o=0; o<hierarchyList[i]->getEPorts().size(); o++)
-	    hierarchyList[i]->getEPorts()[o]->setDest(QPoint(canvasView->canvas()->width()-51,(donePortsR+o+1)*abstandY+(donePortsR+o)*21+11));
+	    hierarchyList[i]->getEPorts()[o]->setDest(QPoint(canvasView->scene()->width()-51,(donePortsR+o+1)*abstandY+(donePortsR+o)*21+11));
 	  donePortsR += hierarchyList[i]->getEPorts().size();
 	}
       
@@ -1090,8 +1086,8 @@
     #ifdef DEBUG_GSYSC
     std::cout<<"\n#####\nHierarchyWindow.drawNetConns for "<<hier->getName()<<":\n"<<"\tPorts:  N->"<<hier->getNPorts().size()<<"  E->"<<hier->getEPorts().size()<<"  S->"<<hier->getSPorts().size()<<"  W->"<<hier->getWPorts().size()<<std::endl;
     #endif
-    vector<Q3CanvasLine*> lines;
-    vector<Q3CanvasPolygon*> polygons;
+    vector<QGraphicsLineItem*> lines;
+    vector<QGraphicsPolygonItem*> polygons;
     int abstand;
     int x = hier->getCenterPoint()->x() - (int) ceil((double)moduleWidth*0.5) +1;
     int y = hier->getCenterPoint()->y() - (int) ceil((double)moduleHeight*0.5) +1;
@@ -1111,66 +1107,71 @@
       #endif
       if(ports[i]->getType() == 0)   	// IN-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(5);
-	pa[0] = QPoint(x,y);
-	pa[1] = QPoint(x+6,y);
-	pa[2] = QPoint(x+6,y+7);
-	pa[3] = QPoint(x+3,y+9);
-	pa[4] = QPoint(x,y+7);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(inPort));
-	polygons[polygons.size()-1]->setBrush(QColor(inPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(5);
+		pa[0] = QPoint(x,y);
+		pa[1] = QPoint(x+6,y);
+		pa[2] = QPoint(x+6,y+7);
+		pa[3] = QPoint(x+3,y+9);
+		pa[4] = QPoint(x,y+7);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(inPort));
+		polygons[polygons.size()-1]->setBrush(QColor(inPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(ports[i]->getType() == 1)   	// OUT-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(5);
-	pa[0] = QPoint(x+3,y);
-	pa[1] = QPoint(x+6,y+2);
-	pa[2] = QPoint(x+6,y+9);
-	pa[3] = QPoint(x,y+9);
-	pa[4] = QPoint(x,y+2);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(outPort));
-	polygons[polygons.size()-1]->setBrush(QColor(outPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(5);
+		pa[0] = QPoint(x+3,y);
+		pa[1] = QPoint(x+6,y+2);
+		pa[2] = QPoint(x+6,y+9);
+		pa[3] = QPoint(x,y+9);
+		pa[4] = QPoint(x,y+2);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(outPort));
+		polygons[polygons.size()-1]->setBrush(QColor(outPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(ports[i]->getType() == 2)   	// INOUT-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(6);
-	pa[0] = QPoint(x+3,y);
-	pa[1] = QPoint(x+6,y+2);
-	pa[2] = QPoint(x+6,y+7);
-	pa[3] = QPoint(x+3,y+9);
-	pa[4] = QPoint(x,y+7); 
-	pa[5] = QPoint(x,y+2);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(inoutPort));
-	polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+	QPolygon pa(6);
+		pa[0] = QPoint(x+3,y);
+		pa[1] = QPoint(x+6,y+2);
+		pa[2] = QPoint(x+6,y+7);
+		pa[3] = QPoint(x+3,y+9);
+		pa[4] = QPoint(x,y+7); 
+		pa[5] = QPoint(x,y+2);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(inoutPort));
+		polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(!ports[i]->isEndPort())
       {
-        lines.push_back(new Q3CanvasLine(canvasView->canvas()));
-        lines.back()->setPoints(x+3,y,x+3,y-((verticalSpace-16)/2));
-        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
+        lines.push_back(new QGraphicsLineItem());
+        lines.back()->setLine(x+3,y,x+3,y-((verticalSpace-16)/2));
+        ports[i]->addLineElem((QAbstractGraphicsShapeItem*)lines.back());
         lines.back()->show();
-        lines.push_back(new Q3CanvasLine(canvasView->canvas()));
+		canvasView->scene()->addItem(lines.back());
+        lines.push_back(new QGraphicsLineItem());
         if (ports[i]->getInitDir() == W) 
-          lines.back()->setPoints(x+3,y-((verticalSpace-16)/2),hier->getCenterPoint()->x()-(int)floor((double)moduleWidth*0.5)-(int)floor((double)horizontalSpace*0.5),y-((verticalSpace-16)/2));
+          lines.back()->setLine(x+3,y-((verticalSpace-16)/2),hier->getCenterPoint()->x()-(int)floor((double)moduleWidth*0.5)-(int)floor((double)horizontalSpace*0.5),y-((verticalSpace-16)/2));
         else	
-          lines.back()->setPoints(x+3,y-((verticalSpace-16)/2),hier->getCenterPoint()->x()+(int)ceil((double)moduleWidth*0.5)+(int)floor((double)horizontalSpace*0.5),y-((verticalSpace-16)/2));
-        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
+          lines.back()->setLine(x+3,y-((verticalSpace-16)/2),hier->getCenterPoint()->x()+(int)ceil((double)moduleWidth*0.5)+(int)floor((double)horizontalSpace*0.5),y-((verticalSpace-16)/2));
+        ports[i]->addLineElem((QAbstractGraphicsShapeItem*)lines.back());
         lines.back()->show();
+		canvasView->scene()->addItem(lines.back());
       }	
       x += 7;	
     }
@@ -1193,67 +1194,72 @@
       #endif
       if(ports[i]->getType() == 0)   	// IN-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(5);
-	pa[0] = QPoint(x,y);
-	pa[1] = QPoint(x+6,y);
-	pa[2] = QPoint(x+6,y-7);
-	pa[3] = QPoint(x+3,y-9);
-	pa[4] = QPoint(x,y-7);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(inPort));
-	polygons[polygons.size()-1]->setBrush(QColor(inPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(5);
+		pa[0] = QPoint(x,y);
+		pa[1] = QPoint(x+6,y);
+		pa[2] = QPoint(x+6,y-7);
+		pa[3] = QPoint(x+3,y-9);
+		pa[4] = QPoint(x,y-7);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(inPort));
+		polygons[polygons.size()-1]->setBrush(QColor(inPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(ports[i]->getType() == 1)   	// OUT-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(5);
-	pa[0] = QPoint(x+3,y);
-	pa[1] = QPoint(x+6,y-2);
-	pa[2] = QPoint(x+6,y-9);
-	pa[3] = QPoint(x,y-9);
-	pa[4] = QPoint(x,y-2);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(outPort));
-	polygons[polygons.size()-1]->setBrush(QColor(outPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(5);
+		pa[0] = QPoint(x+3,y);
+		pa[1] = QPoint(x+6,y-2);
+		pa[2] = QPoint(x+6,y-9);
+		pa[3] = QPoint(x,y-9);
+		pa[4] = QPoint(x,y-2);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(outPort));
+		polygons[polygons.size()-1]->setBrush(QColor(outPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(ports[i]->getType() == 2)   	// INOUT-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(6);
-	pa[0] = QPoint(x+3,y);
-	pa[1] = QPoint(x+6,y-2);
-	pa[2] = QPoint(x+6,y-7);
-	pa[3] = QPoint(x+3,y-9);
-	pa[4] = QPoint(x,y-7); 
-	pa[5] = QPoint(x,y-2);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(inoutPort));
-	polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(6);
+		pa[0] = QPoint(x+3,y);
+		pa[1] = QPoint(x+6,y-2);
+		pa[2] = QPoint(x+6,y-7);
+		pa[3] = QPoint(x+3,y-9);
+		pa[4] = QPoint(x,y-7); 
+		pa[5] = QPoint(x,y-2);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(inoutPort));
+		polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       
       if(!ports[i]->isEndPort())
       {
-        lines.push_back(new Q3CanvasLine(canvasView->canvas()));
-        lines.back()->setPoints(x+3,y,x+3,y+((verticalSpace-16)/2));
-        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
+        lines.push_back(new QGraphicsLineItem());
+        lines.back()->setLine(x+3,y,x+3,y+((verticalSpace-16)/2));
+        ports[i]->addLineElem((QAbstractGraphicsShapeItem*)lines.back());
         lines.back()->show();
-        lines.push_back(new Q3CanvasLine(canvasView->canvas()));
+		canvasView->scene()->addItem(lines.back());
+        lines.push_back(new QGraphicsLineItem());
         if (ports[i]->getInitDir() == W) 
-          lines.back()->setPoints(x+3,y+((verticalSpace-16)/2),hier->getCenterPoint()->x()-(int)floor((double)moduleWidth*0.5)-(int)floor((double)horizontalSpace*0.5),y+((verticalSpace-16)/2));
+          lines.back()->setLine(x+3,y+((verticalSpace-16)/2),hier->getCenterPoint()->x()-(int)floor((double)moduleWidth*0.5)-(int)floor((double)horizontalSpace*0.5),y+((verticalSpace-16)/2));
         else	
-          lines.back()->setPoints(x+3,y+((verticalSpace-16)/2),hier->getCenterPoint()->x()+(int)ceil((double)moduleWidth*0.5)+(int)floor((double)horizontalSpace*0.5),y+((verticalSpace-16)/2));
-        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
+          lines.back()->setLine(x+3,y+((verticalSpace-16)/2),hier->getCenterPoint()->x()+(int)ceil((double)moduleWidth*0.5)+(int)floor((double)horizontalSpace*0.5),y+((verticalSpace-16)/2));
+        ports[i]->addLineElem((QAbstractGraphicsShapeItem*)lines.back());
         lines.back()->show();
+		canvasView->scene()->addItem(lines.back());
       }	
       x += 7;	
     }
@@ -1276,80 +1282,87 @@
       #endif
       if(ports[i]->getType() == 0)   	// IN-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(5);
-	pa[0] = QPoint(x,y);
-	pa[1] = QPoint(x+7,y);
-	pa[2] = QPoint(x+9,y+3);
-	pa[3] = QPoint(x+7,y+6);
-	pa[4] = QPoint(x,y+6);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(inPort));
-	polygons[polygons.size()-1]->setBrush(QColor(inPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(5);
+		pa[0] = QPoint(x,y);
+		pa[1] = QPoint(x+7,y);
+		pa[2] = QPoint(x+9,y+3);
+		pa[3] = QPoint(x+7,y+6);
+		pa[4] = QPoint(x,y+6);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(inPort));
+		polygons[polygons.size()-1]->setBrush(QColor(inPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(ports[i]->getType() == 1)   	// OUT-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(5);
-	pa[0] = QPoint(x,y+3);
-	pa[1] = QPoint(x+2,y);
-	pa[2] = QPoint(x+9,y);
-	pa[3] = QPoint(x+9,y+6);
-	pa[4] = QPoint(x+2,y+6);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(outPort));
-	polygons[polygons.size()-1]->setBrush(QColor(outPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(5);
+		pa[0] = QPoint(x,y+3);
+		pa[1] = QPoint(x+2,y);
+		pa[2] = QPoint(x+9,y);
+		pa[3] = QPoint(x+9,y+6);
+		pa[4] = QPoint(x+2,y+6);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(outPort));
+		polygons[polygons.size()-1]->setBrush(QColor(outPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(ports[i]->getType() == 2)   	// INOUT-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(6);
-	pa[0] = QPoint(x,y+3);
-	pa[1] = QPoint(x+2,y);
-	pa[2] = QPoint(x+7,y);
-	pa[3] = QPoint(x+9,y+3);
-	pa[4] = QPoint(x+7,y+6); 
-	pa[5] = QPoint(x+2,y+6);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(inoutPort));
-	polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(6);
+		pa[0] = QPoint(x,y+3);
+		pa[1] = QPoint(x+2,y);
+		pa[2] = QPoint(x+7,y);
+		pa[3] = QPoint(x+9,y+3);
+		pa[4] = QPoint(x+7,y+6); 
+		pa[5] = QPoint(x+2,y+6);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(inoutPort));
+		polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(! ports[i]->isEndPort())
       {
         if(ports[i]->getDest().isNull())
         {
-          lines.push_back(new Q3CanvasLine(canvasView->canvas()));
-          lines.back()->setPoints(x,y+3,x-((horizontalSpace-16)/2),y+3);
-          ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
-	  lines.back()->show();
-          lines.push_back(new Q3CanvasLine(canvasView->canvas()));
+          lines.push_back(new QGraphicsLineItem());
+          lines.back()->setLine(x,y+3,x-((horizontalSpace-16)/2),y+3);
+          ports[i]->addLineElem((QAbstractGraphicsShapeItem*)lines.back());
+	  	  lines.back()->show();
+		  canvasView->scene()->addItem(lines.back());
+          lines.push_back(new QGraphicsLineItem());
           if (ports[i]->getInitDir() == N) 
-  	  {
-            lines.back()->setPoints(x-((horizontalSpace-16)/2),y+3,x-((horizontalSpace-16)/2),hier->getCenterPoint()->y()-(int)floor((double)moduleHeight*0.5)-(int)floor((double)verticalSpace*0.5));
-	    lines.back()->show();
-	  }  
+  	  	  {
+            lines.back()->setLine(x-((horizontalSpace-16)/2),y+3,x-((horizontalSpace-16)/2),hier->getCenterPoint()->y()-(int)floor((double)moduleHeight*0.5)-(int)floor((double)verticalSpace*0.5));
+	    	lines.back()->show();
+			canvasView->scene()->addItem(lines.back());
+	      }  
           else	
- 	  {
-            lines.back()->setPoints(x-((horizontalSpace-16)/2),y+3,x-((horizontalSpace-16)/2),hier->getCenterPoint()->y()+(int)ceil((double)moduleHeight*0.5)+(int)floor((double)verticalSpace*0.5));
-	    lines.back()->show();
-	  }  
+ 	      {
+            lines.back()->setLine(x-((horizontalSpace-16)/2),y+3,x-((horizontalSpace-16)/2),hier->getCenterPoint()->y()+(int)ceil((double)moduleHeight*0.5)+(int)floor((double)verticalSpace*0.5));
+	    	lines.back()->show();
+			canvasView->scene()->addItem(lines.back());
+	  	  }  
         }	
         else
         {
-          lines.push_back(new Q3CanvasLine(canvasView->canvas()));
-	  lines.back()->setPoints(x,y+3,ports[i]->getDest().x(),ports[i]->getDest().y());
-	  lines.back()->show();
+          lines.push_back(new QGraphicsLineItem());
+	  	  lines.back()->setLine(x,y+3,ports[i]->getDest().x(),ports[i]->getDest().y());
+	  	  lines.back()->show();
+		  canvasView->scene()->addItem(lines.back());
         }
-        ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
+        ports[i]->addLineElem((QAbstractGraphicsShapeItem*)lines.back());
       }
       y += 7;	
     }
@@ -1372,81 +1385,88 @@
       #endif
       if(ports[i]->getType() == 0)   	// IN-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(5);
-	pa[0] = QPoint(x,y);
-	pa[1] = QPoint(x-7,y);
-	pa[2] = QPoint(x-9,y+3);
-	pa[3] = QPoint(x-7,y+6);
-	pa[4] = QPoint(x,y+6);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(inPort));
-	polygons[polygons.size()-1]->setBrush(QColor(inPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(5);
+		pa[0] = QPoint(x,y);
+		pa[1] = QPoint(x-7,y);
+		pa[2] = QPoint(x-9,y+3);
+		pa[3] = QPoint(x-7,y+6);
+		pa[4] = QPoint(x,y+6);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(inPort));
+		polygons[polygons.size()-1]->setBrush(QColor(inPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(ports[i]->getType() == 1)   	// OUT-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(5);
-	pa[0] = QPoint(x,y+3);
-	pa[1] = QPoint(x-2,y);
-	pa[2] = QPoint(x-9,y);
-	pa[3] = QPoint(x-9,y+6);
-	pa[4] = QPoint(x-2,y+6);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(outPort));
-	polygons[polygons.size()-1]->setBrush(QColor(outPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(5);
+		pa[0] = QPoint(x,y+3);
+		pa[1] = QPoint(x-2,y);
+		pa[2] = QPoint(x-9,y);
+		pa[3] = QPoint(x-9,y+6);
+		pa[4] = QPoint(x-2,y+6);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(outPort));
+		polygons[polygons.size()-1]->setBrush(QColor(outPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
       if(ports[i]->getType() == 2)   	// INOUT-Port
       {
-        polygons.push_back(new Q3CanvasPolygon(canvasView->canvas()));
-	Q3PointArray pa(6);
-	pa[0] = QPoint(x,y+3);
-	pa[1] = QPoint(x-2,y);
-	pa[2] = QPoint(x-7,y);
-	pa[3] = QPoint(x-9,y+3);
-	pa[4] = QPoint(x-7,y+6); 
-	pa[5] = QPoint(x-2,y+6);
-	polygons[polygons.size()-1]->setPoints(pa);
-	polygons[polygons.size()-1]->setPen(QColor(inoutPort));
-	polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
-	polygons[polygons.size()-1]->setZ(220);
-	polygons[polygons.size()-1]->show();
-	ports[i]->addLineElem(polygons.back());
+        polygons.push_back(new QGraphicsPolygonItem());
+		QPolygon pa(6);
+		pa[0] = QPoint(x,y+3);
+		pa[1] = QPoint(x-2,y);
+		pa[2] = QPoint(x-7,y);
+		pa[3] = QPoint(x-9,y+3);
+		pa[4] = QPoint(x-7,y+6); 
+		pa[5] = QPoint(x-2,y+6);
+		polygons[polygons.size()-1]->setPolygon(pa);
+		polygons[polygons.size()-1]->setPen(QColor(inoutPort));
+		polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
+		polygons[polygons.size()-1]->setZValue(220);
+		polygons[polygons.size()-1]->show();
+		canvasView->scene()->addItem(polygons[polygons.size()-1]);
+		ports[i]->addLineElem(polygons.back());
       }
 
       if(!ports[i]->isEndPort())
       {
 	if(ports[i]->getDest().isNull())
 	{
-	  lines.push_back(new Q3CanvasLine(canvasView->canvas()));
-	  lines.back()->setPoints(x,y+3,x+((horizontalSpace-16)/2),y+3);
-	  ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
+	  lines.push_back(new QGraphicsLineItem());
+	  lines.back()->setLine(x,y+3,x+((horizontalSpace-16)/2),y+3);
+	  ports[i]->addLineElem((QAbstractGraphicsShapeItem*)lines.back());
 	  lines.back()->show();
-	  lines.push_back(new Q3CanvasLine(canvasView->canvas()));
+	  canvasView->scene()->addItem(lines.back());
+	  lines.push_back(new QGraphicsLineItem());
 	  if (ports[i]->getInitDir() == N) 
 	  {
-	    lines.back()->setPoints(x+((horizontalSpace-16)/2),y+3,x+((horizontalSpace-16)/2),hier->getCenterPoint()->y()-(int)floor((double)moduleHeight*0.5)-(int)floor((double)verticalSpace*0.5));
+	    lines.back()->setLine(x+((horizontalSpace-16)/2),y+3,x+((horizontalSpace-16)/2),hier->getCenterPoint()->y()-(int)floor((double)moduleHeight*0.5)-(int)floor((double)verticalSpace*0.5));
 	    lines.back()->show();
+		canvasView->scene()->addItem(lines.back());
 	  }  
 	  else	
 	  {
-	    lines.back()->setPoints(x+((horizontalSpace-16)/2),y+3,x+((horizontalSpace-16)/2),hier->getCenterPoint()->y()+(int)ceil((double)moduleHeight*0.5)+(int)floor((double)verticalSpace*0.5));
+	    lines.back()->setLine(x+((horizontalSpace-16)/2),y+3,x+((horizontalSpace-16)/2),hier->getCenterPoint()->y()+(int)ceil((double)moduleHeight*0.5)+(int)floor((double)verticalSpace*0.5));
 	    lines.back()->show();
+		canvasView->scene()->addItem(lines.back());
 	  }  
 	}	
 	else
 	{
-	  lines.push_back(new Q3CanvasLine(canvasView->canvas()));
-	  lines.back()->setPoints(x,y+3,ports[i]->getDest().x(),ports[i]->getDest().y());
+	  lines.push_back(new QGraphicsLineItem());
+	  lines.back()->setLine(x,y+3,ports[i]->getDest().x(),ports[i]->getDest().y());
 	  lines.back()->show();
+	  canvasView->scene()->addItem(lines.back());
 	}
-	ports[i]->addLineElem((Q3CanvasPolygonalItem*)lines.back());
+	ports[i]->addLineElem((QAbstractGraphicsShapeItem*)lines.back());
       }
       y += 7;	
     }
@@ -1483,59 +1503,60 @@
       return false;
     }
     short steigung;
-    Q3CanvasItemList cil = canvasView->canvas()->collisions(*p1);
-    Q3CanvasRectangle *nodeRect = 0;
+    QList<QGraphicsItem*> cil = canvasView->scene()->items(*p1);
+    QGraphicsRectItem *nodeRect = 0;
     for(int o=0; o<cil.size(); o++)
     {	    
-      if(cil[o]->rtti() == Q3CanvasRectangle::RTTI) 
+      if(cil[o]->type() == QGraphicsRectItem::Type) 
       {
-	nodeRect = (Q3CanvasRectangle*) cil[o];
+	nodeRect = (QGraphicsRectItem*) cil[o];
       }	
     }  
     if(nodeRect==0)  
-      nodeRect = new Q3CanvasRectangle(p1->x()-11,p1->y()-11,24,24,canvasView->canvas());
-    nodeRect->setZ(100);
-    nodeRect->setPen(QColor(normalNode));
-    nodeRect->setBrush(QColor(normalNode));
-    nodeRect->show();
-    connection->addTraceElem(nodeRect);
+      nodeRect = new QGraphicsRectItem(p1->x()-11,p1->y()-11,24,24);
+      nodeRect->setZValue(100);
+      nodeRect->setPen(QColor(normalNode));
+      nodeRect->setBrush(QColor(normalNode));
+      nodeRect->show();
+	  canvasView->scene()->addItem(nodeRect);
+      connection->addTraceElem(nodeRect);
     if(*p1 == *p2) return true;
     else
     {
       steigung = getSector(p1,p2);
-      Q3CanvasLine *connLine = new Q3CanvasLine(canvasView->canvas());
-      connLine->setZ(20);
+      QGraphicsLineItem *connLine = new QGraphicsLineItem();
+      connLine->setZValue(20);
       connLine->setPen(QPen(QColor(normalSignal),3));
       if(steigung == N || steigung == NNW || steigung == NNE)
       {
-        connLine->setPoints(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
+        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
 	drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
       }
       if(steigung == E || steigung == ENE || steigung == ESE)
       {
-        connLine->setPoints(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
+        connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
 	drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
       }
       if(steigung == S || steigung == SSW || steigung == SSE)
       {
-        connLine->setPoints(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
+        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
 	drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
       }
       if(steigung == W || steigung == WNW || steigung == WSW)
       {
-        connLine->setPoints(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
+        connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
 	drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
       }
       if(steigung == NE)
       {
         if(floor(rand()/RAND_MAX+0.5) == 0.0)
 	{
-        connLine->setPoints(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
+        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
 	drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
 	}
 	else
 	{
-        connLine->setPoints(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
+        connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
 	drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
 	}
       }
@@ -1543,12 +1564,12 @@
       {
         if(floor(rand()/RAND_MAX+0.5) == 0.0)
 	{
-        connLine->setPoints(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
+        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
 	drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
 	}
 	else
 	{
-        connLine->setPoints(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
+        connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
 	drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
 	}
       }
@@ -1556,12 +1577,12 @@
       {
         if(floor(rand()/RAND_MAX+0.5) == 0.0)
 	{
-        connLine->setPoints(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
+        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
 	drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
 	}
 	else
 	{
-        connLine->setPoints(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
+        connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
 	drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
 	}
       }
@@ -1569,17 +1590,18 @@
       {
         if(floor(rand()/RAND_MAX+0.5) == 0.0)
 	{
-        connLine->setPoints(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
+        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
 	drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
 	}
 	else
 	{
-        connLine->setPoints(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
+        connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
 	drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
 	}
       }
       connLine->show();
-      connection->addTraceElem(connLine);
+	  canvasView->scene()->addItem(connLine);
+      connection->addTraceElem(new QGraphicsPathItem(connLine));               //(connLine);
       return true;
     }
 
@@ -1613,128 +1635,146 @@
  
     QFont smallerFont;
     smallerFont.setPointSize(8);
-    Q3CanvasPolygon *polygon = new Q3CanvasPolygon(canvasView->canvas());
-    Q3CanvasText *text = new Q3CanvasText(canvasView->canvas());
+    QGraphicsPolygonItem *polygon = new QGraphicsPolygonItem();
+    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem();
     if (left)
     {
       if (port->getType() == 0)
       {
-        Q3PointArray pa(5);
+        QPolygon pa(5);
 	pa[0] = QPoint(x,y);
 	pa[1] = QPoint(x+40,y);
 	pa[2] = QPoint(x+50,y+11);
 	pa[3] = QPoint(x+40,y+21);
 	pa[4] = QPoint(x,y+21);
-	polygon->setPoints(pa);
+	polygon->setPolygon(pa);
 	polygon->setPen(QColor(inPort));
 	polygon->setBrush(QColor(inPort));
-	polygon->setZ(220);
+	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
-	text->move(5,y+4);
-	text->setZ(240);
+	text->setX(5);
+	text->setY(y+4);
+	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
       if (port->getType() == 1)
       {
-        Q3PointArray pa(5);
+        QPolygon pa(5);
 	pa[0] = QPoint(x,y+11);
 	pa[1] = QPoint(x+10,y);
 	pa[2] = QPoint(x+50,y);
 	pa[3] = QPoint(x+50,y+21);
 	pa[4] = QPoint(x+10,y+21);
-	polygon->setPoints(pa);
+	polygon->setPolygon(pa);
 	polygon->setPen(QColor(outPort));
 	polygon->setBrush(QColor(outPort));
-	polygon->setZ(220);
+	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
-	text->move(5,y+4);
-	text->setZ(240);
+	text->setX(5);
+	text->setY(y+4);
+	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
       if (port->getType() == 2)
       {
-        Q3PointArray pa(6);
+        QPolygon pa(6);
 	pa[0] = QPoint(x,y+11);
 	pa[1] = QPoint(x+10,y);
 	pa[2] = QPoint(x+40,y);
 	pa[3] = QPoint(x+50,y+11);
 	pa[4] = QPoint(x+40,y+21);
 	pa[5] = QPoint(x+10,y+21);
-	polygon->setPoints(pa);
+	polygon->setPolygon(pa);
 	polygon->setPen(QColor(inoutPort));
 	polygon->setBrush(QColor(inoutPort));
-	polygon->setZ(220);
+	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
-	text->move(5,y+4);
-	text->setZ(240);
+	text->setX(5);
+	text->setY(y+4);
+	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
     }
     else
     {
       if (port->getType() == 0)
       {
-        Q3PointArray pa(5);
+        QPolygon pa(5);
 	pa[0] = QPoint(x,y);
 	pa[1] = QPoint(x-40,y);
 	pa[2] = QPoint(x-50,y+11);
 	pa[3] = QPoint(x-40,y+21);
 	pa[4] = QPoint(x,y+21);
-	polygon->setPoints(pa);
+	polygon->setPolygon(pa);
 	polygon->setPen(QColor(inPort));
 	polygon->setBrush(QColor(inPort));
-	polygon->setZ(220);
+	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
-	text->move(5,y+4);
-	text->setZ(240);
+	text->setX(5);
+	text->setY(y+4);
+	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
       if (port->getType() == 1)
       {
-        Q3PointArray pa(5);
+        QPolygon pa(5);
 	pa[0] = QPoint(x,y+11);
 	pa[1] = QPoint(x-10,y);
 	pa[2] = QPoint(x-50,y);
 	pa[3] = QPoint(x-50,y+21);
 	pa[4] = QPoint(x-10,y+21);
-	polygon->setPoints(pa);
+	polygon->setPolygon(pa);
 	polygon->setPen(QColor(outPort));
 	polygon->setBrush(QColor(outPort));
-	polygon->setZ(220);
+	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
-	text->move(5,y+4);
-	text->setZ(240);
+	text->setX(5);
+	text->setY(y+4);
+	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
       if (port->getType() == 2)
       {
-        Q3PointArray pa(6);
+        QPolygon pa(6);
 	pa[0] = QPoint(x,y+11);
 	pa[1] = QPoint(x-10,y);
 	pa[2] = QPoint(x-40,y);
 	pa[3] = QPoint(x-50,y+11);
 	pa[4] = QPoint(x-40,y+21);
 	pa[5] = QPoint(x-10,y+21);
-	polygon->setPoints(pa);
+	polygon->setPolygon(pa);
 	polygon->setPen(QColor(inoutPort));
 	polygon->setBrush(QColor(inoutPort));
-	polygon->setZ(220);
+	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
-	text->move(5,y+4);
-	text->setZ(240);
+	text->setX(5);
+	text->setY(y+4);
+	text->setZValue(240);
 	polygon->show();
 	text->show();
+	canvasView->scene()->addItem(polygon);
+	canvasView->scene()->addItem(text);
       }
     }
     polygon = 0;

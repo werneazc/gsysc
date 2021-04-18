@@ -33,8 +33,8 @@
 #define GSYS_SIGNAL_H
 
 #include "systemc.h"
-#include <Qt/qpoint.h>
-#include <Qt3Support/q3canvas.h>
+#include <QtCore/qpoint.h>
+#include <QtWidgets/QGraphicsScene>
 
 #include <vector> 
 
@@ -53,7 +53,7 @@ class gsysSignal
   bool activated;
   bool highlighted;
   vector<gsysPort*> connPorts;
-  vector<vector<Q3CanvasItem*> > portAnbindungen;  // Lines of the single ports to the network nodes as CanvasPolygonalItem
+  vector<vector<QGraphicsItem*> > portAnbindungen;  // Lines of the single ports to the network nodes as CanvasPolygonalItem
   void* realSignal;
   gsysHierarchy* parentModule;
   gsysConnection* parentConn;
@@ -83,7 +83,7 @@ class gsysSignal
   gsysHierarchy* getParent();
   void setConn(gsysConnection* conn);
   gsysConnection* getConn();
-  Q3CanvasItemList getCanvasItemList();
+  QList<QGraphicsItem*> getCanvasItemList();
   gsysSignalViewer* getSigViewWindow();
   void highlightChanged();
   void deHighlight();

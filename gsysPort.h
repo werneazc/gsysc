@@ -35,8 +35,9 @@
 #define GSYS_PORT_H
 
 #include "systemc.h"
-#include <Qt/qpoint.h>
-#include <Qt3Support/q3canvas.h>
+#include <QtCore/qpoint.h>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QAbstractGraphicsShapeItem>
 #include <vector>
 
 using namespace std;
@@ -55,7 +56,7 @@ class gsysPort
   gsysHierarchy* parent;
   short initialDirection;
   QPoint destination;
-  vector<Q3CanvasPolygonalItem*> lines;
+  vector<QAbstractGraphicsShapeItem*> lines;
   void *realPort;
   bool activated;
   bool highlighted;
@@ -84,8 +85,8 @@ class gsysPort
   QPoint getDest();
   gsysSignal* getSignal();
   void setSignal(gsysSignal* sig);
-  void addLineElem(Q3CanvasPolygonalItem* line);
-  vector<Q3CanvasPolygonalItem*> getCanvasItems();
+  void addLineElem(QAbstractGraphicsShapeItem* line);
+  vector<QAbstractGraphicsShapeItem*> getCanvasItems();
   void setReal(void* real);
   void* getReal();
   void activate();

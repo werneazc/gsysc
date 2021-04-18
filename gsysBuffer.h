@@ -33,10 +33,10 @@
 #define GSYSBUFFER_H
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
-#include <QtGui/qwidget.h>
-#include <QtGui/qgroupbox.h>
-#include <Qt3Support/Q3ProgressBar>
+#include <QtWidgets/qdialog.h>
+#include <QtWidgets/qwidget.h>
+#include <QtWidgets/qgroupbox.h>
+#include <QtWidgets/QProgressBar>
 
 #include <vector>
 
@@ -55,11 +55,11 @@ class gsysBuffer : public QDialog
     Q_OBJECT
 
 private:
-    gsysBuffer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WindowFlags fl = 0 );
+    gsysBuffer( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     ~gsysBuffer();
     
     // List of all ProgressBars
-    vector<Q3ProgressBar*> pgList;
+    vector<QProgressBar*> pgList;
     // List of all identification numbers of the Prog.Bars
     vector<void*> idList;
     // List of the GroupBoxes, in which bars are shown
