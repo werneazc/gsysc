@@ -7,6 +7,7 @@ project(gSysC
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 find_package(SystemC REQUIRED)
+find_package(Threads REQUIRED)
 
 set(CMAKE_AUTOMOC ON)
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED )
@@ -30,8 +31,8 @@ target_include_directories(gsysc
 
 target_link_libraries(gsysc
     PRIVATE Qt5::Gui Qt5::Core Qt5::Widgets
-    PRIVATE "${SYSTEMC_LIBRARIES}" 
-    PRIVATE "pthread"
+    PRIVATE "${SYSTEMC_LIBRARIES}"
+    PRIVATE Threads::Threads
 )
 #####################################################################
 IF(INCLUDE_TESTS)
