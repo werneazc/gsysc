@@ -10,9 +10,9 @@ This project is a fork from [GsysC](https://fameibl.de/file.php?doc=content/proj
 
 ### Dependencies
 
-- CMake (Version 3.14 or higher)
+- CMake (Version 3.10 or higher)
 - SystemC (Version 2.3.2)
-- Qt4 library
+- Qt5 library
 
 ### Environment
 
