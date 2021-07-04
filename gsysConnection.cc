@@ -123,7 +123,7 @@
 	    if(parentWindow!=0)
 	    {
 	      aktLine->setZValue(80);
-	      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig)));
 	    }
 	    else
 	    {
@@ -135,7 +135,7 @@
 	    if(parentWindow!=0)
 	    {
 	      aktLine->setZValue(60);
-	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal)));
 	    }
 	    else
 	    {
@@ -154,13 +154,13 @@
 	    {
 	      aktRect->setZValue(160);
 	      aktRect->setBrush(QBrush(QColor(parentWindow->activeChangedSig)));
-	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
+	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig)));
 	    }
 	    else
 	    {
 	      aktRect->setZValue(140);
 	      aktRect->setBrush(QBrush(QColor(parentWindow->activeSignal)));
-	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
+	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal)));
 	    }
 	  }  
 	  else
@@ -193,12 +193,12 @@
 	    if(highlighted)
 	    {
 	      aktLine->setZValue(40);
-	      aktLine->setPen(QPen(QColor(parentWindow->changedSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->changedSignal)));
 	    }
 	    else
 	    {
 	      aktLine->setZValue(20);
-	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal)));
 	    }
 	  else  
 	  {	  
@@ -242,27 +242,27 @@
 	    {
 	      aktRect->setZValue(160);
 	      aktRect->setBrush(QBrush(QColor(parentWindow->activeChangedSig)));
-	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
+	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig)));
 	    }
 	    else
 	      if(rectHighlighted)
 	      {
 		aktRect->setZValue(120);
 		aktRect->setBrush(QBrush(QColor(parentWindow->changedSignal)));
-	        aktRect->setPen(QPen(QColor(parentWindow->changedSignal),3));
+	        aktRect->setPen(QPen(QColor(parentWindow->changedSignal)));
 	      }	
 	      else
 	        if(rectActivated)
 	        {
 		  aktRect->setZValue(140);
 		  aktRect->setBrush(QBrush(QColor(parentWindow->activeSignal)));
-	          aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
+	          aktRect->setPen(QPen(QColor(parentWindow->activeSignal)));
 	        }	
 	        else
 		{
 		  aktRect->setZValue(100);
 		  aktRect->setBrush(QBrush(QColor(parentWindow->normalNode)));
-	          aktRect->setPen(QPen(QColor(parentWindow->normalNode),3));
+	          aktRect->setPen(QPen(QColor(parentWindow->normalNode)));
 	        } 
 	  }
 	  else
@@ -300,12 +300,12 @@
 		    if(activated)
 		    {
 		      aktLine->setZValue(80);
-		      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
+		      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig)));
 		    }
 		    else
 		    {
 		      aktLine->setZValue(40);
-		      aktLine->setPen(QPen(QColor(parentWindow->changedSignal),3));
+		      aktLine->setPen(QPen(QColor(parentWindow->changedSignal)));
 		    }
 		  }
 		  else
@@ -351,27 +351,27 @@
 		    {
 		      		aktRect->setZValue(160);
 		      		aktRect->setBrush(QBrush(QColor(parentWindow->activeChangedSig)));
-		      		aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
+		      		aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig)));
 		    }
 		    else
 		      if(rectHighlighted)
 		      {
 					aktRect->setZValue(120);
 					aktRect->setBrush(QBrush(QColor(parentWindow->changedSignal)));
-		        	aktRect->setPen(QPen(QColor(parentWindow->changedSignal),3));
+		        	aktRect->setPen(QPen(QColor(parentWindow->changedSignal)));
 		      }	
 		    else
 		        if(rectActivated)
 		        {
 			  		aktRect->setZValue(140);
 			  		aktRect->setBrush(QBrush(QColor(parentWindow->activeSignal)));
-		          	aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
+		          	aktRect->setPen(QPen(QColor(parentWindow->activeSignal)));
 		        }	
 		    else
 				{
 			  		aktRect->setZValue(100);
 			  		aktRect->setBrush(QBrush(QColor(parentWindow->normalNode)));
-		          	aktRect->setPen(QPen(QColor(parentWindow->normalNode),3));
+		          	aktRect->setPen(QPen(QColor(parentWindow->normalNode)));
 		        } 
 		  }
 		  else
@@ -409,12 +409,12 @@
 	    if(activated)
 	    {
 	      aktLine->setZValue(60);
-	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal)));
 	    }
 	    else
 	    {
 	      aktLine->setZValue(20);
-	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal)));
 	    }
 	    aktLine->setActive(true);
 	    aktLine->scene()->update();  
@@ -437,13 +437,13 @@
 	    {
 	      aktRect->setZValue(140);
 	      aktRect->setBrush(QBrush(QColor(parentWindow->activeSignal)));
-	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
+	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal)));
 	    }
 	    else
 	    {
 	      aktRect->setZValue(100);
 	      aktRect->setBrush(QBrush(QColor(parentWindow->normalNode)));
-	      aktRect->setPen(QPen(QColor(parentWindow->normalNode),3));
+	      aktRect->setPen(QPen(QColor(parentWindow->normalNode)));
 	    }
 	    aktRect->setActive(true);
 	    aktRect->scene()->update();  

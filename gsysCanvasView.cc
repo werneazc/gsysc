@@ -394,7 +394,7 @@ void gsysCanvasView::mouseMoveEvent(QMouseEvent *e)
           ((gsysHierarchyWindow*) parentWidget())->lineEditTyp->setText( tr("Module:") );
           ((gsysHierarchyWindow*) parentWidget())->lineEditWert->setText( "" );
 	  connShowHierarchy = hierList[i];
-	  hierList[i]->getHierRect()->setBrush(QColor(mmHierConnColor));
+	  hierList[i]->getHierRect()->setBrush(QBrush(QColor(mmHierConnColor)));
 	  vector<gsysConnection*> conns = (new gsysMain())->getRegModule()->getAllConns();
 	  for(int o=0; o<conns.size(); o++)
 	  {
@@ -405,7 +405,7 @@ void gsysCanvasView::mouseMoveEvent(QMouseEvent *e)
 		if((conns[o]->getHier2()!=0 && conns[o]->getHier2()->getParent() != hierList[i])  ||
 		   (hierList[i]!=0 && conns[o]->getHier2() != hierList[i]->getParent()))
 		  {
-		    conns[o]->getHier2()->getHierRect()->setBrush(QColor(mmHierConnColor));
+		    conns[o]->getHier2()->getHierRect()->setBrush(QBrush(QColor(mmHierConnColor)));
 		    conns[o]->getHier2()->getHierRect()->setPen(QPen(QColor(mmHierConnColor)));
 		  }  
 	      }
@@ -415,7 +415,7 @@ void gsysCanvasView::mouseMoveEvent(QMouseEvent *e)
 		  if((conns[o]->getHier1()!=0 && conns[o]->getHier1()->getParent() != hierList[i])  ||
 		     (hierList[i]!=0 && conns[o]->getHier1() != hierList[i]->getParent()))
 		    {
-		      conns[o]->getHier1()->getHierRect()->setBrush(QColor(mmHierConnColor));
+		      conns[o]->getHier1()->getHierRect()->setBrush(QBrush(QColor(mmHierConnColor)));
 		      conns[o]->getHier1()->getHierRect()->setPen(QPen(QColor(mmHierConnColor)));
 		    }  
 		}
@@ -431,9 +431,9 @@ void gsysCanvasView::mouseMoveEvent(QMouseEvent *e)
       {
         // de-highlight ...
 	if(connShowHierarchy->getChildren().size()<=0) 
-	  connShowHierarchy->getHierRect()->setBrush(QColor(moduleColor));
+	  connShowHierarchy->getHierRect()->setBrush(QBrush(QColor(moduleColor)));
 	else
-	  connShowHierarchy->getHierRect()->setBrush(QColor(moduleWithChild));
+	  connShowHierarchy->getHierRect()->setBrush(QBrush(QColor(moduleWithChild)));
 	vector<gsysConnection*> conns = (new gsysMain())->getRegModule()->getAllConns();
 	for(int o=0; o<conns.size(); o++)
 	{
@@ -446,12 +446,12 @@ void gsysCanvasView::mouseMoveEvent(QMouseEvent *e)
 		{
 		  if(conns[o]->getHier2()->getChildren().size()<=0)
 		  {
-		    conns[o]->getHier2()->getHierRect()->setBrush(QColor(moduleColor));
+		    conns[o]->getHier2()->getHierRect()->setBrush(QBrush(QColor(moduleColor)));
 		    conns[o]->getHier2()->getHierRect()->setPen(QPen(QColor(moduleColor)));
 		  }
 		  else
 		  {
-		    conns[o]->getHier2()->getHierRect()->setBrush(QColor(moduleWithChild));
+		    conns[o]->getHier2()->getHierRect()->setBrush(QBrush(QColor(moduleWithChild)));
 		    conns[o]->getHier2()->getHierRect()->setPen(QPen(QColor(moduleWithChild)));
 		  }
 		}  
@@ -464,12 +464,12 @@ void gsysCanvasView::mouseMoveEvent(QMouseEvent *e)
 		  {
 		    if(conns[o]->getHier1()->getChildren().size()<=0)
 		    {
-		      conns[o]->getHier1()->getHierRect()->setBrush(QColor(moduleColor));
+		      conns[o]->getHier1()->getHierRect()->setBrush(QBrush(QColor(moduleColor)));
 		      conns[o]->getHier1()->getHierRect()->setPen(QPen(QColor(moduleColor)));
 		    }
 		    else
 		    {
-		      conns[o]->getHier1()->getHierRect()->setBrush(QColor(moduleWithChild));
+		      conns[o]->getHier1()->getHierRect()->setBrush(QBrush(QColor(moduleWithChild)));
 		      conns[o]->getHier1()->getHierRect()->setPen(QPen(QColor(moduleWithChild)));
 		    }
 		  }  
