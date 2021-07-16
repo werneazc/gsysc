@@ -131,6 +131,7 @@ public:
   void stop();
   void addPort(gsysPort* port);
   void clearPorts();
+  bool stopped();
   
 public slots:
   void autoStep_stateChanged( int );
