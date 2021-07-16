@@ -123,7 +123,7 @@
 	    if(parentWindow!=0)
 	    {
 	      aktLine->setZValue(80);
-	      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig)));
 	    }
 	    else
 	    {
@@ -135,7 +135,7 @@
 	    if(parentWindow!=0)
 	    {
 	      aktLine->setZValue(60);
-	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal)));
 	    }
 	    else
 	    {
@@ -153,14 +153,14 @@
   	    if(aktRect->pen().color().rgb() == QColor(parentWindow->changedSignal).rgb()) 
 	    {
 	      aktRect->setZValue(160);
-	      aktRect->setBrush(QColor(parentWindow->activeChangedSig));
-	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
+	      aktRect->setBrush(QBrush(QColor(parentWindow->activeChangedSig)));
+	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig)));
 	    }
 	    else
 	    {
 	      aktRect->setZValue(140);
-	      aktRect->setBrush(QColor(parentWindow->activeSignal));
-	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
+	      aktRect->setBrush(QBrush(QColor(parentWindow->activeSignal)));
+	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal)));
 	    }
 	  }  
 	  else
@@ -193,12 +193,12 @@
 	    if(highlighted)
 	    {
 	      aktLine->setZValue(40);
-	      aktLine->setPen(QPen(QColor(parentWindow->changedSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->changedSignal)));
 	    }
 	    else
 	    {
 	      aktLine->setZValue(20);
-	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal)));
 	    }
 	  else  
 	  {	  
@@ -241,28 +241,28 @@
 	    if(rectActivated && rectHighlighted)
 	    {
 	      aktRect->setZValue(160);
-	      aktRect->setBrush(QColor(parentWindow->activeChangedSig));
-	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
+	      aktRect->setBrush(QBrush(QColor(parentWindow->activeChangedSig)));
+	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig)));
 	    }
 	    else
 	      if(rectHighlighted)
 	      {
 		aktRect->setZValue(120);
-		aktRect->setBrush(QColor(parentWindow->changedSignal));
-	        aktRect->setPen(QPen(QColor(parentWindow->changedSignal),3));
+		aktRect->setBrush(QBrush(QColor(parentWindow->changedSignal)));
+	        aktRect->setPen(QPen(QColor(parentWindow->changedSignal)));
 	      }	
 	      else
 	        if(rectActivated)
 	        {
 		  aktRect->setZValue(140);
-		  aktRect->setBrush(QColor(parentWindow->activeSignal));
-	          aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
+		  aktRect->setBrush(QBrush(QColor(parentWindow->activeSignal)));
+	          aktRect->setPen(QPen(QColor(parentWindow->activeSignal)));
 	        }	
 	        else
 		{
 		  aktRect->setZValue(100);
-		  aktRect->setBrush(QColor(parentWindow->normalNode));
-	          aktRect->setPen(QPen(QColor(parentWindow->normalNode),3));
+		  aktRect->setBrush(QBrush(QColor(parentWindow->normalNode)));
+	          aktRect->setPen(QPen(QColor(parentWindow->normalNode)));
 	        } 
 	  }
 	  else
@@ -292,95 +292,95 @@
       QGraphicsLineItem* aktLine = 0;
       for(int i=0; i<verlauf.size(); i++)
       {
-	if(verlauf[i]->type() == (new QGraphicsLineItem(0,0,0,0))->type())
-	{
-	  aktLine = (QGraphicsLineItem*) verlauf[i];
-	  if (parentWindow != 0)
-	  { 
-	    if(activated)
-	    {
-	      aktLine->setZValue(80);
-	      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
-	    }
-	    else
-	    {
-	      aktLine->setZValue(40);
-	      aktLine->setPen(QPen(QColor(parentWindow->changedSignal),3));
-	    }
-	  }
-	  else
-	  {
-	    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
-          }
-	  aktLine->setActive(true);
-	  aktLine->scene()->update();  
-	}
-	if(verlauf[i]->type() == (new QGraphicsRectItem(0,0,0,0))->type())
-	{
-	  aktRect = (QGraphicsRectItem*) verlauf[i];
-	  #ifdef DEBUG_GSYSC
-	  cout << "RECT(high) i=" << i << ";  Coords: (" << aktRect->rect().x() << "," << aktRect->rect().y() << ");  Color=" << aktRect->pen().color().rgb() << "  (activeSignal-color: " << QColor(parentWindow->activeSignal).rgb() << ")" << endl;
-	  #endif
-	  if(parentWindow != 0)
-	  {
-	    // Check whether any signal is highlighted (through click) and/or changed
-            QList<QGraphicsItem*> cil = parentWindow->canvasView->scene()->items(aktRect->rect());
-	    bool rectActivated = false;
-	    bool rectHighlighted = false;
-            for(int i=0; i<cil.count(); i++)
-	    {	    
-              if(cil[i]->type() == (new QGraphicsLineItem(0,0,0,0))->type())
-	      {	      
-                if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
+		if(verlauf[i]->type() == (new QGraphicsLineItem(0,0,0,0))->type())
 		{
-		  rectActivated = true;
-		  rectHighlighted = true;
-		  break;
+		  aktLine = (QGraphicsLineItem*) verlauf[i];
+		  if (parentWindow != 0)
+		  { 
+		    if(activated)
+		    {
+		      aktLine->setZValue(80);
+		      aktLine->setPen(QPen(QColor(parentWindow->activeChangedSig)));
+		    }
+		    else
+		    {
+		      aktLine->setZValue(40);
+		      aktLine->setPen(QPen(QColor(parentWindow->changedSignal)));
+		    }
+		  }
+		  else
+		  {
+		    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
+    	  }
+		  aktLine->setActive(true);
+		  aktLine->scene()->update();  
 		}
-		else if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->activeSignal).rgb())
-		     {
-		       rectActivated = true;
-		     }
-		     else if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->changedSignal).rgb())
-			  {
-		            rectHighlighted = true;
-			  }
-	      }	
-	    }  
-	    if(rectActivated && rectHighlighted)
-	    {
-	      aktRect->setZValue(160);
-	      aktRect->setBrush(QColor(parentWindow->activeChangedSig));
-	      aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig),3));
-	    }
-	    else
-	      if(rectHighlighted)
-	      {
-		aktRect->setZValue(120);
-		aktRect->setBrush(QColor(parentWindow->changedSignal));
-	        aktRect->setPen(QPen(QColor(parentWindow->changedSignal),3));
-	      }	
-	      else
-	        if(rectActivated)
-	        {
-		  aktRect->setZValue(140);
-		  aktRect->setBrush(QColor(parentWindow->activeSignal));
-	          aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
-	        }	
-	        else
+		if(verlauf[i]->type() == (new QGraphicsRectItem(0,0,0,0))->type())
 		{
-		  aktRect->setZValue(100);
-		  aktRect->setBrush(QColor(parentWindow->normalNode));
-	          aktRect->setPen(QPen(QColor(parentWindow->normalNode),3));
-	        } 
-	  }
-	  else
-	  {
-	    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
-	  }
-	  aktRect->setActive(true);
-	  aktRect->scene()->update();  
-	}
+		  aktRect = (QGraphicsRectItem*) verlauf[i];
+		  #ifdef DEBUG_GSYSC
+		  cout << "RECT(high) i=" << i << ";  Coords: (" << aktRect->rect().x() << "," << aktRect->rect().y() << ");  Color=" << aktRect->pen().color().rgb() << "  (activeSignal-color: " << QColor(parentWindow->activeSignal).rgb() << ")" << endl;
+		  #endif
+		  if(parentWindow != 0)
+		  {
+		    // Check whether any signal is highlighted (through click) and/or changed
+    	    QList<QGraphicsItem*> cil = parentWindow->canvasView->scene()->items(aktRect->rect());
+		    bool rectActivated = false;
+		    bool rectHighlighted = false;
+    	    for(int i=0; i<cil.count(); i++)
+		    {	    
+    	      if(cil[i]->type() == (new QGraphicsLineItem(0,0,0,0))->type())
+		      {	      
+    	        if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->activeChangedSig).rgb()) 
+				{
+			  		rectActivated = true;
+			  		rectHighlighted = true;
+			  		break;
+			    }
+				else if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->activeSignal).rgb())
+			    {
+			    	rectActivated = true;
+			    }
+			    else if(((QGraphicsLineItem*)cil[i])->pen().color().rgb() == QColor(parentWindow->changedSignal).rgb())
+				{
+			        rectHighlighted = true;
+				}
+		      }	
+		    }   
+		    if(rectActivated && rectHighlighted)
+		    {
+		      		aktRect->setZValue(160);
+		      		aktRect->setBrush(QBrush(QColor(parentWindow->activeChangedSig)));
+		      		aktRect->setPen(QPen(QColor(parentWindow->activeChangedSig)));
+		    }
+		    else
+		      if(rectHighlighted)
+		      {
+					aktRect->setZValue(120);
+					aktRect->setBrush(QBrush(QColor(parentWindow->changedSignal)));
+		        	aktRect->setPen(QPen(QColor(parentWindow->changedSignal)));
+		      }	
+		    else
+		        if(rectActivated)
+		        {
+			  		aktRect->setZValue(140);
+			  		aktRect->setBrush(QBrush(QColor(parentWindow->activeSignal)));
+		          	aktRect->setPen(QPen(QColor(parentWindow->activeSignal)));
+		        }	
+		    else
+				{
+			  		aktRect->setZValue(100);
+			  		aktRect->setBrush(QBrush(QColor(parentWindow->normalNode)));
+		          	aktRect->setPen(QPen(QColor(parentWindow->normalNode)));
+		        } 
+		  }
+		  else
+		  {
+		    cerr << "ERROR: \t 'parentWindow' not set in connection " << this << endl;
+		  }
+		  aktRect->setActive(true);
+		  aktRect->scene()->update();  
+		}
       }
       aktRect = 0;
       aktLine = 0;
@@ -409,12 +409,12 @@
 	    if(activated)
 	    {
 	      aktLine->setZValue(60);
-	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->activeSignal)));
 	    }
 	    else
 	    {
 	      aktLine->setZValue(20);
-	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal),3));
+	      aktLine->setPen(QPen(QColor(parentWindow->normalSignal)));
 	    }
 	    aktLine->setActive(true);
 	    aktLine->scene()->update();  
@@ -436,14 +436,14 @@
 	    if(verlauf[i]->pen().color().rgb() == QColor(parentWindow->activeChangedSig).rgb())
 	    {
 	      aktRect->setZValue(140);
-	      aktRect->setBrush(QColor(parentWindow->activeSignal));
-	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal),3));
+	      aktRect->setBrush(QBrush(QColor(parentWindow->activeSignal)));
+	      aktRect->setPen(QPen(QColor(parentWindow->activeSignal)));
 	    }
 	    else
 	    {
 	      aktRect->setZValue(100);
-	      aktRect->setBrush(QColor(parentWindow->normalNode));
-	      aktRect->setPen(QPen(QColor(parentWindow->normalNode),3));
+	      aktRect->setBrush(QBrush(QColor(parentWindow->normalNode)));
+	      aktRect->setPen(QPen(QColor(parentWindow->normalNode)));
 	    }
 	    aktRect->setActive(true);
 	    aktRect->scene()->update();  

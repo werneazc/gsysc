@@ -474,12 +474,12 @@
       // draw module
       if(hierarchyList[i]->getChildren().size()>0)
       {
-        modRect[i]->setBrush(QColor(moduleWithChild));
-        modRect[i]->setPen(QPen(moduleWithChild));
+        modRect[i]->setBrush(QBrush(QColor(moduleWithChild)));
+        modRect[i]->setPen(QPen(QColor(moduleWithChild)));
       }
       else   		// no sub hierarchy
       {
-        modRect[i]->setBrush(QColor(moduleColor));
+        modRect[i]->setBrush(QBrush(QColor(moduleColor)));
         modRect[i]->setPen(QPen(QColor(moduleColor)));
       }
       modRect[i]->setX(x);
@@ -491,7 +491,7 @@
       std::cout << "Module "<<hierarchyList[i]->getName()<<" has center point "<<hierarchyList[i]->getCenterPoint()->x()<<"/"<<hierarchyList[i]->getCenterPoint()->y()<<std::endl;
       #endif
       modText[i]->setText(hierarchyList[i]->getName());
-      modText[i]->setBrush(QBrush(textColor));
+      modText[i]->setBrush(QBrush(QColor(textColor)));
       textRect = modText[i]->boundingRect();
       modText[i]->setX(x+(int) (0.5*(double)moduleWidth-0.5*(double)textRect.width()));
       modText[i]->setY(y+ (int) (0.5*(double)moduleHeight-0.5*(double)textRect.height()));
@@ -1115,8 +1115,8 @@
 		pa[3] = QPoint(x+3,y+9);
 		pa[4] = QPoint(x,y+7);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(inPort));
-		polygons[polygons.size()-1]->setBrush(QColor(inPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(inPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(inPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1132,8 +1132,8 @@
 		pa[3] = QPoint(x,y+9);
 		pa[4] = QPoint(x,y+2);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(outPort));
-		polygons[polygons.size()-1]->setBrush(QColor(outPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(outPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(outPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1150,8 +1150,8 @@
 		pa[4] = QPoint(x,y+7); 
 		pa[5] = QPoint(x,y+2);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(inoutPort));
-		polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(inoutPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(inoutPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1202,8 +1202,8 @@
 		pa[3] = QPoint(x+3,y-9);
 		pa[4] = QPoint(x,y-7);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(inPort));
-		polygons[polygons.size()-1]->setBrush(QColor(inPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(inPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(inPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1219,8 +1219,8 @@
 		pa[3] = QPoint(x,y-9);
 		pa[4] = QPoint(x,y-2);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(outPort));
-		polygons[polygons.size()-1]->setBrush(QColor(outPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(outPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(outPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1237,8 +1237,8 @@
 		pa[4] = QPoint(x,y-7); 
 		pa[5] = QPoint(x,y-2);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(inoutPort));
-		polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(inoutPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(inoutPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1290,8 +1290,8 @@
 		pa[3] = QPoint(x+7,y+6);
 		pa[4] = QPoint(x,y+6);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(inPort));
-		polygons[polygons.size()-1]->setBrush(QColor(inPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(inPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(inPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1307,8 +1307,8 @@
 		pa[3] = QPoint(x+9,y+6);
 		pa[4] = QPoint(x+2,y+6);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(outPort));
-		polygons[polygons.size()-1]->setBrush(QColor(outPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(outPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(outPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1325,8 +1325,8 @@
 		pa[4] = QPoint(x+7,y+6); 
 		pa[5] = QPoint(x+2,y+6);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(inoutPort));
-		polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(inoutPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(inoutPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1393,8 +1393,8 @@
 		pa[3] = QPoint(x-7,y+6);
 		pa[4] = QPoint(x,y+6);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(inPort));
-		polygons[polygons.size()-1]->setBrush(QColor(inPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(inPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(inPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1410,8 +1410,8 @@
 		pa[3] = QPoint(x-9,y+6);
 		pa[4] = QPoint(x-2,y+6);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(outPort));
-		polygons[polygons.size()-1]->setBrush(QColor(outPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(outPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(outPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1428,8 +1428,8 @@
 		pa[4] = QPoint(x-7,y+6); 
 		pa[5] = QPoint(x-2,y+6);
 		polygons[polygons.size()-1]->setPolygon(pa);
-		polygons[polygons.size()-1]->setPen(QColor(inoutPort));
-		polygons[polygons.size()-1]->setBrush(QColor(inoutPort));
+		polygons[polygons.size()-1]->setPen(QPen(QColor(inoutPort)));
+		polygons[polygons.size()-1]->setBrush(QBrush(QColor(inoutPort)));
 		polygons[polygons.size()-1]->setZValue(220);
 		polygons[polygons.size()-1]->show();
 		canvasView->scene()->addItem(polygons[polygons.size()-1]);
@@ -1515,8 +1515,8 @@
     if(nodeRect==0)  
       nodeRect = new QGraphicsRectItem(p1->x()-11,p1->y()-11,24,24);
       nodeRect->setZValue(100);
-      nodeRect->setPen(QColor(normalNode));
-      nodeRect->setBrush(QColor(normalNode));
+      nodeRect->setPen(QPen(QColor(normalNode)));
+      nodeRect->setBrush(QBrush(QColor(normalNode)));
       nodeRect->show();
 	  canvasView->scene()->addItem(nodeRect);
       connection->addTraceElem(nodeRect);
@@ -1526,7 +1526,7 @@
       steigung = getSector(p1,p2);
       QGraphicsLineItem *connLine = new QGraphicsLineItem();
       connLine->setZValue(20);
-      connLine->setPen(QPen(QColor(normalSignal),3));
+      connLine->setPen(QPen(QColor(normalSignal)));
       if(steigung == N || steigung == NNW || steigung == NNE)
       {
         connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
@@ -1648,8 +1648,8 @@
 	pa[3] = QPoint(x+40,y+21);
 	pa[4] = QPoint(x,y+21);
 	polygon->setPolygon(pa);
-	polygon->setPen(QColor(inPort));
-	polygon->setBrush(QColor(inPort));
+	polygon->setPen(QPen(QColor(inPort)));
+	polygon->setBrush(QBrush(QColor(inPort)));
 	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
@@ -1670,8 +1670,8 @@
 	pa[3] = QPoint(x+50,y+21);
 	pa[4] = QPoint(x+10,y+21);
 	polygon->setPolygon(pa);
-	polygon->setPen(QColor(outPort));
-	polygon->setBrush(QColor(outPort));
+	polygon->setPen(QPen(QColor(outPort)));
+	polygon->setBrush(QBrush(QColor(outPort)));
 	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
@@ -1693,8 +1693,8 @@
 	pa[4] = QPoint(x+40,y+21);
 	pa[5] = QPoint(x+10,y+21);
 	polygon->setPolygon(pa);
-	polygon->setPen(QColor(inoutPort));
-	polygon->setBrush(QColor(inoutPort));
+	polygon->setPen(QPen(QColor(inoutPort)));
+	polygon->setBrush(QBrush(QColor(inoutPort)));
 	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
@@ -1718,8 +1718,8 @@
 	pa[3] = QPoint(x-40,y+21);
 	pa[4] = QPoint(x,y+21);
 	polygon->setPolygon(pa);
-	polygon->setPen(QColor(inPort));
-	polygon->setBrush(QColor(inPort));
+	polygon->setPen(QPen(QColor(inPort)));
+	polygon->setBrush(QBrush(QColor(inPort)));
 	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
@@ -1740,8 +1740,8 @@
 	pa[3] = QPoint(x-50,y+21);
 	pa[4] = QPoint(x-10,y+21);
 	polygon->setPolygon(pa);
-	polygon->setPen(QColor(outPort));
-	polygon->setBrush(QColor(outPort));
+	polygon->setPen(QPen(QColor(outPort)));
+	polygon->setBrush(QBrush(QColor(outPort)));
 	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);
@@ -1763,8 +1763,8 @@
 	pa[4] = QPoint(x-40,y+21);
 	pa[5] = QPoint(x-10,y+21);
 	polygon->setPolygon(pa);
-	polygon->setPen(QColor(inoutPort));
-	polygon->setBrush(QColor(inoutPort));
+	polygon->setPen(QPen(QColor(inoutPort)));
+	polygon->setBrush(QBrush(QColor(inoutPort)));
 	polygon->setZValue(220);
 	text->setText(port->getName());
 	text->setFont(smallerFont);

@@ -357,6 +357,9 @@
     if (aktStep > maxSpin->value()) { maxSpin->setValue(aktStep); }
     setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
     (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
+    if(useViewer->isChecked()) {
+      (new gsysMain())->getRegModule()->showChanges();
+    }
   }
 
   /*

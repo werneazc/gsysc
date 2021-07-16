@@ -210,12 +210,15 @@
         #ifdef DEBUG_GSYSC
         cout<<"\t\tIF-condition NOT fulfilled..."<<endl;
         #endif
-	// Remove highlighting of the current signal
-	for(int i=0; i<connPorts.size(); i++)
-	  connPorts[i]->deHighlight();
-	parentConn->deHighlight();	
-	highlighted = false;
+	      // Remove highlighting of the current signal
+	      for(int i=0; i<connPorts.size(); i++)
+	        connPorts[i]->deHighlight();
+	      parentConn->deHighlight();	
+	      highlighted = false;
       }  
+    if(sigViewWindow!=0) {
+      sigViewWindow->lineEdit4->setText(this->getValue());			// Signal value
+    }
   }
 
   /*
