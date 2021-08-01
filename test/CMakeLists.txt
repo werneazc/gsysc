@@ -16,7 +16,7 @@ add_executable(
 target_compile_features(gsysc_testproject PRIVATE cxx_std_11)
 target_link_libraries(
   gsysc_testproject PRIVATE gsysc ${SYSTEMC_LIBRARIES} Qt5::Core
-                            Qt5::Gui Qt5::Widgets "pthread")
+                            Qt5::Gui Qt5::Widgets Threads::Threads)
 target_include_directories(
   gsysc_testproject PRIVATE ${SYSTEMC_INCLUDE_DIRS}
                             ${CMAKE_CURRENT_SOURCE_DIR} Qt5Widget_INCLUDE_DIR)

@@ -44,6 +44,10 @@ void* startThread(void *stepsVoid)
   gsysSimulator* simWdw = (new gsysMain())->getSimulator();
   for (int i=1; i<=steps; i++)
   {
+    if(simWdw->stopped())
+    {
+      pthread_exit(NULL);
+    }
     pthread_mutex_lock(&run_mutex);
     simWdw->start(1);
     if (simWdw->autoStep->isChecked()) 

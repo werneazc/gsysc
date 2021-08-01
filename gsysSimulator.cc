@@ -228,6 +228,7 @@
   {
     if (!haveToStop() && timeValue>0)
     {
+      (new gsysMain())->getRegModule()->saveAllPortValues();
       sc_start(timeValue, unit);
       aktStep += timeValue;   
       if(autoStep->isChecked())
@@ -246,6 +247,7 @@
 	        hardStop = true;
           setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
 	        (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
+          (new gsysMain())->getRegModule()->showChanges();
           if(useViewer->isChecked())
             (new gsysMain())->getRegModule()->showChanges();
 	      }  
@@ -255,10 +257,11 @@
     {
       // do value-Save for being able to detect changes in the last step
       (new gsysMain())->getRegModule()->saveAllPortValues();
-      aktStep++;   
+      sc_start(timeValue, unit);
+      aktStep += timeValue;    
       hardStop = true;
       setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
-      (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
+	    (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
       if(useViewer->isChecked())
         (new gsysMain())->getRegModule()->showChanges();
     }
@@ -351,15 +354,10 @@
    */
   void gsysSimulator::stepButton_clicked()
   {
-    toStop = (stepSpin->value() == 1);
+    toStop = true;
     hardStop = false;
     start(stepSpin->value());
     if (aktStep > maxSpin->value()) { maxSpin->setValue(aktStep); }
-    setWindowTitle( tr( "Simulator - steps done: " ).append(asChar(aktStep)) );
-    (new gsysMain())->getMainWindow()->getPortViewer()->refresh();
-    if(useViewer->isChecked()) {
-      (new gsysMain())->getRegModule()->showChanges();
-    }
   }
 
   /*
@@ -379,6 +377,14 @@
   void gsysSimulator::clearPorts()
   {
     watchPorts.clear();
+  }
+
+  /*
+   *   method to check, if the simulation has been stopped
+   */
+  bool gsysSimulator::stopped()
+  {
+    return toStop || hardStop;
   }
 
   /*
