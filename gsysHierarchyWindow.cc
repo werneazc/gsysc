@@ -108,7 +108,7 @@
 	if(aktLine.substr(0,14).compare("mmHierConnShow") == 0) 
 	  if(atoi(aktLine.substr(15,1).data()) > 0) { mmHierConnShow = (atoi((const char*) (aktLine.substr(15,1).data())) > 0); }
 	if(aktLine.substr(0,13).compare("mmSigPortShow") == 0) 
-	  if(atoi(aktLine.substr(14,1).data()) > 0) { mmSigPortShow = (atoi((const char*) (aktLine.substr(11,4).data())) > 0); }
+	  if(atoi(aktLine.substr(14,1).data()) > 0) { mmSigPortShow = (atoi((const char*) (aktLine.substr(14,1).data())) > 0); }
 	if(aktLine.substr(0,10).compare("sideMargin") == 0) 
 	  if(atoi(aktLine.substr(11,4).data()) > 0) { sideMargin = atoi((const char*) (aktLine.substr(11,4).data())); }
 	if(aktLine.substr(0,9).compare("topMargin") == 0) 

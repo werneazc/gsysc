@@ -373,56 +373,57 @@ void gsysCanvasView::mouseMoveEvent(QMouseEvent *e)
       {
         cil.clear();
         for(int o=0; o<sigList[i]->getPorts().size(); o++)
-	{
-	  for(int u=0; u<sigList[i]->getPorts()[o]->getCanvasItems().size(); u++)
-	    cil.push_back(sigList[i]->getPorts()[o]->getCanvasItems()[u]);
-	  if(cil.contains(l.front()))
-	  {
-            ((gsysHierarchyWindow*) parentWidget())->lineEditTyp->setText( tr("Port: ").append(sigList[i]->getPorts()[o]->getName()) );
-            ((gsysHierarchyWindow*) parentWidget())->lineEditWert->setText( sigList[i]->getPorts()[o]->getValue() );
-	  }  
-	}
+		{
+	  		for(int u=0; u<sigList[i]->getPorts()[o]->getCanvasItems().size(); u++)
+	    		cil.push_back(sigList[i]->getPorts()[o]->getCanvasItems()[u]);
+	  		if(cil.contains(l.front()))
+	  		{
+            	((gsysHierarchyWindow*) parentWidget())->lineEditTyp->setText( tr("Port: ").append(sigList[i]->getPorts()[o]->getName()) );
+            	((gsysHierarchyWindow*) parentWidget())->lineEditWert->setText( sigList[i]->getPorts()[o]->getValue() );
+	  		}  
+		}
       }
     }
+	
     if(mmHierConnShow && l.size()>=1 && l.front()->type()==QGraphicsRectItem::Type)
     {
       vector<gsysHierarchy*> hierList = (new gsysMain())->getRegModule()->getHierarchyList();
       for(int i=0; i<hierList.size(); i++)
       {
         if(hierList[i]->getHierRect()==l.front())
-	{
-          ((gsysHierarchyWindow*) parentWidget())->lineEditTyp->setText( tr("Module:") );
-          ((gsysHierarchyWindow*) parentWidget())->lineEditWert->setText( "" );
-	  connShowHierarchy = hierList[i];
-	  hierList[i]->getHierRect()->setBrush(QBrush(QColor(mmHierConnColor)));
-	  vector<gsysConnection*> conns = (new gsysMain())->getRegModule()->getAllConns();
-	  for(int o=0; o<conns.size(); o++)
-	  {
-	    if(conns[o]!=0 && conns[o]->getHier1()!=0 && conns[o]->getHier2()!=0 && conns[o]->getHier1()->getHierRect()!=0 && conns[o]->getHier2()->getHierRect()!=0)
-	    {
-	      if(conns[o]->getHier1()==hierList[i])
-	      {
-		if((conns[o]->getHier2()!=0 && conns[o]->getHier2()->getParent() != hierList[i])  ||
-		   (hierList[i]!=0 && conns[o]->getHier2() != hierList[i]->getParent()))
-		  {
-		    conns[o]->getHier2()->getHierRect()->setBrush(QBrush(QColor(mmHierConnColor)));
-		    conns[o]->getHier2()->getHierRect()->setPen(QPen(QColor(mmHierConnColor)));
-		  }  
-	      }
-	      else 
-		if(conns[o]->getHier2()==hierList[i])
 		{
-		  if((conns[o]->getHier1()!=0 && conns[o]->getHier1()->getParent() != hierList[i])  ||
-		     (hierList[i]!=0 && conns[o]->getHier1() != hierList[i]->getParent()))
-		    {
-		      conns[o]->getHier1()->getHierRect()->setBrush(QBrush(QColor(mmHierConnColor)));
-		      conns[o]->getHier1()->getHierRect()->setPen(QPen(QColor(mmHierConnColor)));
-		    }  
-		}
-	    }
-	  }
-	  conns.clear();
-	}
+          ((gsysHierarchyWindow*) parentWidget())->lineEditTyp->setText( tr("Module: ").append(hierList[i]->getName()) );
+          ((gsysHierarchyWindow*) parentWidget())->lineEditWert->setText( "" );
+	  		connShowHierarchy = hierList[i];
+	 		hierList[i]->getHierRect()->setBrush(QBrush(QColor(mmHierConnColor)));
+	  		vector<gsysConnection*> conns = (new gsysMain())->getRegModule()->getAllConns();
+	  		for(int o=0; o<conns.size(); o++)
+	  		{
+	    	  if(conns[o]!=0 && conns[o]->getHier1()!=0 && conns[o]->getHier2()!=0 && conns[o]->getHier1()->getHierRect()!=0 && conns[o]->getHier2()->getHierRect()!=0)
+	    	  {
+	      	    if(conns[o]->getHier1()==hierList[i])
+	      		{
+				  if((conns[o]->getHier2()!=0 && conns[o]->getHier2()->getParent() != hierList[i])  ||
+		   		  (hierList[i]!=0 && conns[o]->getHier2() != hierList[i]->getParent()))
+		  		  {
+		    		conns[o]->getHier2()->getHierRect()->setBrush(QBrush(QColor(mmHierConnColor)));
+		    		conns[o]->getHier2()->getHierRect()->setPen(QPen(QColor(mmHierConnColor)));
+		  		  }  
+	      		}
+	      		else 
+				  if(conns[o]->getHier2()==hierList[i])
+				  {
+		  			if((conns[o]->getHier1()!=0 && conns[o]->getHier1()->getParent() != hierList[i])  ||
+		     		  (hierList[i]!=0 && conns[o]->getHier1() != hierList[i]->getParent()))
+		    		{
+		      		  conns[o]->getHier1()->getHierRect()->setBrush(QBrush(QColor(mmHierConnColor)));
+		      		  conns[o]->getHier1()->getHierRect()->setPen(QPen(QColor(mmHierConnColor)));
+		    		}  
+				  }
+	    	  }
+	  		}
+	  		conns.clear();
+		  }
       }
     }
     else
@@ -430,53 +431,53 @@ void gsysCanvasView::mouseMoveEvent(QMouseEvent *e)
       if(connShowHierarchy!=0)
       {
         // de-highlight ...
-	if(connShowHierarchy->getChildren().size()<=0) 
-	  connShowHierarchy->getHierRect()->setBrush(QBrush(QColor(moduleColor)));
-	else
-	  connShowHierarchy->getHierRect()->setBrush(QBrush(QColor(moduleWithChild)));
-	vector<gsysConnection*> conns = (new gsysMain())->getRegModule()->getAllConns();
-	for(int o=0; o<conns.size(); o++)
-	{
-	  if(conns[o]!=0 && conns[o]->getHier1()!=0 && conns[o]->getHier2()!=0 && conns[o]->getHier1()->getHierRect()!=0 && conns[o]->getHier2()->getHierRect()!=0)
-	  {
-	    if(conns[o]->getHier1()==connShowHierarchy)
-	    {
-	      if((conns[o]->getHier2()!=0 && conns[o]->getHier2()->getParent() != connShowHierarchy)  ||
-		 (connShowHierarchy!=0 && conns[o]->getHier2() != connShowHierarchy->getParent()))
+		if(connShowHierarchy->getChildren().size()<=0) 
+		  connShowHierarchy->getHierRect()->setBrush(QBrush(QColor(moduleColor)));
+		else
+		  connShowHierarchy->getHierRect()->setBrush(QBrush(QColor(moduleWithChild)));
+		vector<gsysConnection*> conns = (new gsysMain())->getRegModule()->getAllConns();
+		for(int o=0; o<conns.size(); o++)
 		{
-		  if(conns[o]->getHier2()->getChildren().size()<=0)
+		  if(conns[o]!=0 && conns[o]->getHier1()!=0 && conns[o]->getHier2()!=0 && conns[o]->getHier1()->getHierRect()!=0 && conns[o]->getHier2()->getHierRect()!=0)
 		  {
-		    conns[o]->getHier2()->getHierRect()->setBrush(QBrush(QColor(moduleColor)));
-		    conns[o]->getHier2()->getHierRect()->setPen(QPen(QColor(moduleColor)));
-		  }
-		  else
-		  {
-		    conns[o]->getHier2()->getHierRect()->setBrush(QBrush(QColor(moduleWithChild)));
-		    conns[o]->getHier2()->getHierRect()->setPen(QPen(QColor(moduleWithChild)));
-		  }
-		}  
-	    }
-	    else 
-	      if(conns[o]->getHier2()==connShowHierarchy)
-	      {
-		if((conns[o]->getHier1()!=0 && conns[o]->getHier1()->getParent() != connShowHierarchy)  ||
-		   (connShowHierarchy!=0 && conns[o]->getHier1() != connShowHierarchy->getParent()))
-		  {
-		    if(conns[o]->getHier1()->getChildren().size()<=0)
+		    if(conns[o]->getHier1()==connShowHierarchy)
 		    {
-		      conns[o]->getHier1()->getHierRect()->setBrush(QBrush(QColor(moduleColor)));
-		      conns[o]->getHier1()->getHierRect()->setPen(QPen(QColor(moduleColor)));
+		      if((conns[o]->getHier2()!=0 && conns[o]->getHier2()->getParent() != connShowHierarchy)  ||
+			 (connShowHierarchy!=0 && conns[o]->getHier2() != connShowHierarchy->getParent()))
+			{
+			  if(conns[o]->getHier2()->getChildren().size()<=0)
+			  {
+			    conns[o]->getHier2()->getHierRect()->setBrush(QBrush(QColor(moduleColor)));
+			    conns[o]->getHier2()->getHierRect()->setPen(QPen(QColor(moduleColor)));
+			  }
+			  else
+			  {
+			    conns[o]->getHier2()->getHierRect()->setBrush(QBrush(QColor(moduleWithChild)));
+			    conns[o]->getHier2()->getHierRect()->setPen(QPen(QColor(moduleWithChild)));
+			  }
+			}  
 		    }
-		    else
-		    {
-		      conns[o]->getHier1()->getHierRect()->setBrush(QBrush(QColor(moduleWithChild)));
-		      conns[o]->getHier1()->getHierRect()->setPen(QPen(QColor(moduleWithChild)));
-		    }
-		  }  
-	      }
-	  }
-	}
-	conns.clear();
+		    else 
+		      if(conns[o]->getHier2()==connShowHierarchy)
+		      {
+			if((conns[o]->getHier1()!=0 && conns[o]->getHier1()->getParent() != connShowHierarchy)  ||
+			   (connShowHierarchy!=0 && conns[o]->getHier1() != connShowHierarchy->getParent()))
+			  {
+			    if(conns[o]->getHier1()->getChildren().size()<=0)
+			    {
+			      conns[o]->getHier1()->getHierRect()->setBrush(QBrush(QColor(moduleColor)));
+			      conns[o]->getHier1()->getHierRect()->setPen(QPen(QColor(moduleColor)));
+			    }
+			    else
+			    {
+			      conns[o]->getHier1()->getHierRect()->setBrush(QBrush(QColor(moduleWithChild)));
+			      conns[o]->getHier1()->getHierRect()->setPen(QPen(QColor(moduleWithChild)));
+			    }
+			  }  
+		      }
+		  }
+		}
+		conns.clear();
       }
     }
     scene()->update();
