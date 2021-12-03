@@ -57,22 +57,22 @@ gsysCanvasView::~gsysCanvasView() {}
  */
 bool gsysCanvasView::foundAndOpenedHier(QPoint p)
 {
-  vector<gsysHierarchy*> hierList = ((gsysHierarchyWindow*) parentWidget())->hierarchyList;
+  vector< tuple <gsysHierarchy*, gsysHierarchyWindow::moduleType> > hierList = ((gsysHierarchyWindow*) parentWidget())->hierarchyList;
   for(int i=0; i<hierList.size(); i++)
   {
     #ifdef DEBUG_GSYSC
     cout<<"--++-- point "<<p.x()<<"/"<<p.y()<<":  x-area "<<hierList[i]->getCenterPoint()->x()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1<<"->"<<hierList[i]->getCenterPoint()->x()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)<<";  y-area "<<hierList[i]->getCenterPoint()->y()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1<<"->"<<hierList[i]->getCenterPoint()->y()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5)<<endl;
     #endif
-    if(hierList[i]->getCenterPoint()->x()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1 < p.x()   &&
-       hierList[i]->getCenterPoint()->x()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5) > p.x()   &&
-       hierList[i]->getCenterPoint()->y()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5)+1 < p.y()   &&
-       hierList[i]->getCenterPoint()->y()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5) > p.y())
+    if(get<0>(hierList[i])->getCenterPoint()->x()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1 < p.x()   &&
+       get<0>(hierList[i])->getCenterPoint()->x()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5) > p.x()   &&
+       get<0>(hierList[i])->getCenterPoint()->y()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5)+1 < p.y()   &&
+       get<0>(hierList[i])->getCenterPoint()->y()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5) > p.y())
        {
-         #ifdef DEBUG_GSYSC
-	 cout<<"-+- the point "<<p.x()<<"/"<<p.y()<<" lies in module "<<hierList[i]->getName()<<endl;
-	 #endif
-         (new gsysMain())->getHierarchyTree()->openWindow(hierList[i]);
-	 return true;
+    #ifdef DEBUG_GSYSC
+	cout<<"-+- the point "<<p.x()<<"/"<<p.y()<<" lies in module "<<hierList[i]->getName()<<endl;
+	#endif
+        (new gsysMain())->getHierarchyTree()->openWindow(get<0>(hierList[i]));
+	return true;
        }	 
   }
   return false;
@@ -110,10 +110,10 @@ void gsysCanvasView::mousePressEvent(QMouseEvent* e)
     polygons.clear();
     for (QList<QGraphicsItem*>::Iterator it=l.begin(); it!=l.end(); ++it) {
       if ( (*it)->type() == QGraphicsLineItem::Type ) {
-	lines.push_back(*it);
+		lines.push_back(*it);
       }
       if ( (*it)->type() == QGraphicsPolygonItem::Type ) {
-	polygons.push_back(*it);
+		polygons.push_back(*it);
       }
     }
     #ifdef DEBUG_GSYSC
@@ -151,27 +151,27 @@ void gsysCanvasView::mousePressEvent(QMouseEvent* e)
 	      #endif
 	      if( ((gsysHierarchyWindow*) parentWidget())->getOwnHier() == sigList[i]->getParent() )
 	      {
-		int sidePortNr=-1;
-		int destNr=-1;
-		for(int k=0; k<sigList[i]->getPorts().size(); k++) 
-		  if(!sigList[i]->getPorts()[k]->getDest().isNull()) destNr=k;
-		  
-		if(destNr>=0 && (sidePortNr=sidePortExists(sigList[i]->getPorts(),destNr))>=0)
-		{
-		  #ifdef DEBUG_GSYSC
-		  cout<<"--- Signal "<<sigList[i]<<" has "<<sigList[i]->getPorts().size()<<" Ports; Port"<<destNr<<" has Dest"<<endl;
-		  #endif
-		  if(!sigList[i]->isActivated()) sigList[i]->activate(sigList[i]->getPorts()[sidePortNr]);
-		  else sigList[i]->deactivate(sigList[i]->getPorts()[sidePortNr]);
-		}
-		else
-		{
-		  #ifdef DEBUG_GSYSC
-		  cout<<"--- Signal "<<sigList[i]<<" has "<<sigList[i]->getPorts().size()<<" Ports; Port"<<destNr<<" has Dest"<<endl;
-		  #endif
-		  if(!sigList[i]->isActivated()) sigList[i]->activate();
-		  else sigList[i]->deactivate();
-		}
+			int sidePortNr=-1;
+			int destNr=-1;
+			for(int k=0; k<sigList[i]->getPorts().size(); k++) 
+			  if(!sigList[i]->getPorts()[k]->getDest().isNull()) destNr=k;
+
+			if(destNr>=0 && (sidePortNr=sidePortExists(sigList[i]->getPorts(),destNr))>=0)
+			{
+			  #ifdef DEBUG_GSYSC
+			  cout<<"--- Signal "<<sigList[i]<<" has "<<sigList[i]->getPorts().size()<<" Ports; Port"<<destNr<<" has Dest"<<endl;
+			  #endif
+			  if(!sigList[i]->isActivated()) sigList[i]->activate(sigList[i]->getPorts()[sidePortNr]);
+			  else sigList[i]->deactivate(sigList[i]->getPorts()[sidePortNr]);
+			}
+			else
+			{
+			  #ifdef DEBUG_GSYSC
+			  cout<<"--- Signal "<<sigList[i]<<" has "<<sigList[i]->getPorts().size()<<" Ports; Port"<<destNr<<" has Dest"<<endl;
+			  #endif
+			  if(!sigList[i]->isActivated()) sigList[i]->activate();
+			  else sigList[i]->deactivate();
+			}
 	      }
 	    }  
       }
@@ -184,12 +184,12 @@ void gsysCanvasView::mousePressEvent(QMouseEvent* e)
       l=scene()->items(QRect(p.x()-1,p.y()-1,3,3));
       if(l.size()>=1 && l.front()->type()==QGraphicsTextItem::Type) l.erase(l.begin());
       for (QList<QGraphicsItem*>::Iterator it=l.begin(); it!=l.end(); ++it) {
-	if ( (*it)->type() == QGraphicsLineItem::Type ) {
-	  lines.push_back(*it);
-	}
-	if ( (*it)->type() == QGraphicsPolygonItem::Type ) {
-	  polygons.push_back(*it);
-	}
+		if ( (*it)->type() == QGraphicsLineItem::Type ) {
+		  lines.push_back(*it);
+		}
+		if ( (*it)->type() == QGraphicsPolygonItem::Type ) {
+		  polygons.push_back(*it);
+		}
       }
       #ifdef DEBUG_GSYSC
       std::cout << "in a square of 3x3 point from "<<p.x()<<"/"<<p.y()<<" there are "<<lines.size()<<" lines and "<<polygons.size()<<" polygons found!"<<std::endl;
@@ -203,11 +203,11 @@ void gsysCanvasView::mousePressEvent(QMouseEvent* e)
 	    line0->line().p1()==line1->line().p2() ||
 	    line0->line().p2()==line1->line().p1() ||
 	    line0->line().p2()==line1->line().p2())&&
-	   line0->line().x1()+line0->line().x2() != line1->line().x1()+line1->line().x2()  &&
-	   line0->line().y1()+line0->line().y2() != line1->line().y1()+line1->line().y2())
+	    line0->line().x1()+line0->line().x2() != line1->line().x1()+line1->line().x2()  &&
+	    line0->line().y1()+line0->line().y2() != line1->line().y1()+line1->line().y2())
 		lines.erase(++lines.begin());   // delete second element, because needless
-	line0 = 0;
-	line1 = 0;
+		line0 = 0;
+		line1 = 0;
       }
       if(lines.size()==1 || polygons.size()==1)
       {
@@ -218,30 +218,30 @@ void gsysCanvasView::mousePressEvent(QMouseEvent* e)
 	  if((lines.size()==1 && cil.contains(lines[0])) ||
 	     (polygons.size()==1 && cil.contains(polygons[0])))
 	      {
-		if( ((gsysHierarchyWindow*) parentWidget())->getOwnHier() == sigList[i]->getParent() ) 
-		{
-		  int sidePortNr=-1;
-		  int destNr=-1;
-		  for(int k=0; k<sigList[i]->getPorts().size(); k++) 
-		    if(!sigList[i]->getPorts()[k]->getDest().isNull()) destNr=k;
-		    
-		  if(destNr>=0 && (sidePortNr=sidePortExists(sigList[i]->getPorts(),destNr))>=0)
-		  {
-		    #ifdef DEBUG_GSYSC
-		    cout<<"--- Signal "<<sigList[i]<<" has "<<sigList[i]->getPorts().size()<<" Ports; Port"<<destNr<<" has Dest"<<endl;
-		    #endif
-		    if(!sigList[i]->isActivated()) sigList[i]->activate(sigList[i]->getPorts()[sidePortNr]);
-		    else sigList[i]->deactivate(sigList[i]->getPorts()[sidePortNr]);
-		  }
-		  else
-		  {
-		    #ifdef DEBUG_GSYSC
-		    cout<<"--- Signal "<<sigList[i]<<" has "<<sigList[i]->getPorts().size()<<" Ports; Port"<<destNr<<" has Dest"<<endl;
-		    #endif
-		    if(!sigList[i]->isActivated()) sigList[i]->activate();
-		    else sigList[i]->deactivate();
-		  }
-		}  
+			if( ((gsysHierarchyWindow*) parentWidget())->getOwnHier() == sigList[i]->getParent() ) 
+			{
+			  int sidePortNr=-1;
+			  int destNr=-1;
+			  for(int k=0; k<sigList[i]->getPorts().size(); k++) 
+			    if(!sigList[i]->getPorts()[k]->getDest().isNull()) destNr=k;
+
+			  if(destNr>=0 && (sidePortNr=sidePortExists(sigList[i]->getPorts(),destNr))>=0)
+			  {
+			    #ifdef DEBUG_GSYSC
+			    cout<<"--- Signal "<<sigList[i]<<" has "<<sigList[i]->getPorts().size()<<" Ports; Port"<<destNr<<" has Dest"<<endl;
+			    #endif
+			    if(!sigList[i]->isActivated()) sigList[i]->activate(sigList[i]->getPorts()[sidePortNr]);
+			    else sigList[i]->deactivate(sigList[i]->getPorts()[sidePortNr]);
+			  }
+			  else
+			  {
+			    #ifdef DEBUG_GSYSC
+			    cout<<"--- Signal "<<sigList[i]<<" has "<<sigList[i]->getPorts().size()<<" Ports; Port"<<destNr<<" has Dest"<<endl;
+			    #endif
+			    if(!sigList[i]->isActivated()) sigList[i]->activate();
+			    else sigList[i]->deactivate();
+			  }
+			}  
 	      }	
 	}
 	sigList.clear();
@@ -272,11 +272,11 @@ void gsysCanvasView::mousePressEvent(QMouseEvent* e)
 	      line0->line().p1()==line1->line().p2()   ||
 	      line0->line().p2()==line1->line().p1()   ||
 	      line0->line().p2()==line1->line().p2())    &&
-	     line0->line().x1()+line0->line().x2() != line1->line().x1()+line1->line().x2()  &&
-	     line0->line().y1()+line0->line().y2() != line1->line().y1()+line1->line().y2())
+	      line0->line().x1()+line0->line().x2() != line1->line().x1()+line1->line().x2()  &&
+	      line0->line().y1()+line0->line().y2() != line1->line().y1()+line1->line().y2())
 		  lines.erase(++lines.begin());   // delete second element, because needless
-	  line0 = 0;
-	  line1 = 0;
+	  	  line0 = 0;
+	  	  line1 = 0;
 	}
 	if(lines.size()==1 || polygons.size()==1)
 	{

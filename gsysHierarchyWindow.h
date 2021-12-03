@@ -90,7 +90,8 @@ class gsysHierarchyWindow : public QDialog
 
   private:
   
-  vector<gsysHierarchy*> hierarchyList;
+  enum moduleType{PE, CHANNEL, MISC};
+  vector< tuple <gsysHierarchy*, moduleType> > hierarchyList;
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
   gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
@@ -104,6 +105,7 @@ class gsysHierarchyWindow : public QDialog
   void drawConnections();
   bool drawConnStep(gsysConnection* connection,QPoint *p1, QPoint *p2,int lfdNr);
   bool thisLevel(gsysHierarchy* hier);
+  moduleType getModuleType(gsysHierarchy* hier);
  
   // values to be read from file 'gsysHViewer.conf'
   int sideMargin;

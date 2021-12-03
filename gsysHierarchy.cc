@@ -112,16 +112,16 @@
       if (portExists(sigPorts[i])>=0)
       {
         if(sigPorts[i]->getParent()==this)
-	{
+	      {
           if(portsN.size() == 0 || initDir > 9) portsN.push_back(sigPorts[i]);
-	  else portsN.insert(portsN.begin(),1,sigPorts[i]);
-	}
-	sigPorts[i]->setInitDir(initDir);
-	#ifdef DEBUG_GSYSC
-	std::cout<<"\t\tThe port was found under number "<<i<<" ("<<sigPorts[i]->getName()<<";"<<sigPorts[i]<<") and included!"<<std::endl;
-	#endif
-	sigPorts.clear();
-	return true;
+	        else portsN.insert(portsN.begin(),1,sigPorts[i]);
+	      }
+	      sigPorts[i]->setInitDir(initDir);
+	      #ifdef DEBUG_GSYSC
+	      std::cout<<"\t\tThe port was found under number "<<i<<" ("<<sigPorts[i]->getName()<<";"<<sigPorts[i]<<") and included!"<<std::endl;
+	      #endif
+	      sigPorts.clear();
+	      return true;
       }
     }
     sigPorts.clear();
@@ -147,16 +147,16 @@
       if (portExists(sigPorts[i])>=0)
       {
         if(sigPorts[i]->getParent()==this)
-	{
+	      {
           if(portsE.size() == 0 || (initDir > 5 && initDir <= 13)) portsE.push_back(sigPorts[i]);
-	  else portsE.insert(portsE.begin(),1,sigPorts[i]);
-	}
-	sigPorts[i]->setInitDir(initDir);
-	#ifdef DEBUG_GSYSC
-	std::cout<<"\t\tThe port was found under number "<<i<<" ("<<sigPorts[i]->getName()<<";"<<sigPorts[i]<<") and included!"<<std::endl;
-	#endif
-	sigPorts.clear();
-	return true;
+	        else portsE.insert(portsE.begin(),1,sigPorts[i]);
+	      }
+	      sigPorts[i]->setInitDir(initDir);
+	      #ifdef DEBUG_GSYSC
+	      std::cout<<"\t\tThe port was found under number "<<i<<" ("<<sigPorts[i]->getName()<<";"<<sigPorts[i]<<") and included!"<<std::endl;
+	      #endif
+	      sigPorts.clear();
+	      return true;
       }
     }
     sigPorts.clear();
@@ -183,15 +183,15 @@
       {
         if(sigPorts[i]->getParent()==this)
         {
-	  if(portsS.size() == 0 || initDir > 9) portsS.push_back(sigPorts[i]);
-	  else portsS.insert(portsS.begin(),1,sigPorts[i]);
-	}
-	sigPorts[i]->setInitDir(initDir);
-	#ifdef DEBUG_GSYSC
-	std::cout<<"\t\tThe port was found under number "<<i<<" ("<<sigPorts[i]->getName()<<";"<<sigPorts[i]<<") and included!"<<std::endl;
-	#endif
-	sigPorts.clear();
-	return true;
+	        if(portsS.size() == 0 || initDir > 9) portsS.push_back(sigPorts[i]);
+	        else portsS.insert(portsS.begin(),1,sigPorts[i]);
+	      }
+	      sigPorts[i]->setInitDir(initDir);
+	      #ifdef DEBUG_GSYSC
+	      std::cout<<"\t\tThe port was found under number "<<i<<" ("<<sigPorts[i]->getName()<<";"<<sigPorts[i]<<") and included!"<<std::endl;
+	      #endif
+	      sigPorts.clear();
+	      return true;
       }
     }
     sigPorts.clear();
@@ -219,14 +219,14 @@
         if(sigPorts[i]->getParent()==this)
 	{
           if(portsW.size() == 0 || (initDir >= 5 && initDir < 13)) portsW.push_back(sigPorts[i]);
-	  else portsW.insert(portsW.begin(),1,sigPorts[i]);
-	}
-	sigPorts[i]->setInitDir(initDir);
-	#ifdef DEBUG_GSYSC
-	std::cout<<"\t\tThe port was found under number "<<i<<" ("<<sigPorts[i]->getName()<<";"<<sigPorts[i]<<") and included!"<<std::endl;
-	#endif
-	sigPorts.clear();
-	return true;
+	        else portsW.insert(portsW.begin(),1,sigPorts[i]);
+	      }
+	      sigPorts[i]->setInitDir(initDir);
+	      #ifdef DEBUG_GSYSC
+	      std::cout<<"\t\tThe port was found under number "<<i<<" ("<<sigPorts[i]->getName()<<";"<<sigPorts[i]<<") and included!"<<std::endl;
+	      #endif
+	      sigPorts.clear();
+	      return true;
       }
     }
     sigPorts.clear();
@@ -244,15 +244,15 @@
     for(int i=0; i<portList.size(); i++)
       for (int o=0; o<sig->getPorts().size(); o++)
         if(portList[i]==sig->getPorts()[o])
-	{
-	  #ifdef DEBUG_GSYSC
-	  cout<<"### addEPort(2) -> "<<portList[i]<<" ("<<portList[i]->getName()<<") == "<<sig->getPorts()[o]<<" ("<<sig->getPorts()[o]->getName()<<"), therefore to be added!"<<endl;
-	  #endif
+	      {
+	        #ifdef DEBUG_GSYSC
+	        cout<<"### addEPort(2) -> "<<portList[i]<<" ("<<portList[i]->getName()<<") == "<<sig->getPorts()[o]<<" ("<<sig->getPorts()[o]->getName()<<"), therefore to be added!"<<endl;
+	        #endif
           if(portList[i]->getParent()==this)
-	    portsE.push_back(portList[i]);
-	  portList[i]->setDest(dest);
-	  return true;
-	}
+	          portsE.push_back(portList[i]);
+	        portList[i]->setDest(dest);
+	        return true;
+	      }
     return false;	
   }
 
@@ -267,15 +267,15 @@
     for(int i=0; i<portList.size(); i++)
       for (int o=0; o<sig->getPorts().size(); o++)
         if(portList[i]==sig->getPorts()[o])
-	{
-	  #ifdef DEBUG_GSYSC
-	  cout<<"### addWPort(2) -> "<<portList[i]<<" ("<<portList[i]->getName()<<") == "<<sig->getPorts()[o]<<" ("<<sig->getPorts()[o]->getName()<<"), therefore to be added!"<<endl;
-	  #endif
+	      {
+	        #ifdef DEBUG_GSYSC
+	        cout<<"### addWPort(2) -> "<<portList[i]<<" ("<<portList[i]->getName()<<") == "<<sig->getPorts()[o]<<" ("<<sig->getPorts()[o]->getName()<<"), therefore to be added!"<<endl;
+	        #endif
           if(portList[i]->getParent()==this)
-	    portsW.push_back(portList[i]);
-	  portList[i]->setDest(dest);
-	  return true;
-	}
+	          portsW.push_back(portList[i]);
+	        portList[i]->setDest(dest);
+	        return true;
+	      }
     return false;	
   }
 
@@ -289,13 +289,13 @@
     for(int i=0; i<portList.size(); i++)
       for (int o=0; o<sig->getPorts().size(); o++)
         if(portList[i]==sig->getPorts()[o])
-	{
-	  #ifdef DEBUG_GSYSC
-	  cout<<"### addLeftPort -> "<<portList[i]<<" ("<<portList[i]->getName()<<") == "<<sig->getPorts()[o]<<" ("<<sig->getPorts()[o]->getName()<<"), therefore to be added!"<<endl;
-	  #endif
+	      {
+	        #ifdef DEBUG_GSYSC
+	        cout<<"### addLeftPort -> "<<portList[i]<<" ("<<portList[i]->getName()<<") == "<<sig->getPorts()[o]<<" ("<<sig->getPorts()[o]->getName()<<"), therefore to be added!"<<endl;
+	        #endif
           if(portList[i]->getParent()==this)
-	    leftPorts.push_back(portList[i]);
-	}
+	          leftPorts.push_back(portList[i]);
+	      }
   }
 
   /*
@@ -308,13 +308,13 @@
     for(int i=0; i<portList.size(); i++)
       for (int o=0; o<sig->getPorts().size(); o++)
         if(portList[i]==sig->getPorts()[o])
-	{
-	  #ifdef DEBUG_GSYSC
-	  cout<<"### addRightPort -> "<<portList[i]<<" ("<<portList[i]->getName()<<") == "<<sig->getPorts()[o]<<" ("<<sig->getPorts()[o]->getName()<<"), therefore to be added!"<<endl;
-	  #endif
-          if(portList[i]->getParent()==this)
-	    rightPorts.push_back(portList[i]);
-	}
+	      {
+	        #ifdef DEBUG_GSYSC
+	        cout<<"### addRightPort -> "<<portList[i]<<" ("<<portList[i]->getName()<<") == "<<sig->getPorts()[o]<<" ("<<sig->getPorts()[o]->getName()<<"), therefore to be added!"<<endl;
+	        #endif
+                if(portList[i]->getParent()==this)
+	          rightPorts.push_back(portList[i]);
+	      }
   }
  
   /*
