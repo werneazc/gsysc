@@ -33,6 +33,7 @@
 #define GSYS_HIERWIN_H
 
 #include "systemc.h"
+#include "gsysHierarchy.h"
 
 #include <vector>
 #include <cmath>
@@ -90,8 +91,7 @@ class gsysHierarchyWindow : public QDialog
 
   private:
   
-  enum moduleType{PE, CHANNEL, MISC};
-  vector< tuple <gsysHierarchy*, moduleType> > hierarchyList;
+  map<gsysHierarchy*, int> hierarchyList; // ((hier, index), type)
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
   gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
@@ -105,7 +105,6 @@ class gsysHierarchyWindow : public QDialog
   void drawConnections();
   bool drawConnStep(gsysConnection* connection,QPoint *p1, QPoint *p2,int lfdNr);
   bool thisLevel(gsysHierarchy* hier);
-  moduleType getModuleType(gsysHierarchy* hier);
  
   // values to be read from file 'gsysHViewer.conf'
   int sideMargin;

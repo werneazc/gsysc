@@ -400,13 +400,19 @@
     {
       for (int i=0; i<allHierarchies.size(); i++)
         if(allHierarchies[i]->getParent() == 0) 
-			hierarchyList.push_back(make_tuple(allHierarchies[i], getModuleType(allHierarchies[i])));
+		{
+			pair<gsysHierarchy*, int> p (allHierarchies[i], hierarchyList.size());
+			hierarchyList.insert(p);
+		}
     }
     else
     {
 	  vector<gsysHierarchy *> childList = ownHierarchy->getChildren();
       for (int i=0; i<childList.size(); i++)
-		hierarchyList.push_back(make_tuple(childList[i], getModuleType(childList[i])));
+		{
+			pair<gsysHierarchy*, int> p (childList[i], hierarchyList.size());
+			hierarchyList.insert(p);
+		}
     }
     
     #ifdef DEBUG_GSYSC
@@ -419,13 +425,20 @@
     for (int i=0; i<allConnections.size(); i++)
     {
       #ifdef DEBUG_GSYSC
-      std::cout << "Hier1: "<<allConnections[i]->getHier1()->getName()<<" ("<<allConnections[i]->getHier1()<<");  Hier2: "<<allConnections[i]->getHier2()->getName()<<" ("<<allConnections[i]->getHier2()<<")"<<std::endl;
+      std::cout << "Hier1: " << allConnections[i]->getHier1()->getName()
+	  			<< " ("<<allConnections[i]->getHier1()
+				<< ");  Hier2: "<<allConnections[i]->getHier2()->getName()
+				<< " ("<<allConnections[i]->getHier2()
+				<< ")" << std::endl;
       #endif
       found=false;
       if(thisLevel(allConnections[i]->getHier1()) && thisLevel(allConnections[i]->getHier2()))
       {
+		///////////////////
         #ifdef DEBUG_GSYSC
-		cout<<allConnections[i]->getHier1()->getName()<<" AND "<<allConnections[i]->getHier2()->getName()<<" are in this level!"<<endl;
+		cout 	<< allConnections[i]->getHier1()->getName()
+				<< " AND " << allConnections[i]->getHier2()->getName()
+				<< " are in this level!" << endl;
 		#endif
 		for(int u=0; u<connList.size(); u++)
 	  	if(connList[u]==allConnections[i]) found=true;
@@ -444,7 +457,9 @@
 	      (allConnections[i]->getHier2()==ownHierarchy && thisLevel(allConnections[i]->getHier1())) )
 	  	{
       		#ifdef DEBUG_GSYSC
-	  		cout<<allConnections[i]->getHier1()->getName()<<" OR "<<allConnections[i]->getHier2()->getName()<<" is in this level!"<<endl;
+	  		cout 	<< allConnections[i]->getHier1()->getName()
+			  		<< " OR "<<allConnections[i]->getHier2()->getName()
+					<< " is in this level!" << endl;
 	  		#endif
 	  		for(int u=0; u<sideConnList.size(); u++)
 	  			if(sideConnList[u]==allConnections[i]) found=true;
@@ -468,15 +483,16 @@
     QRectF textRect;
     int x=sideMargin;
     int y=topMargin;
-    for (int i=0; i<hierarchyList.size(); i++)
+    for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
     {	
-	  
+	  int i = iter->second;
+	  ////////////
       modRect.push_back(new QGraphicsRectItem(0,0,moduleWidth,moduleHeight));
-      get<0>(hierarchyList[i])->setHierRect(modRect.back());
+      iter->first->setHierRect(modRect.back());
       modText.push_back(new QGraphicsSimpleTextItem());
       
       // draw module
-      if(get<0>(hierarchyList[i])->getChildren().size()>0)
+      if(iter->first->getChildren().size()>0)
       {
         modRect[i]->setBrush(QBrush(QColor(moduleWithChild)));
         modRect[i]->setPen(QPen(QColor(moduleWithChild)));
@@ -490,13 +506,13 @@
       modRect[i]->setY(y);
       modRect[i]->setZValue(210);
       modRect[i]->show();
-      get<0>(hierarchyList[i])->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)moduleWidth)-1,y+(int) ceil(0.5*(double)moduleHeight)-1));
+      iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)moduleWidth)-1,y+(int) ceil(0.5*(double)moduleHeight)-1));
       #ifdef DEBUG_GSYSC
       std::cout << "Module " << get<0>(hierarchyList[i])->getName()
 	  			<<" has center point " << get<0>(hierarchyList[i])->getCenterPoint()->x() 
 				<< "/"<<hierarchyList[i]->getCenterPoint()->y() << std::endl;
       #endif
-      modText[i]->setText(get<0>(hierarchyList[i])->getName());
+      modText[i]->setText(iter->first->getName());
       modText[i]->setBrush(QBrush(QColor(textColor)));
       textRect = modText[i]->boundingRect();
       modText[i]->setX(x+(int) (0.5*(double)moduleWidth-0.5*(double)textRect.width()));
@@ -1054,30 +1070,34 @@
     
       int donePortsL = 0;
       int donePortsR = 0;
-      for(int i=0; i<hierarchyList.size(); i++)
+      for(map<gsysHierarchy*, int>::iterator i = hierarchyList.begin(); i != hierarchyList.end(); i++)
       {
-	if (i % dimFactor == 0)
-	{
-	  for (int o=0; o<get<0>(hierarchyList[i])->getWPorts().size(); o++)
-	    get<0>(hierarchyList[i])->getWPorts()[o]->setDest(QPoint(50,(donePortsL+o+1)*abstandY+(donePortsL+o)*21+11));
-	  donePortsL += get<0>(hierarchyList[i])->getWPorts().size();
-	}
-	if (i % dimFactor == dimFactor-1)
-	{
-	  for (int o=0; o<get<0>(hierarchyList[i])->getEPorts().size(); o++)
-	    get<0>(hierarchyList[i])->getEPorts()[o]->setDest(QPoint(canvasView->scene()->width()-51,(donePortsR+o+1)*abstandY+(donePortsR+o)*21+11));
-	  donePortsR += get<0>(hierarchyList[i])->getEPorts().size();
-	}
-      
+	    if (i->second % dimFactor == 0)
+	    {
+	      for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
+	        iter->first->getWPorts()[iter->second]->setDest(
+	    		QPoint(50, (donePortsL + iter->second + 1) * abstandY + (donePortsL + iter->second) * 21 + 11)
+	    	);
+	      donePortsL += i->first->getWPorts().size();
+	    }
+	    if (i->second % dimFactor == dimFactor-1)
+	    {
+	    for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
+	      iter->first->getEPorts()[iter->second]->setDest(
+	  		QPoint(canvasView->scene()->width() - 51, (donePortsR + iter->second + 1) * abstandY + (donePortsR + iter->second) * 21 + 11)
+	  	);
+	    donePortsR += i->first->getEPorts().size();
+	    }
+        
       }
-    }
+	}
 
     sigList.clear();
 
-    for(int i=0; i<hierarchyList.size(); i++)
-    {
-      drawNetConns(get<0>(hierarchyList[i]));
-    }	
+	for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
+	{
+		drawNetConns(iter->first);
+	}
 
     drawConnections();
 
@@ -1488,11 +1508,10 @@
    */
   bool gsysHierarchyWindow::thisLevel(gsysHierarchy* hier)
   {
-	auto it = find_if(	hierarchyList.begin(), 
-						hierarchyList.end(), 
-						[hier](const tuple<gsysHierarchy*, gsysHierarchyWindow::moduleType>& e)
-						{ return get<0>(e) == hier; } );
-    return it != hierarchyList.end();
+	for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
+		if(iter->first == hier)
+			return true;
+    return false;
   }
 
   /*
@@ -1835,19 +1854,4 @@
         if (abs((source->y()-dest->y()) / (source->x()-dest->x())) > 1.0) return NNW;
 	else return WNW;
     return -1;	
-  }
-
-  /*
-   *   	Return the corresponding module type of a hierarchy element to identify it's 
-   *	relative positioning area in the window
-   */
-  gsysHierarchyWindow::moduleType gsysHierarchyWindow::getModuleType(gsysHierarchy* hier)
-  {
-	string name = (string) hier->getName();
-	if (name.find("Channel"))
-		return moduleType::CHANNEL;
-	else if (name.find("FE"))
-		return moduleType::PE;
-	else 
-		return moduleType::MISC;
   }

@@ -57,21 +57,22 @@ gsysCanvasView::~gsysCanvasView() {}
  */
 bool gsysCanvasView::foundAndOpenedHier(QPoint p)
 {
-  vector< tuple <gsysHierarchy*, gsysHierarchyWindow::moduleType> > hierList = ((gsysHierarchyWindow*) parentWidget())->hierarchyList;
-  for(int i=0; i<hierList.size(); i++)
+  map<gsysHierarchy*, int> hierList = ((gsysHierarchyWindow*) parentWidget())->hierarchyList;
+  for(map<gsysHierarchy*, int>::iterator iter = hierList.begin(); iter != hierList.end(); iter++)
   {
+	int i = iter->second;
     #ifdef DEBUG_GSYSC
-    cout<<"--++-- point "<<p.x()<<"/"<<p.y()<<":  x-area "<<hierList[i]->getCenterPoint()->x()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1<<"->"<<hierList[i]->getCenterPoint()->x()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)<<";  y-area "<<hierList[i]->getCenterPoint()->y()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1<<"->"<<hierList[i]->getCenterPoint()->y()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5)<<endl;
+    cout<<"--++-- point "<<p.x()<<"/"<<p.y()<<":  x-area "<<iter->first->getCenterPoint()->x()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1<<"->"<<iter->first->getCenterPoint()->x()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)<<";  y-area "<<iter->first->getCenterPoint()->y()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1<<"->"<<iter->first->getCenterPoint()->y()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5)<<endl;
     #endif
-    if(get<0>(hierList[i])->getCenterPoint()->x()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1 < p.x()   &&
-       get<0>(hierList[i])->getCenterPoint()->x()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5) > p.x()   &&
-       get<0>(hierList[i])->getCenterPoint()->y()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5)+1 < p.y()   &&
-       get<0>(hierList[i])->getCenterPoint()->y()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5) > p.y())
+    if(iter->first->getCenterPoint()->x()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5)+1 < p.x()   &&
+       iter->first->getCenterPoint()->x()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleWidth*0.5) > p.x()   &&
+       iter->first->getCenterPoint()->y()-(int)ceil((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5)+1 < p.y()   &&
+       iter->first->getCenterPoint()->y()+(int)floor((double)((gsysHierarchyWindow*)parentWidget())->moduleHeight*0.5) > p.y())
        {
     #ifdef DEBUG_GSYSC
-	cout<<"-+- the point "<<p.x()<<"/"<<p.y()<<" lies in module "<<hierList[i]->getName()<<endl;
+	cout<<"-+- the point "<<p.x()<<"/"<<p.y()<<" lies in module "<<get<0>(iter->first)->getName()<<endl;
 	#endif
-        (new gsysMain())->getHierarchyTree()->openWindow(get<0>(hierList[i]));
+        (new gsysMain())->getHierarchyTree()->openWindow(iter->first);
 	return true;
        }	 
   }

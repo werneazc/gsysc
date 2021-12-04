@@ -43,25 +43,6 @@ class gsysSignal;
 
 class gsysHierarchy 
 {
-  private:
-
-  vector<gsysPort*> portList;
-  vector<gsysPort*> leftPorts;		// linke Portleiste
-  vector<gsysPort*> rightPorts;		// rechte Portleiste
-  vector<gsysPort*> portsN;
-  vector<gsysPort*> portsE;
-  vector<gsysPort*> portsS;
-  vector<gsysPort*> portsW;
-  
-  QGraphicsRectItem *hierRect;
-  
-  char* name;
-  vector<gsysHierarchy*> childList;
-  gsysHierarchy* parent;
-  sc_module* realHierarchy;
-  int portExists(gsysPort* port);
-  int childExists(gsysHierarchy* child);
-  QPoint* centerPoint;
   
   public:
   
@@ -98,6 +79,7 @@ class gsysHierarchy
   char* getName();
   void setParent(gsysHierarchy* newParent);
   gsysHierarchy* getParent();
+   enum moduleType{PE, CHANNEL, MISC};
   
   void setCenterPoint(QPoint* cp);
   QPoint* getCenterPoint();
@@ -106,6 +88,31 @@ class gsysHierarchy
   QGraphicsRectItem *getHierRect();
 
   bool hasSidePort(gsysPort* p);
+  moduleType getModuleType();
+
+  private:
+
+  vector<gsysPort*> portList;
+  vector<gsysPort*> leftPorts;		// linke Portleiste
+  vector<gsysPort*> rightPorts;		// rechte Portleiste
+  vector<gsysPort*> portsN;
+  vector<gsysPort*> portsE;
+  vector<gsysPort*> portsS;
+  vector<gsysPort*> portsW;
+  
+  QGraphicsRectItem *hierRect;
+  
+  char* name;
+  vector<gsysHierarchy*> childList;
+  gsysHierarchy* parent;
+  sc_module* realHierarchy;
+  int portExists(gsysPort* port);
+  int childExists(gsysHierarchy* child);
+  QPoint* centerPoint;
+  moduleType type;
+
+  moduleType determineModuleType();
+
 };
 
 

@@ -29,6 +29,7 @@
     this->name = name;
     realHierarchy = 0;
     centerPoint = new QPoint();
+    this->type = determineModuleType();
     portList.clear();
     portsN.clear();
     portsE.clear();
@@ -539,4 +540,27 @@
       if(rightPorts[i]==p) return true;
     }
     return false;
+  }
+
+  /*
+   *   	Return the corresponding module type of a hierarchy element to identify it's 
+   *	relative positioning area in the window
+   */
+  gsysHierarchy::moduleType gsysHierarchy::determineModuleType()
+  {
+	string name = (string) getName();
+	if (name.find("Channel"))
+		return moduleType::CHANNEL;
+	else if (name.find("FE"))
+		return moduleType::PE;
+	else 
+		return moduleType::MISC;
+  }
+
+  /*
+   *   	Return module type of the hierarchy
+   */
+  gsysHierarchy::moduleType gsysHierarchy::getModuleType()
+  {
+	  return type;
   }
