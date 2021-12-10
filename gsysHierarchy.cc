@@ -543,15 +543,18 @@
   }
 
   /*
-   *   	Return the corresponding module type of a hierarchy element to identify it's 
-   *	relative positioning area in the window
+   *   	Return the corresponding module type of a hierarchy element to identify  
+   *	  its relative position in the window
    */
   gsysHierarchy::moduleType gsysHierarchy::determineModuleType()
   {
 	string name = (string) getName();
 	if (name.find("Channel"))
-		return moduleType::CHANNEL;
-	else if (name.find("FE"))
+    if (name.find("Virtual"))
+		  return moduleType::VIRT_CHANNEL;
+    else 
+		  return moduleType::CHANNEL;
+	else if (name.find("PE"))
 		return moduleType::PE;
 	else 
 		return moduleType::MISC;

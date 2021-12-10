@@ -79,7 +79,7 @@ class gsysHierarchy
   char* getName();
   void setParent(gsysHierarchy* newParent);
   gsysHierarchy* getParent();
-   enum moduleType{PE, CHANNEL, MISC};
+   enum moduleType{PE, CHANNEL, VIRT_CHANNEL, MISC};
   
   void setCenterPoint(QPoint* cp);
   QPoint* getCenterPoint();

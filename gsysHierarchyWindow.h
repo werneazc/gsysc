@@ -94,6 +94,13 @@ class gsysHierarchyWindow : public QDialog
   map<gsysHierarchy*, int> hierarchyList; // ((hier, index), type)
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
+
+/************************************************************************
+    Beiden miteinander Verbindenen Hierarchyelemente und deren
+    jeweiligen Index in 'hierarchyList'. 
+*************************************************************************/
+  vector<pair<pair<gsysHierarchy*, gsysHierarchy*>, pair<int, int>>> hierElemOverview;
+
   gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
   gsysHierarchy* parent;
   gsysHierarchy* ownHierarchy;
@@ -103,6 +110,7 @@ class gsysHierarchyWindow : public QDialog
   void drawSidePort(gsysPort* port, bool left, int nr, int abstand, int portHeight=21);
   void drawNetConns(gsysHierarchy* hier);
   void drawConnections();
+  void registerConnection(gsysHierarchy* hier1, gsysHierarchy* hier2);
   bool drawConnStep(gsysConnection* connection,QPoint *p1, QPoint *p2,int lfdNr);
   bool thisLevel(gsysHierarchy* hier);
  
