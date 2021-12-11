@@ -414,6 +414,8 @@
 			hierarchyList.insert(p);
 		}
     }
+
+	
     
     #ifdef DEBUG_GSYSC
     cout<<"    all modules of this level: "<<endl;
@@ -429,6 +431,8 @@
 *************************************************************************/
     for (int i=0; i<allConnections.size(); i++)
     {
+	  allConnections[i]->getHier1()->addAdjacentHier(allConnections[i]->getHier2());
+	  allConnections[i]->getHier2()->addAdjacentHier(allConnections[i]->getHier1());
       #ifdef DEBUG_GSYSC
       std::cout << "Hier1: " << allConnections[i]->getHier1()->getName()
 	  			<< " ("<<allConnections[i]->getHier1()
@@ -500,6 +504,8 @@
     QRectF textRect;
     int x=sideMargin;
     int y=topMargin;
+
+	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedHierElems = sortHierarchyList();
 
 /************************************************************************
 	Hier werden aktuell die Rechtecke, welche die eigentlichen 
@@ -1901,8 +1907,11 @@
    */
   void gsysHierarchyWindow::registerConnection(gsysHierarchy* hier1, gsysHierarchy* hier2)
   {
-	  if((hier1->getModuleType() == gsysHierarchy::moduleType::CHANNEL || hier1->getModuleType() == gsysHierarchy::moduleType::PE) &&
-	  	 (hier2->getModuleType() == gsysHierarchy::moduleType::CHANNEL || hier2->getModuleType() == gsysHierarchy::moduleType::PE))
+	  vector<gsysHierarchy::moduleType> cAndP {	gsysHierarchy::moduleType::CHANNEL, 
+	  											gsysHierarchy::moduleType::PE, 
+												gsysHierarchy::moduleType::INCOMING_CHANNEL}; 
+	  if( (std::find(cAndP.begin(), cAndP.end(), hier1->getModuleType()) != cAndP.end()) &&
+	  	  (std::find(cAndP.begin(), cAndP.end(), hier2->getModuleType()) != cAndP.end()) )
 	  {
 		  pair<gsysHierarchy*, gsysHierarchy*> p1(hier1, hier2);
 		  pair<int, int> p2(hierarchyList.at(hier1), 
@@ -1910,5 +1919,71 @@
 		  pair<pair<gsysHierarchy*, gsysHierarchy*>, pair<int, int>> p3(p1, p2);
 		  hierElemOverview.push_back(make_pair(p1, p2));
 	  }
+  }
+
+  /*
+   *   	Sort hierarchy elements according to their relative position in 
+   *	GUI.
+   */
+  map<gsysHierarchy*, vector<gsysHierarchy*>> gsysHierarchyWindow::sortHierarchyList()
+  {
+	  map<gsysHierarchy*, vector<gsysHierarchy*>> sortList = {};
+	  vector<gsysHierarchy*> relevantItems = {};
+	  gsysHierarchy* currentChannel;
+	  int workOnElems = 0;
+
+	  // Filter the relevant items first and pick the incoming channel as first elem in sortList
+	  for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
+	  {
+		  if(iter->first->getModuleType() == gsysHierarchy::moduleType::INCOMING_CHANNEL)
+		  {
+			  sortList.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (iter->first, {}));
+			  currentChannel = iter->first;	// Start at the incoming channel
+		  } 
+		  else if(	iter->first->getModuleType() == gsysHierarchy::moduleType::CHANNEL ||
+		  			iter->first->getModuleType() == gsysHierarchy::moduleType::PE 		)
+		  {
+			  relevantItems.push_back(iter->first); // Add channel or PE
+			  workOnElems++;
+		  }
+	  }
+
+	  // Process every element 
+	  while(workOnElems > 0)
+	  {
+
+		// Go through the list of PE's and channels
+	  	for(int i = 0; i < relevantItems.size(); i++)	
+	  	{
+		  if(relevantItems[i]->getModuleType() == gsysHierarchy::moduleType::PE)
+		  {
+		  	for(int j = 0; j < relevantItems[i]->getAdjacentHier().size(); j++)	
+		  	{
+		  	  if(relevantItems[i]->getAdjacentHier()[j] == currentChannel) // The PE is connected to currentChannel
+			  {
+				sortList.at(currentChannel).push_back(relevantItems[i]);
+				workOnElems--;
+				break;
+			  }
+		  	}
+		  }
+	  	}
+
+		// Search for the next level channel
+		for(int i = 0; i < sortList.at(currentChannel)[0]->getAdjacentHier().size(); i++) 
+		{
+		  gsysHierarchy* nextPotentialChannel = sortList.at(currentChannel)[0]->getAdjacentHier()[i];
+		  
+		  if(nextPotentialChannel->getModuleType() == gsysHierarchy::moduleType::CHANNEL &&
+		     currentChannel != nextPotentialChannel)
+		  {
+			  currentChannel = nextPotentialChannel;
+			  sortList.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (currentChannel, {}));
+			  workOnElems--;
+			  break;
+		  }
+		}
+	  }
+	  return sortList;
   }
   

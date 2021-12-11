@@ -95,11 +95,20 @@ class gsysHierarchyWindow : public QDialog
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
 
+
 /************************************************************************
     Beiden miteinander Verbindenen Hierarchyelemente und deren
     jeweiligen Index in 'hierarchyList'. 
 *************************************************************************/
   vector<pair<pair<gsysHierarchy*, gsysHierarchy*>, pair<int, int>>> hierElemOverview;
+
+
+/************************************************************************
+    Sortier die Liste (aktuell) danach, dass die Channels und PE's
+    in ihrer Reihenfolge einsortiert sind.
+    ( Map zur Zeit PE's (Elementvektor) auf Channels (Key) )
+*************************************************************************/
+  map<gsysHierarchy*, vector<gsysHierarchy*>> sortHierarchyList();
 
   gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
   gsysHierarchy* parent;

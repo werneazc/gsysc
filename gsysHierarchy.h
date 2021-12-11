@@ -68,18 +68,20 @@ class gsysHierarchy
   vector<gsysPort*> getSPorts();
   vector<gsysPort*> getWPorts();
   
+  vector<gsysHierarchy*> getAdjacentHier();
   vector<gsysPort*> getPorts();
   vector<gsysPort*> getLeftPorts();
   vector<gsysPort*> getRightPorts();
   vector<gsysHierarchy*> getChildren();
   void addChild(gsysHierarchy* child);
+  void addAdjacentHier(gsysHierarchy* h);
   sc_module* getReal();
   void setReal(sc_module* realHier);
   void setName(char* name);
   char* getName();
   void setParent(gsysHierarchy* newParent);
   gsysHierarchy* getParent();
-   enum moduleType{PE, CHANNEL, VIRT_CHANNEL, MISC};
+   enum moduleType{CHANNEL, INCOMING_CHANNEL, MISC, PE, VIRT_CHANNEL};
   
   void setCenterPoint(QPoint* cp);
   QPoint* getCenterPoint();
@@ -99,6 +101,7 @@ class gsysHierarchy
   vector<gsysPort*> portsE;
   vector<gsysPort*> portsS;
   vector<gsysPort*> portsW;
+  vector<gsysHierarchy*> adjacentHier;
   
   QGraphicsRectItem *hierRect;
   

@@ -27,6 +27,7 @@
   {
     // initialize the global variables
     this->name = name;
+    adjacentHier = {};
     realHierarchy = 0;
     centerPoint = new QPoint();
     this->type = determineModuleType();
@@ -77,7 +78,8 @@
   void gsysHierarchy::addPort(gsysPort* port)
   {
     int it = portExists(port);
-    if (it < 0) portList.push_back(port);
+    if (it < 0) 
+      portList.push_back(port);
     #ifdef DEBUG_GSYSC
     std::cout<<"+++++++++++\nall ports (portList) of "<<this->getName()<<" ("<<this<<")"<<std::endl;
     for(int i=0; i<portList.size();i++)
@@ -552,7 +554,9 @@
 	if (name.find("Channel"))
     if (name.find("Virtual"))
 		  return moduleType::VIRT_CHANNEL;
-    else 
+    else if (name.find("Virtual"))
+		  return moduleType::INCOMING_CHANNEL;
+    else
 		  return moduleType::CHANNEL;
 	else if (name.find("PE"))
 		return moduleType::PE;
@@ -566,4 +570,21 @@
   gsysHierarchy::moduleType gsysHierarchy::getModuleType()
   {
 	  return type;
+  }
+
+  /*
+   *   	Return the hierarchy elements which are connected to this one
+   */
+  vector<gsysHierarchy*> gsysHierarchy::getAdjacentHier()
+  {
+	  return adjacentHier;
+  }
+
+  /*
+   *   	Add a hierarchy element to the list of elements,
+   *    which are connected to this one.
+   */
+  void gsysHierarchy::addAdjacentHier(gsysHierarchy* h)
+  {
+	  adjacentHier.push_back(h);
   }
