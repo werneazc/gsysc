@@ -58,12 +58,12 @@
       mmHierConnColor=(char*)"#FFFF00";
       mmHierConnShow = true;
       mmSigPortShow = true;
-      sideMargin=130;
-      topMargin=60;
+      sideMargin=50;
+      topMargin=50;
       horizontalSpace=51;
       verticalSpace=51;
-      moduleWidth=150;
-      moduleHeight=120;
+      moduleWidth=100;
+      moduleHeight=80;
       char zeile[50];
       while(!feof(fp))
       {
@@ -147,12 +147,12 @@
       mmHierConnColor=(char*)"#FFFF00";
       mmHierConnShow = true;
       mmSigPortShow = true;
-      sideMargin=130;
-      topMargin=60;
+      sideMargin=50;
+      topMargin=50;
       horizontalSpace=51;
       verticalSpace=51;
-      moduleWidth=150;
-      moduleHeight=120;
+      moduleWidth=100;
+      moduleHeight=80;
 
       cerr<<"WARNING: The configuration file could not be opened. Probably it does not exist!"<<endl;
     }
@@ -196,6 +196,7 @@
     sideConnList.clear();
     parent = 0;
     ownHierarchy = 0;
+	maxPE = 0;
 
     canvasView = new gsysCanvasView(new QGraphicsScene(0,0,300,300),this,"Canvas");
     /* Size- and color properties for the structure graphic read out of the configuration file */
@@ -491,9 +492,11 @@
 /************************************************************************
 	Erstellen einer Canvas für die GUI Elemente.
 *************************************************************************/
-    dimFactor = (int) (ceil(sqrt((double) hierarchyList.size())));
-    canvasView->resize(dimFactor*moduleWidth+2*sideMargin+(dimFactor-1)*horizontalSpace+10,dimFactor*moduleHeight+(dimFactor-1)*verticalSpace+2*topMargin+10);
-    canvasView->scene()->setSceneRect(0, 0, dimFactor*moduleWidth+2*sideMargin+(dimFactor-1)*horizontalSpace,dimFactor*moduleHeight+(dimFactor-1)*verticalSpace+2*topMargin);
+	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedHierElems = sortHierarchyList();
+    canvasView->resize((maxPE+1)*moduleWidth + (maxPE+2)*sideMargin, 
+					   (sortedHierElems.size()*2) * moduleHeight + (sortedHierElems.size()*2) * topMargin);
+    canvasView->scene()->setSceneRect(0, 0, (maxPE+1)*moduleWidth + (maxPE+2)*sideMargin,
+											moduleHeight + (sortedHierElems.size()*2) * moduleHeight + (sortedHierElems.size()*2) * topMargin);
 	canvasView->setAlignment(Qt::AlignTop|Qt::AlignLeft);
 	QPalette palette;
     palette.setColor(canvasView->backgroundRole(), backgroundColor);
@@ -504,63 +507,105 @@
     QRectF textRect;
     int x=sideMargin;
     int y=topMargin;
+	int item = 0;
 
-	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedHierElems = sortHierarchyList();
+	int channelWidth = maxPE * moduleWidth; 
 
 /************************************************************************
 	Hier werden aktuell die Rechtecke, welche die eigentlichen 
-	Module Hierarchyobjekte darstellen, erstellt und 
-	mithile von X-Y-routing platziert.
+	Module Hierarchyobjekte darstellen, erstellt und platziert.
 *************************************************************************/
-    for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
-	{	
-	  int i = iter->second;
-      modRect.push_back(new QGraphicsRectItem(0,0,moduleWidth,moduleHeight));
-      iter->first->setHierRect(modRect.back());
-      modText.push_back(new QGraphicsSimpleTextItem());
-      
-      // draw module
-      if(iter->first->getChildren().size()>0)
-      {
-        modRect[i]->setBrush(QBrush(QColor(moduleWithChild)));
-        modRect[i]->setPen(QPen(QColor(moduleWithChild)));
-      }
-      else   		// no sub hierarchy
-      {
-        modRect[i]->setBrush(QBrush(QColor(moduleColor)));
-        modRect[i]->setPen(QPen(QColor(moduleColor)));
-      }
-      modRect[i]->setX(x);
-      modRect[i]->setY(y);
-      modRect[i]->setZValue(210);
-      modRect[i]->show();
-      iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)moduleWidth)-1,y+(int) ceil(0.5*(double)moduleHeight)-1));
-      #ifdef DEBUG_GSYSC
-      std::cout << "Module " << get<0>(hierarchyList[i])->getName()
-	  			<<" has center point " << get<0>(hierarchyList[i])->getCenterPoint()->x() 
-				<< "/"<<hierarchyList[i]->getCenterPoint()->y() << std::endl;
-      #endif
-      modText[i]->setText(iter->first->getName());
-      modText[i]->setBrush(QBrush(QColor(textColor)));
-      textRect = modText[i]->boundingRect();
-      modText[i]->setX(x+(int) (0.5*(double)moduleWidth-0.5*(double)textRect.width()));
-      modText[i]->setY(y+ (int) (0.5*(double)moduleHeight-0.5*(double)textRect.height()));
-      modText[i]->setZValue(240);
-      modText[i]->show(); 
+	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedHierElems.begin(); iter != sortedHierElems.end(); iter++)
+	{
+		// Channel
+		modRect.push_back(new QGraphicsRectItem(0,0,channelWidth,moduleHeight));
+		iter->first->setHierRect(modRect.back());
+		modText.push_back(new QGraphicsSimpleTextItem());
 
-	  canvasView->scene()->addItem(modText[i]);	
-	  canvasView->scene()->addItem(modRect[i]);
+		// draw module
+      	if(iter->first->getChildren().size()>0)
+      	{
+        	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
+        	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
+      	}
+      	else   		// no sub hierarchy
+      	{
+        	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
+        	modRect[item]->setPen(QPen(QColor(moduleColor)));
+      	}
+		modRect[item]->setX(x);
+      	modRect[item]->setY(y);
+      	modRect[item]->setZValue(210);
+      	modRect[item]->show();
+		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)channelWidth)-1,y+(int) ceil(0.5*(double)moduleHeight)-1));
+		#ifdef DEBUG_GSYSC
+      		std::cout << "Module " << iter->first->getName()
+	  		<<" has center point " << iter->first->getCenterPoint()->x() 
+			<< "/" << iter->first->getCenterPoint()->y() << std::endl;
+      	#endif
+		modText[item]->setText(iter->first->getName());
+      	modText[item]->setBrush(QBrush(QColor(textColor)));
+      	textRect = modText[item]->boundingRect();
+      	modText[item]->setX(x+(int) (0.5*(double)channelWidth-0.5*(double)textRect.width()));
+      	modText[item]->setY(y+ (int) (0.5*(double)moduleHeight-0.5*(double)textRect.height()));
+      	modText[item]->setZValue(240);
+      	modText[item]->show(); 
+			
+		canvasView->scene()->addItem(modText[item]);	
+	  	canvasView->scene()->addItem(modRect[item]);
 
-      // Coordinates of the next module
-      x = x+horizontalSpace+moduleWidth;
-      if (x > sideMargin+(dimFactor-1)*moduleWidth+(dimFactor-1)*horizontalSpace) 
-      {
-        x = sideMargin;
-		y = y+verticalSpace+moduleHeight; 
-      }
-    }
+		// Coordinates of the next module
+		y += moduleHeight + topMargin;
+		item++;
 
-    modRect.clear();
+		// PE's
+		for(int i = 0; i < iter->second.size(); i++)
+		{
+			modRect.push_back(new QGraphicsRectItem(0,0,moduleWidth,moduleHeight));
+			iter->first->setHierRect(modRect.back());
+			modText.push_back(new QGraphicsSimpleTextItem());
+
+			// draw module
+      		if(iter->first->getChildren().size()>0)
+      		{
+        		modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
+        		modRect[item]->setPen(QPen(QColor(moduleWithChild)));
+      		}
+      		else   		// no sub hierarchy
+      		{
+        		modRect[item]->setBrush(QBrush(QColor(moduleColor)));
+        		modRect[item]->setPen(QPen(QColor(moduleColor)));
+      		}
+			modRect[item]->setX(x);
+      		modRect[item]->setY(y);
+      		modRect[item]->setZValue(210);
+      		modRect[item]->show();
+			iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)moduleWidth)-1,y+(int) ceil(0.5*(double)moduleHeight)-1));
+			#ifdef DEBUG_GSYSC
+      			std::cout << "Module " << iter->first->getName()
+	  			<<" has center point " << iter->first->getCenterPoint()->x() 
+				<< "/" << iter->first->getCenterPoint()->y() << std::endl;
+      		#endif
+			modText[item]->setText(iter->second[i]->getName());
+      		modText[item]->setBrush(QBrush(QColor(textColor)));
+      		textRect = modText[item]->boundingRect();
+      		modText[item]->setX(x+(int) (0.5*(double)moduleWidth-0.5*(double)textRect.width()));
+      		modText[item]->setY(y+ (int) (0.5*(double)moduleHeight-0.5*(double)textRect.height()));
+      		modText[item]->setZValue(240);
+      		modText[item]->show(); 
+			
+			canvasView->scene()->addItem(modText[item]);	
+	  		canvasView->scene()->addItem(modRect[item]);
+
+			// Coordinates of the next module
+			x += moduleWidth + sideMargin;
+			item++;
+		}
+		y += moduleHeight + topMargin;
+		x = sideMargin;
+	}	
+		
+	modRect.clear();
     modText.clear();
 
     // Port placement
@@ -1558,127 +1603,128 @@
    */
   bool gsysHierarchyWindow::drawConnStep(gsysConnection* connection, QPoint *p1, QPoint *p2,int lfdNr)
   {
-    #ifdef DEBUG_GSYSC
-    std::cout<<"Point 1:  "<<p1->x()<<"/"<<p1->y()<<";     Point 2:  "<<p2->x()<<"/"<<p2->y()<<std::endl;
-    #endif
-    if(lfdNr > 2*dimFactor) 
-    {
-      std::cerr<<"ERROR:  endless recursion threatens in function 'drawConnStep'!!!!!"<<std::endl;
-      return false;
-    }
-    short steigung;
-    QList<QGraphicsItem*> cil = canvasView->scene()->items(*p1);
-    QGraphicsRectItem *nodeRect = 0;
-    for(int o=0; o<cil.size(); o++)
-    {	    
-      if(cil[o]->type() == QGraphicsRectItem::Type) 
-      {
-		nodeRect = (QGraphicsRectItem*) cil[o];
-      }	
-    }  
-
-/************************************************************************
-	Zeichnen eines Knotens der Verbindungen als Rechteck.
-*************************************************************************/
-    if(nodeRect==0)  
-      nodeRect = new QGraphicsRectItem(p1->x()-11,p1->y()-11,24,24);
-      nodeRect->setZValue(100);
-      nodeRect->setPen(QPen(QColor(normalNode)));
-      nodeRect->setBrush(QBrush(QColor(normalNode)));
-      nodeRect->show();
-	  canvasView->scene()->addItem(nodeRect);
-      connection->addTraceElem(nodeRect);
-    if(*p1 == *p2) return true;
-    else
-    {
-
-/************************************************************************
-	Zeichnen einer Linie als Verbindung zwischen zwei GUI 
-	Elementen.
-*************************************************************************/
-      steigung = getSector(p1,p2);
-      QGraphicsLineItem *connLine = new QGraphicsLineItem();
-      connLine->setZValue(20);
-      connLine->setPen(QPen(QColor(normalSignal)));
-      if(steigung == N || steigung == NNW || steigung == NNE)
-      {
-        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
-		drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
-      }
-      if(steigung == E || steigung == ENE || steigung == ESE)
-      {
-        connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
-		drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
-      }
-      if(steigung == S || steigung == SSW || steigung == SSE)
-      {
-        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
-		drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
-      }
-      if(steigung == W || steigung == WNW || steigung == WSW)
-      {
-        connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
-		drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
-      }
-      if(steigung == NE)
-      {
-        if(floor(rand()/RAND_MAX+0.5) == 0.0)
-		{
-    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
-			drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
-		}
-		else
-		{
-    	    connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
-			drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
-		}
-      }
-      if(steigung == NW)
-      {
-        if(floor(rand()/RAND_MAX+0.5) == 0.0)
-		{
-    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
-			drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
-		}
-		else
-		{
-    	    connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
-			drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
-		}
-      }
-      if(steigung == SE)
-      {
-        if(floor(rand()/RAND_MAX+0.5) == 0.0)
-		{
-    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
-			drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
-		}
-		else
-		{
-    	    connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
-			drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
-		}
-      }
-      if(steigung == SW)
-      {
-        if(floor(rand()/RAND_MAX+0.5) == 0.0)
-		{
-    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
-			drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
-		}
-		else
-		{
-    	    connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
-			drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
-		}
-      }
-      connLine->show();
-	  canvasView->scene()->addItem(connLine);
-      connection->addTraceElem(new QGraphicsPathItem(connLine));               //(connLine);
-      return true;
-    }
-
-    nodeRect = 0;
+	  return true;
+//    #ifdef DEBUG_GSYSC
+//    std::cout<<"Point 1:  "<<p1->x()<<"/"<<p1->y()<<";     Point 2:  "<<p2->x()<<"/"<<p2->y()<<std::endl;
+//    #endif
+//    if(lfdNr > 2*dimFactor) 
+//    {
+//      std::cerr<<"ERROR:  endless recursion threatens in function 'drawConnStep'!!!!!"<<std::endl;
+//      return false;
+//    }
+//    short steigung;
+//    QList<QGraphicsItem*> cil = canvasView->scene()->items(*p1);
+//    QGraphicsRectItem *nodeRect = 0;
+//    for(int o=0; o<cil.size(); o++)
+//    {	    
+//      if(cil[o]->type() == QGraphicsRectItem::Type) 
+//      {
+//		nodeRect = (QGraphicsRectItem*) cil[o];
+//      }	
+//    }  
+//
+///************************************************************************
+//	Zeichnen eines Knotens der Verbindungen als Rechteck.
+//*************************************************************************/
+//    if(nodeRect==0)  
+//      nodeRect = new QGraphicsRectItem(p1->x()-11,p1->y()-11,24,24);
+//      nodeRect->setZValue(100);
+//      nodeRect->setPen(QPen(QColor(normalNode)));
+//      nodeRect->setBrush(QBrush(QColor(normalNode)));
+//      nodeRect->show();
+//	  canvasView->scene()->addItem(nodeRect);
+//      connection->addTraceElem(nodeRect);
+//    if(*p1 == *p2) return true;
+//    else
+//    {
+//
+///************************************************************************
+//	Zeichnen einer Linie als Verbindung zwischen zwei GUI 
+//	Elementen.
+//*************************************************************************/
+//      steigung = getSector(p1,p2);
+//      QGraphicsLineItem *connLine = new QGraphicsLineItem();
+//      connLine->setZValue(20);
+//      connLine->setPen(QPen(QColor(normalSignal)));
+//      if(steigung == N || steigung == NNW || steigung == NNE)
+//      {
+//        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
+//		drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
+//      }
+//      if(steigung == E || steigung == ENE || steigung == ESE)
+//      {
+//        connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
+//		drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
+//      }
+//      if(steigung == S || steigung == SSW || steigung == SSE)
+//      {
+//        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
+//		drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
+//      }
+//      if(steigung == W || steigung == WNW || steigung == WSW)
+//      {
+//        connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
+//		drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
+//      }
+//      if(steigung == NE)
+//      {
+//        if(floor(rand()/RAND_MAX+0.5) == 0.0)
+//		{
+//    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
+//			drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
+//		}
+//		else
+//		{
+//    	    connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
+//			drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
+//		}
+//      }
+//      if(steigung == NW)
+//      {
+//        if(floor(rand()/RAND_MAX+0.5) == 0.0)
+//		{
+//    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
+//			drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
+//		}
+//		else
+//		{
+//    	    connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
+//			drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
+//		}
+//      }
+//      if(steigung == SE)
+//      {
+//        if(floor(rand()/RAND_MAX+0.5) == 0.0)
+//		{
+//    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
+//			drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
+//		}
+//		else
+//		{
+//    	    connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
+//			drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
+//		}
+//      }
+//      if(steigung == SW)
+//      {
+//        if(floor(rand()/RAND_MAX+0.5) == 0.0)
+//		{
+//    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
+//			drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
+//		}
+//		else
+//		{
+//    	    connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
+//			drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
+//		}
+//      }
+//      connLine->show();
+//	  canvasView->scene()->addItem(connLine);
+//      connection->addTraceElem(new QGraphicsPathItem(connLine));               //(connLine);
+//      return true;
+//    }
+//
+//    nodeRect = 0;
   }
 
   /*
@@ -1931,6 +1977,7 @@
 	  vector<gsysHierarchy*> relevantItems = {};
 	  gsysHierarchy* currentChannel;
 	  int workOnElems = 0;
+	  int levelPE = 0;
 
 	  // Filter the relevant items first and pick the incoming channel as first elem in sortList
 	  for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
@@ -1957,6 +2004,7 @@
 	  	{
 		  if(relevantItems[i]->getModuleType() == gsysHierarchy::moduleType::PE)
 		  {
+			levelPE++;
 		  	for(int j = 0; j < relevantItems[i]->getAdjacentHier().size(); j++)	
 		  	{
 		  	  if(relevantItems[i]->getAdjacentHier()[j] == currentChannel) // The PE is connected to currentChannel
@@ -1967,6 +2015,7 @@
 			  }
 		  	}
 		  }
+		  maxPE = (levelPE > maxPE) ? levelPE : maxPE;
 	  	}
 
 		// Search for the next level channel

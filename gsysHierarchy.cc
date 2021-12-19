@@ -551,17 +551,20 @@
   gsysHierarchy::moduleType gsysHierarchy::determineModuleType()
   {
 	string name = (string) getName();
-	if (name.find("Channel"))
-    if (name.find("Virtual"))
-		  return moduleType::VIRT_CHANNEL;
-    else if (name.find("Virtual"))
-		  return moduleType::INCOMING_CHANNEL;
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+	if (name.find("channel") != string::npos)
+  {
+    if (name.find("incoming") != string::npos)
+		  { return moduleType::INCOMING_CHANNEL; }
+    else if (name.find("virtual") != string::npos)
+		  { return moduleType::VIRT_CHANNEL; }
     else
-		  return moduleType::CHANNEL;
-	else if (name.find("PE"))
-		return moduleType::PE;
+		  { return moduleType::CHANNEL; }
+	} 
+  else if (name.find("pe") != string::npos)
+    { return moduleType::PE; }
 	else 
-		return moduleType::MISC;
+		{ return moduleType::MISC; }
   }
 
   /*
