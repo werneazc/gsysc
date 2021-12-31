@@ -91,24 +91,18 @@ class gsysHierarchyWindow : public QDialog
 
   private:
   
-  map<gsysHierarchy*, int> hierarchyList; // ((hier, index), type)
+  map<gsysHierarchy*, int> hierarchyList;  // (hier, index)
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
-
-
-/************************************************************************
-    Beiden miteinander Verbindenen Hierarchyelemente und deren
-    jeweiligen Index in 'hierarchyList'. 
-*************************************************************************/
-  vector<pair<pair<gsysHierarchy*, gsysHierarchy*>, pair<int, int>>> hierElemOverview;
-
 
 /************************************************************************
     Sortier die Liste (aktuell) danach, dass die Channels und PE's
     in ihrer Reihenfolge einsortiert sind.
     ( Map zur Zeit PE's (Elementvektor) auf Channels (Key) )
 *************************************************************************/
-  map<gsysHierarchy*, vector<gsysHierarchy*>> sortHierarchyList();
+  map<gsysHierarchy*, vector<gsysHierarchy*>> sortChannels();
+  map<gsysHierarchy*, vector<gsysHierarchy*>> sortChannelSeperator(map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems);
+  map<gsysHierarchy*, vector<gsysHierarchy*>> sortPeSeperator(map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems);
 
   gsysHierarchyWindow( QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
   gsysHierarchy* parent;
@@ -119,7 +113,6 @@ class gsysHierarchyWindow : public QDialog
   void drawSidePort(gsysPort* port, bool left, int nr, int abstand, int portHeight=21);
   void drawNetConns(gsysHierarchy* hier);
   void drawConnections();
-  void registerConnection(gsysHierarchy* hier1, gsysHierarchy* hier2);
   bool drawConnStep(gsysConnection* connection,QPoint *p1, QPoint *p2,int lfdNr);
   bool thisLevel(gsysHierarchy* hier);
  

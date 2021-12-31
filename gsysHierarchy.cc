@@ -563,8 +563,9 @@
 	} 
   else if (name.find("pe") != string::npos)
     { return moduleType::PE; }
-	else 
-		{ return moduleType::MISC; }
+	else if (name.find("seperator") != string::npos)
+    { return moduleType::SEPERATOR; }
+	else { return moduleType::MISC; }
   }
 
   /*

@@ -449,7 +449,7 @@
 	Hier werden die Elemente, welche jeweils in Verbindung stehen
 	und in der GUI enthalten sind zu 'hierElemOverview' hinzugefuegt.
 *************************************************************************/
-		registerConnection(allConnections[i]->getHier1(), allConnections[i]->getHier2());
+//registerConnection(allConnections[i]->getHier1(), allConnections[i]->getHier2());
         
 		#ifdef DEBUG_GSYSC
 		cout 	<< allConnections[i]->getHier1()->getName()
@@ -492,11 +492,13 @@
 /************************************************************************
 	Erstellen einer Canvas für die GUI Elemente.
 *************************************************************************/
-	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedHierElems = sortHierarchyList();
+	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems = sortChannels();
+	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelSeperator = sortChannelSeperator(sortedChannelElems);
+	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedPESeperator = sortPeSeperator(sortedChannelElems);
     canvasView->resize((maxPE+1)*moduleWidth + (maxPE+2)*sideMargin, 
-					   (sortedHierElems.size()*2) * moduleHeight + (sortedHierElems.size()*2) * topMargin);
+					   (sortedChannelElems.size()*2) * moduleHeight + (sortedChannelElems.size()*2) * topMargin);
     canvasView->scene()->setSceneRect(0, 0, (maxPE+1)*moduleWidth + (maxPE+2)*sideMargin,
-											moduleHeight + (sortedHierElems.size()*2) * moduleHeight + (sortedHierElems.size()*2) * topMargin);
+											moduleHeight + (sortedChannelElems.size()*2) * moduleHeight + (sortedChannelElems.size()*2) * topMargin);
 	canvasView->setAlignment(Qt::AlignTop|Qt::AlignLeft);
 	QPalette palette;
     palette.setColor(canvasView->backgroundRole(), backgroundColor);
@@ -515,7 +517,7 @@
 	Hier werden aktuell die Rechtecke, welche die eigentlichen 
 	Module Hierarchyobjekte darstellen, erstellt und platziert.
 *************************************************************************/
-	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedHierElems.begin(); iter != sortedHierElems.end(); iter++)
+	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelElems.begin(); iter != sortedChannelElems.end(); iter++)
 	{
 		// Channel
 		modRect.push_back(new QGraphicsRectItem(0,0,channelWidth,moduleHeight));
@@ -1946,11 +1948,11 @@
 		else return WNW;
     return -1;	
   }
-
+/*
   /*
    *   Add two interconnected hierarchy GUI elements to 'hierElemOverview'.
    *   hier1 / hier2 both hierarchy elements respectively.
-   */
+   *
   void gsysHierarchyWindow::registerConnection(gsysHierarchy* hier1, gsysHierarchy* hier2)
   {
 	  vector<gsysHierarchy::moduleType> cAndP {	gsysHierarchy::moduleType::CHANNEL, 
@@ -1963,18 +1965,21 @@
 		  pair<int, int> p2(hierarchyList.at(hier1), 
 		  					hierarchyList.at(hier2));
 		  pair<pair<gsysHierarchy*, gsysHierarchy*>, pair<int, int>> p3(p1, p2);
-		  hierElemOverview.push_back(make_pair(p1, p2));
+		  channelPEOverview.push_back(make_pair(p1, p2));
 	  }
   }
+*/
 
   /*
-   *   	Sort hierarchy elements according to their relative position in 
-   *	GUI.
+   *   	Sort channel and PE elements according to their relative position 
+   *	in the GUI.
    */
-  map<gsysHierarchy*, vector<gsysHierarchy*>> gsysHierarchyWindow::sortHierarchyList()
+  map<gsysHierarchy*, vector<gsysHierarchy*>> gsysHierarchyWindow::sortChannels()
   {
 	  map<gsysHierarchy*, vector<gsysHierarchy*>> sortList = {};
-	  vector<gsysHierarchy*> relevantItems = {};
+	  vector<gsysHierarchy*> channels = {};
+	  vector<gsysHierarchy*> PE = {};
+	  vector<gsysHierarchy*> sortedPE = {};
 	  gsysHierarchy* currentChannel;
 	  int workOnElems = 0;
 	  int levelPE = 0;
@@ -1987,11 +1992,15 @@
 			  sortList.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (iter->first, {}));
 			  currentChannel = iter->first;	// Start at the incoming channel
 		  } 
-		  else if(	iter->first->getModuleType() == gsysHierarchy::moduleType::CHANNEL ||
-		  			iter->first->getModuleType() == gsysHierarchy::moduleType::PE 		)
+		  else if(iter->first->getModuleType() == gsysHierarchy::moduleType::CHANNEL)
 		  {
-			  relevantItems.push_back(iter->first); // Add channel or PE
-			  workOnElems++;
+			channels.push_back(iter->first);
+			workOnElems++;
+		  }
+		  else if(iter->first->getModuleType() == gsysHierarchy::moduleType::PE)
+		  {
+			PE.push_back(iter->first);
+			workOnElems++;
 		  }
 	  }
 
@@ -1999,34 +2008,50 @@
 	  while(workOnElems > 0)
 	  {
 
-		// Go through the list of PE's and channels
-	  	for(int i = 0; i < relevantItems.size(); i++)	
+		// Find PE's which are connected to the currentChannel
+	  	for(const auto &item : PE)	
 	  	{
-		  if(relevantItems[i]->getModuleType() == gsysHierarchy::moduleType::PE)
+		  levelPE++;
+		  for(const auto &neighbour : item->getAdjacentHier())	
 		  {
-			levelPE++;
-		  	for(int j = 0; j < relevantItems[i]->getAdjacentHier().size(); j++)	
-		  	{
-		  	  if(relevantItems[i]->getAdjacentHier()[j] == currentChannel) // The PE is connected to currentChannel
-			  {
-				sortList.at(currentChannel).push_back(relevantItems[i]);
-				workOnElems--;
-				break;
-			  }
-		  	}
+		    if(neighbour == currentChannel) // Is the PE connected to currentChannel
+		    {
+		  	  if(neighbour->getModuleType() == gsysHierarchy::moduleType::SEPERATOR) // And to a seperator
+		  	  { sortedPE.push_back(neighbour); } 
+		  	  else 
+		  	  { sortList.at(currentChannel).push_back(item); }
+			  workOnElems--;
+		  	  break;
+		    }
 		  }
 		  maxPE = (levelPE > maxPE) ? levelPE : maxPE;
+		  levelPE = 0;
 	  	}
 
-		// Search for the next level channel
-		for(int i = 0; i < sortList.at(currentChannel)[0]->getAdjacentHier().size(); i++) 
-		{
-		  gsysHierarchy* nextPotentialChannel = sortList.at(currentChannel)[0]->getAdjacentHier()[i];
-		  
-		  if(nextPotentialChannel->getModuleType() == gsysHierarchy::moduleType::CHANNEL &&
-		     currentChannel != nextPotentialChannel)
+		// Sort the PE's
+		for(int i = 0; i < sortList.at(currentChannel).size(); i++)	
+		{	
+		  for(const auto &elem : sortedPE[i]->getAdjacentHier())
 		  {
-			  currentChannel = nextPotentialChannel;
+			if(elem->getModuleType() == gsysHierarchy::moduleType::PE &&
+			   std::find(sortedPE.begin(), sortedPE.end(), elem) == sortedPE.end())
+			{
+			  sortedPE.push_back(elem);
+			  break;
+			}
+		  }
+		}
+
+		std::reverse(sortedPE.begin(), sortedPE.end());
+		sortList.at(currentChannel) = sortedPE;
+
+		// Search for the next level channel
+		for(const auto &item : sortList.at(currentChannel)[0]->getAdjacentHier()) 
+		{
+		  if(item->getModuleType() == gsysHierarchy::moduleType::CHANNEL &&
+		     currentChannel != item)
+		  {
+			  currentChannel = item;
 			  sortList.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (currentChannel, {}));
 			  workOnElems--;
 			  break;
@@ -2036,3 +2061,62 @@
 	  return sortList;
   }
   
+  /*
+   *   	Sort channel configuration seperator elements according to their relative position in the GUI.
+   */
+  map<gsysHierarchy*, vector<gsysHierarchy*>> gsysHierarchyWindow::sortChannelSeperator(map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems)
+  {
+	  map<gsysHierarchy*, vector<gsysHierarchy*>> channelAndSeperator = {};
+
+	  for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelElems.begin(); iter != sortedChannelElems.end(); iter++)
+	  {
+		// Find the seperator of the channel
+	    for(const auto &item : iter->first->getAdjacentHier())
+		{
+		  if(item->getModuleType() == gsysHierarchy::moduleType::SEPERATOR &&
+		  	 channelAndSeperator.find(item) == channelAndSeperator.end())
+		  {
+			// Add a new seperator
+		  	channelAndSeperator.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (item, {iter->first}));
+			break;
+		  } 
+		  else 
+		  {
+			// Add the channel to an existing seperator
+			channelAndSeperator.at(item).push_back(iter->first);
+			break;
+		  }
+		}
+	  }
+	  return channelAndSeperator;
+  }
+
+  /*
+   *   	Sort PE configuration seperator elements according to their relative position in the GUI.
+   */
+  map<gsysHierarchy*, vector<gsysHierarchy*>> gsysHierarchyWindow::sortPeSeperator(map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems)
+  {
+	  map<gsysHierarchy*, vector<gsysHierarchy*>> peAndSeperator = {};
+
+	  for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelElems.begin(); iter != sortedChannelElems.end(); iter++)
+	  {
+		// Find the seperator of the PE
+		for(const auto &item : iter->second[iter->second.size()]->getAdjacentHier())
+		{
+		  if(item->getModuleType() == gsysHierarchy::moduleType::SEPERATOR &&
+		  	 peAndSeperator.find(item) == peAndSeperator.end())
+			{
+			  // Add a new seperator
+   			  peAndSeperator.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (item, {iter->second[iter->second.size()]}));
+   			  break;
+			}
+			else 
+			{
+			  // Add the PE to an existing seperator
+			  peAndSeperator.at(item).push_back(iter->second[iter->second.size()]);
+			  break;
+			}
+		}
+	  }
+	  return peAndSeperator;
+  }
