@@ -493,8 +493,8 @@
 	Erstellen einer Canvas für die GUI Elemente.
 *************************************************************************/
 	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems = sortChannels();
-	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelSeperator = sortChannelSeperator(sortedChannelElems);
-	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedPESeperator = sortPeSeperator(sortedChannelElems);
+	//map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelSeperator = sortChannelSeperator(sortedChannelElems);
+	//map<gsysHierarchy*, vector<gsysHierarchy*>> sortedPESeperator = sortPeSeperator(sortedChannelElems);
     canvasView->resize((maxPE+1)*moduleWidth + (maxPE+2)*sideMargin, 
 					   (sortedChannelElems.size()*2) * moduleHeight + (sortedChannelElems.size()*2) * topMargin);
     canvasView->scene()->setSceneRect(0, 0, (maxPE+1)*moduleWidth + (maxPE+2)*sideMargin,
@@ -1981,6 +1981,7 @@
 	  vector<gsysHierarchy*> PE = {};
 	  vector<gsysHierarchy*> sortedPE = {};
 	  gsysHierarchy* currentChannel;
+	  gsysHierarchy* adjSeperator = NULL;
 	  int workOnElems = 0;
 	  int levelPE = 0;
 
@@ -2016,8 +2017,24 @@
 		  {
 		    if(neighbour == currentChannel) // Is the PE connected to currentChannel
 		    {
-		  	  if(neighbour->getModuleType() == gsysHierarchy::moduleType::SEPERATOR) // And to a seperator
-		  	  { sortedPE.push_back(neighbour); } 
+			  // Check for a connection to a seperator
+			  //if(sortedPE.size() == 0)
+			  //{
+			  for(int i = 0; i < item->getAdjacentHier().size(); i++)
+			  {
+			    if(item->getAdjacentHier()[i]->getModuleType() == gsysHierarchy::moduleType::SEPERATOR)
+			    {
+			  	  adjSeperator = item->getAdjacentHier()[i];
+			  	  break;
+			    }
+			  }
+			  //}
+
+		  	  if(adjSeperator != NULL) 
+		  	  { 
+				sortedPE.push_back(item); 
+			  	adjSeperator = NULL;
+			  } 
 		  	  else 
 		  	  { sortList.at(currentChannel).push_back(item); }
 			  workOnElems--;

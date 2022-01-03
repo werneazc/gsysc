@@ -561,10 +561,10 @@
     else
 		  { return moduleType::CHANNEL; }
 	} 
-  else if (name.find("pe") != string::npos)
-    { return moduleType::PE; }
-	else if (name.find("seperator") != string::npos)
+  else if (name.find("seperator") != string::npos)
     { return moduleType::SEPERATOR; }
+  else if (name == "pe")
+    { return moduleType::PE; }
 	else { return moduleType::MISC; }
   }
 
