@@ -494,7 +494,7 @@
 *************************************************************************/
 	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems = sortChannels();
 	//map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelSeperator = sortChannelSeperator(sortedChannelElems);
-	//map<gsysHierarchy*, vector<gsysHierarchy*>> sortedPESeperator = sortPeSeperator(sortedChannelElems);
+	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedPESeperator = sortPeSeperator(sortedChannelElems);
     canvasView->resize((maxPE+1)*moduleWidth + (maxPE+2)*sideMargin, 
 					   (sortedChannelElems.size()*2) * moduleHeight + (sortedChannelElems.size()*2) * topMargin);
     canvasView->scene()->setSceneRect(0, 0, (maxPE+1)*moduleWidth + (maxPE+2)*sideMargin,
@@ -517,6 +517,16 @@
 	Hier werden aktuell die Rechtecke, welche die eigentlichen 
 	Module Hierarchyobjekte darstellen, erstellt und platziert.
 *************************************************************************/
+
+	//for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortChannelSeperator.begin(); iter != sortChannelSeperator.end(); iter++)
+	//{
+	//}
+
+	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortPeSeperator.begin(); iter != sortPeSeperator.end(); iter++)
+	{
+	}
+
+
 	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelElems.begin(); iter != sortedChannelElems.end(); iter++)
 	{
 		// Channel
@@ -2042,7 +2052,6 @@
 		    }
 		  }
 		  maxPE = (levelPE > maxPE) ? levelPE : maxPE;
-		  levelPE = 0;
 	  	}
 
 		// Sort the PE's
@@ -2071,6 +2080,7 @@
 			  currentChannel = item;
 			  sortList.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (currentChannel, {}));
 			  workOnElems--;
+			  levelPE = 0;
 			  break;
 		  }
 		}
@@ -2083,7 +2093,7 @@
    */
   map<gsysHierarchy*, vector<gsysHierarchy*>> gsysHierarchyWindow::sortChannelSeperator(map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems)
   {
-	  map<gsysHierarchy*, vector<gsysHierarchy*>> channelAndSeperator = {};
+	  map<gsysHierarchy*, vector<gsysHierarchy*>> seperatorAndChannel = {};
 
 	  for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelElems.begin(); iter != sortedChannelElems.end(); iter++)
 	  {
@@ -2091,21 +2101,21 @@
 	    for(const auto &item : iter->first->getAdjacentHier())
 		{
 		  if(item->getModuleType() == gsysHierarchy::moduleType::SEPERATOR &&
-		  	 channelAndSeperator.find(item) == channelAndSeperator.end())
+		  	 seperatorAndChannel.find(item) == seperatorAndChannel.end())
 		  {
 			// Add a new seperator
-		  	channelAndSeperator.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (item, {iter->first}));
+		  	seperatorAndChannel.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (item, {iter->first}));
 			break;
 		  } 
 		  else 
 		  {
 			// Add the channel to an existing seperator
-			channelAndSeperator.at(item).push_back(iter->first);
+			seperatorAndChannel.at(item).push_back(iter->first);
 			break;
 		  }
 		}
 	  }
-	  return channelAndSeperator;
+	  return seperatorAndChannel;
   }
 
   /*
@@ -2113,27 +2123,29 @@
    */
   map<gsysHierarchy*, vector<gsysHierarchy*>> gsysHierarchyWindow::sortPeSeperator(map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems)
   {
-	  map<gsysHierarchy*, vector<gsysHierarchy*>> peAndSeperator = {};
+	  gsysHierarchy* rPE;	//Rightmost PE, which is usually connected to a seperator
+	  map<gsysHierarchy*, vector<gsysHierarchy*>> seperatorAndPE = {};
 
 	  for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelElems.begin(); iter != sortedChannelElems.end(); iter++)
 	  {
-		// Find the seperator of the PE
-		for(const auto &item : iter->second[iter->second.size()]->getAdjacentHier())
+		rPE = iter->second[iter->second.size() - 1]; 
+		// Find the seperator of the PE 
+		for(const auto &item : rPE->getAdjacentHier())
 		{
 		  if(item->getModuleType() == gsysHierarchy::moduleType::SEPERATOR &&
-		  	 peAndSeperator.find(item) == peAndSeperator.end())
+		  	 seperatorAndPE.find(item) == seperatorAndPE.end())
 			{
 			  // Add a new seperator
-   			  peAndSeperator.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (item, {iter->second[iter->second.size()]}));
+   			  seperatorAndPE.insert(pair<gsysHierarchy*, vector<gsysHierarchy*>> (item, {rPE}));
    			  break;
 			}
 			else 
 			{
 			  // Add the PE to an existing seperator
-			  peAndSeperator.at(item).push_back(iter->second[iter->second.size()]);
+			  seperatorAndPE.at(item).push_back(rPE);
 			  break;
 			}
 		}
 	  }
-	  return peAndSeperator;
+	  return seperatorAndPE;
   }
