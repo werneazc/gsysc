@@ -58,12 +58,14 @@
       mmHierConnColor=(char*)"#FFFF00";
       mmHierConnShow = true;
       mmSigPortShow = true;
-      sideMargin=50;
-      topMargin=50;
+      sideMargin=30;
+      topMargin=30;
       horizontalSpace=51;
       verticalSpace=51;
       moduleWidth=100;
       moduleHeight=80;
+      seperatorWidth=(int) moduleWidth*0.5;
+      seperatorHeight=2*moduleHeight + topMargin;	  
       char zeile[50];
       while(!feof(fp))
       {
@@ -147,12 +149,14 @@
       mmHierConnColor=(char*)"#FFFF00";
       mmHierConnShow = true;
       mmSigPortShow = true;
-      sideMargin=50;
-      topMargin=50;
+      sideMargin=30;
+      topMargin=30;
       horizontalSpace=51;
       verticalSpace=51;
       moduleWidth=100;
       moduleHeight=80;
+      seperatorWidth=(int) moduleWidth*0.5;
+      seperatorHeight=2*moduleHeight + topMargin;	
 
       cerr<<"WARNING: The configuration file could not be opened. Probably it does not exist!"<<endl;
     }
@@ -493,7 +497,7 @@
 	Erstellen einer Canvas für die GUI Elemente.
 *************************************************************************/
 	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems = sortChannels();
-	//map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelSeperator = sortChannelSeperator(sortedChannelElems);
+	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelSeperator = sortChannelSeperator(sortedChannelElems);
 	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedPESeperator = sortPeSeperator(sortedChannelElems);
     canvasView->resize((maxPE+1)*moduleWidth + (maxPE+2)*sideMargin, 
 					   (sortedChannelElems.size()*2) * moduleHeight + (sortedChannelElems.size()*2) * topMargin);
@@ -510,22 +514,108 @@
     int x=sideMargin;
     int y=topMargin;
 	int item = 0;
-
 	int channelWidth = maxPE * moduleWidth; 
+
 
 /************************************************************************
 	Hier werden aktuell die Rechtecke, welche die eigentlichen 
 	Module Hierarchyobjekte darstellen, erstellt und platziert.
 *************************************************************************/
-
-	//for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortChannelSeperator.begin(); iter != sortChannelSeperator.end(); iter++)
-	//{
-	//}
-
-	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortPeSeperator.begin(); iter != sortPeSeperator.end(); iter++)
+	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelSeperator.begin(); iter != sortedChannelSeperator.end(); iter++)
 	{
+		// Channel seperator
+		modRect.push_back(new QGraphicsRectItem(0,0,seperatorWidth,seperatorHeight));
+		iter->first->setHierRect(modRect.back());
+		modText.push_back(new QGraphicsSimpleTextItem());
+
+		// draw module
+      	if(iter->first->getChildren().size()>0)
+      	{
+        	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
+        	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
+      	}
+      	else   		// no sub hierarchy
+      	{
+        	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
+        	modRect[item]->setPen(QPen(QColor(moduleColor)));
+      	}
+		modRect[item]->setX(x);
+      	modRect[item]->setY(y);
+      	modRect[item]->setZValue(210);
+      	modRect[item]->show();
+		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)seperatorWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
+		#ifdef DEBUG_GSYSC
+      		std::cout << "Module " << iter->first->getName()
+	  		<<" has center point " << iter->first->getCenterPoint()->x() 
+			<< "/" << iter->first->getCenterPoint()->y() << std::endl;
+      	#endif
+		modText[item]->setText(iter->first->getName());
+		modText[item]->setRotation(90);
+      	modText[item]->setBrush(QBrush(QColor(textColor)));
+      	textRect = modText[item]->boundingRect();
+      	modText[item]->setX(x+ sideMargin);
+      	modText[item]->setY(y+ topMargin);
+      	modText[item]->setZValue(240);
+      	modText[item]->show(); 
+			
+		canvasView->scene()->addItem(modText[item]);	
+	  	canvasView->scene()->addItem(modRect[item]);
+
+		// Coordinates of the next module
+		y += seperatorHeight + topMargin;
+		item++;
 	}
 
+	x += seperatorWidth + 2*sideMargin + channelWidth;
+	y = topMargin;
+
+	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedPESeperator.begin(); iter != sortedPESeperator.end(); iter++)
+	{	
+		// PE seperator
+		modRect.push_back(new QGraphicsRectItem(0,0,seperatorWidth,seperatorHeight));
+		iter->first->setHierRect(modRect.back());
+		modText.push_back(new QGraphicsSimpleTextItem());
+
+		// draw module
+      	if(iter->first->getChildren().size()>0)
+      	{
+        	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
+        	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
+      	}
+      	else   		// no sub hierarchy
+      	{
+        	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
+        	modRect[item]->setPen(QPen(QColor(moduleColor)));
+      	}
+		modRect[item]->setX(x);
+      	modRect[item]->setY(y);
+      	modRect[item]->setZValue(210);
+      	modRect[item]->show();
+		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)seperatorWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
+		#ifdef DEBUG_GSYSC
+      		std::cout << "Module " << iter->first->getName()
+	  		<<" has center point " << iter->first->getCenterPoint()->x() 
+			<< "/" << iter->first->getCenterPoint()->y() << std::endl;
+      	#endif
+		modText[item]->setText(iter->first->getName());
+		modText[item]->setRotation(90);
+      	modText[item]->setBrush(QBrush(QColor(textColor)));
+      	textRect = modText[item]->boundingRect();
+      	modText[item]->setX(x+ sideMargin);
+      	modText[item]->setY(y+ topMargin);
+      	modText[item]->setZValue(240);
+      	modText[item]->show(); 
+			
+		canvasView->scene()->addItem(modText[item]);	
+	  	canvasView->scene()->addItem(modRect[item]);
+
+		// Coordinates of the next module
+		y += seperatorHeight + topMargin;
+		item++;
+	}
+
+	x = seperatorWidth + 2*sideMargin;
+	y = topMargin;
 
 	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelElems.begin(); iter != sortedChannelElems.end(); iter++)
 	{
@@ -614,8 +704,11 @@
 			item++;
 		}
 		y += moduleHeight + topMargin;
-		x = sideMargin;
+		x = seperatorWidth + 2*sideMargin;
 	}	
+
+	x = sideMargin;
+	y = topMargin;
 		
 	modRect.clear();
     modText.clear();

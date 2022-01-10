@@ -123,6 +123,8 @@ class gsysHierarchyWindow : public QDialog
   int verticalSpace;
   int moduleWidth;
   int moduleHeight;
+  int seperatorWidth;
+  int seperatorHeight;
   int maxPE;
   char* backgroundColor;
   char* moduleColor;
