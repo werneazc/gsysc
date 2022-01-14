@@ -558,6 +558,8 @@
 		  { return moduleType::INCOMING_CHANNEL; }
     else if (name.find("virtual") != string::npos)
 		  { return moduleType::VIRT_CHANNEL; }
+    else if (name.find("processing") != string::npos)
+		  { return moduleType::PROC_CHANNEL; }
     else
 		  { return moduleType::CHANNEL; }
 	} 

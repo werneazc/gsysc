@@ -64,8 +64,8 @@
       verticalSpace=51;
       moduleWidth=100;
       moduleHeight=80;
-      seperatorWidth=(int) moduleWidth*0.5;
-      seperatorHeight=2*moduleHeight + topMargin;	  
+      verticalModuleWidth=(int) moduleWidth*0.5;
+      seperatorHeight=2*moduleHeight + topMargin;	
       char zeile[50];
       while(!feof(fp))
       {
@@ -155,7 +155,7 @@
       verticalSpace=51;
       moduleWidth=100;
       moduleHeight=80;
-      seperatorWidth=(int) moduleWidth*0.5;
+      verticalModuleWidth=(int) moduleWidth*0.5;
       seperatorHeight=2*moduleHeight + topMargin;	
 
       cerr<<"WARNING: The configuration file could not be opened. Probably it does not exist!"<<endl;
@@ -499,6 +499,7 @@
 	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelElems = sortChannels();
 	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedChannelSeperator = sortChannelSeperator(sortedChannelElems);
 	map<gsysHierarchy*, vector<gsysHierarchy*>> sortedPESeperator = sortPeSeperator(sortedChannelElems);
+
     canvasView->resize((maxPE+1)*moduleWidth + (maxPE+2)*sideMargin, 
 					   (sortedChannelElems.size()*2) * moduleHeight + (sortedChannelElems.size()*2) * topMargin);
     canvasView->scene()->setSceneRect(0, 0, (maxPE+1)*moduleWidth + (maxPE+2)*sideMargin,
@@ -515,16 +516,65 @@
     int y=topMargin;
 	int item = 0;
 	int channelWidth = maxPE * moduleWidth; 
+	int outerChannelHeight = (moduleHeight*2 + topMargin*2) * sortedChannelElems.size();
 
 
 /************************************************************************
 	Hier werden aktuell die Rechtecke, welche die eigentlichen 
 	Module Hierarchyobjekte darstellen, erstellt und platziert.
 *************************************************************************/
+
+	for(int i = 0; i < outerChannel.size(); i++)
+	{
+		// Channel seperator
+		modRect.push_back(new QGraphicsRectItem(0,0,verticalModuleWidth,outerChannelHeight));
+		outerChannel[i]->setHierRect(modRect.back());
+		modText.push_back(new QGraphicsSimpleTextItem());
+
+		// draw module
+      	if(outerChannel[i]->getChildren().size()>0)
+      	{
+        	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
+        	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
+      	}
+      	else   		// no sub hierarchy
+      	{
+        	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
+        	modRect[item]->setPen(QPen(QColor(moduleColor)));
+      	}
+		modRect[item]->setX(x);
+      	modRect[item]->setY(y);
+      	modRect[item]->setZValue(210);
+      	modRect[item]->show();
+		outerChannel[i]->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)verticalModuleWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
+		#ifdef DEBUG_GSYSC
+      		std::cout << "Module " << outerChannel[i]->getName()
+	  		<<" has center point " << outerChannel[i]->getCenterPoint()->x() 
+			<< "/" << outerChannel[i]->getCenterPoint()->y() << std::endl;
+      	#endif
+		modText[item]->setText(outerChannel[i]->getName());
+		modText[item]->setRotation(90);
+      	modText[item]->setBrush(QBrush(QColor(textColor)));
+      	textRect = modText[item]->boundingRect();
+      	modText[item]->setX(x+ sideMargin);
+      	modText[item]->setY(y+ topMargin);
+      	modText[item]->setZValue(240);
+      	modText[item]->show(); 
+			
+		canvasView->scene()->addItem(modText[item]);	
+	  	canvasView->scene()->addItem(modRect[item]);
+
+		// Coordinates of the next module
+		x += sideMargin*4 + channelWidth + verticalModuleWidth*2;
+		item++;
+	}
+
+	x=sideMargin*2 + verticalModuleWidth;
+
 	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelSeperator.begin(); iter != sortedChannelSeperator.end(); iter++)
 	{
 		// Channel seperator
-		modRect.push_back(new QGraphicsRectItem(0,0,seperatorWidth,seperatorHeight));
+		modRect.push_back(new QGraphicsRectItem(0,0,verticalModuleWidth,seperatorHeight));
 		iter->first->setHierRect(modRect.back());
 		modText.push_back(new QGraphicsSimpleTextItem());
 
@@ -543,7 +593,7 @@
       	modRect[item]->setY(y);
       	modRect[item]->setZValue(210);
       	modRect[item]->show();
-		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)seperatorWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
+		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)verticalModuleWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
 		#ifdef DEBUG_GSYSC
       		std::cout << "Module " << iter->first->getName()
 	  		<<" has center point " << iter->first->getCenterPoint()->x() 
@@ -566,13 +616,13 @@
 		item++;
 	}
 
-	x += seperatorWidth + 2*sideMargin + channelWidth;
+	x += verticalModuleWidth + 2*sideMargin + channelWidth;
 	y = topMargin;
 
 	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedPESeperator.begin(); iter != sortedPESeperator.end(); iter++)
 	{	
 		// PE seperator
-		modRect.push_back(new QGraphicsRectItem(0,0,seperatorWidth,seperatorHeight));
+		modRect.push_back(new QGraphicsRectItem(0,0,verticalModuleWidth,seperatorHeight));
 		iter->first->setHierRect(modRect.back());
 		modText.push_back(new QGraphicsSimpleTextItem());
 
@@ -591,7 +641,7 @@
       	modRect[item]->setY(y);
       	modRect[item]->setZValue(210);
       	modRect[item]->show();
-		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)seperatorWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
+		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)verticalModuleWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
 		#ifdef DEBUG_GSYSC
       		std::cout << "Module " << iter->first->getName()
 	  		<<" has center point " << iter->first->getCenterPoint()->x() 
@@ -614,7 +664,7 @@
 		item++;
 	}
 
-	x = seperatorWidth + 2*sideMargin;
+	x = verticalModuleWidth + 2*sideMargin;
 	y = topMargin;
 
 	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelElems.begin(); iter != sortedChannelElems.end(); iter++)
@@ -704,7 +754,7 @@
 			item++;
 		}
 		y += moduleHeight + topMargin;
-		x = seperatorWidth + 2*sideMargin;
+		x = verticalModuleWidth + 2*sideMargin;
 	}	
 
 	x = sideMargin;
@@ -2051,27 +2101,6 @@
 		else return WNW;
     return -1;	
   }
-/*
-  /*
-   *   Add two interconnected hierarchy GUI elements to 'hierElemOverview'.
-   *   hier1 / hier2 both hierarchy elements respectively.
-   *
-  void gsysHierarchyWindow::registerConnection(gsysHierarchy* hier1, gsysHierarchy* hier2)
-  {
-	  vector<gsysHierarchy::moduleType> cAndP {	gsysHierarchy::moduleType::CHANNEL, 
-	  											gsysHierarchy::moduleType::PE, 
-												gsysHierarchy::moduleType::INCOMING_CHANNEL}; 
-	  if( (std::find(cAndP.begin(), cAndP.end(), hier1->getModuleType()) != cAndP.end()) &&
-	  	  (std::find(cAndP.begin(), cAndP.end(), hier2->getModuleType()) != cAndP.end()) )
-	  {
-		  pair<gsysHierarchy*, gsysHierarchy*> p1(hier1, hier2);
-		  pair<int, int> p2(hierarchyList.at(hier1), 
-		  					hierarchyList.at(hier2));
-		  pair<pair<gsysHierarchy*, gsysHierarchy*>, pair<int, int>> p3(p1, p2);
-		  channelPEOverview.push_back(make_pair(p1, p2));
-	  }
-  }
-*/
 
   /*
    *   	Sort channel and PE elements according to their relative position 
@@ -2100,6 +2129,15 @@
 		  {
 			channels.push_back(iter->first);
 			workOnElems++;
+		  } 
+		  else if(iter->first->getModuleType() == gsysHierarchy::moduleType::VIRT_CHANNEL)
+		  {
+			outerChannel.push_back(iter->first);	//Put this channel at the beginning
+			std::reverse(outerChannel.begin(), outerChannel.end());
+		  }
+		  else if(iter->first->getModuleType() == gsysHierarchy::moduleType::PROC_CHANNEL)
+		  {
+			outerChannel.push_back(iter->first);
 		  }
 		  else if(iter->first->getModuleType() == gsysHierarchy::moduleType::PE)
 		  {

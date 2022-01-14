@@ -94,6 +94,7 @@ class gsysHierarchyWindow : public QDialog
   map<gsysHierarchy*, int> hierarchyList;  // (hier, index)
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
+  vector<gsysHierarchy*> outerChannel;
 
 /************************************************************************
     Sortier die Liste (aktuell) danach, dass die Channels und PE's
@@ -123,7 +124,7 @@ class gsysHierarchyWindow : public QDialog
   int verticalSpace;
   int moduleWidth;
   int moduleHeight;
-  int seperatorWidth;
+  int verticalModuleWidth;
   int seperatorHeight;
   int maxPE;
   char* backgroundColor;
