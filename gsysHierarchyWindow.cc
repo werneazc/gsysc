@@ -527,46 +527,10 @@
 	for(int i = 0; i < outerChannel.size(); i++)
 	{
 		// Channel seperator
-		modRect.push_back(new QGraphicsRectItem(0,0,verticalModuleWidth,outerChannelHeight));
-		outerChannel[i]->setHierRect(modRect.back());
-		modText.push_back(new QGraphicsSimpleTextItem());
-
-		// draw module
-      	if(outerChannel[i]->getChildren().size()>0)
-      	{
-        	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
-        	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
-      	}
-      	else   		// no sub hierarchy
-      	{
-        	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
-        	modRect[item]->setPen(QPen(QColor(moduleColor)));
-      	}
-		modRect[item]->setX(x);
-      	modRect[item]->setY(y);
-      	modRect[item]->setZValue(210);
-      	modRect[item]->show();
-		outerChannel[i]->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)verticalModuleWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
-		#ifdef DEBUG_GSYSC
-      		std::cout << "Module " << outerChannel[i]->getName()
-	  		<<" has center point " << outerChannel[i]->getCenterPoint()->x() 
-			<< "/" << outerChannel[i]->getCenterPoint()->y() << std::endl;
-      	#endif
-		modText[item]->setText(outerChannel[i]->getName());
-		modText[item]->setRotation(90);
-      	modText[item]->setBrush(QBrush(QColor(textColor)));
-      	textRect = modText[item]->boundingRect();
-      	modText[item]->setX(x+ sideMargin);
-      	modText[item]->setY(y+ topMargin);
-      	modText[item]->setZValue(240);
-      	modText[item]->show(); 
-			
-		canvasView->scene()->addItem(modText[item]);	
-	  	canvasView->scene()->addItem(modRect[item]);
+		drawModuleSquaresVertical(outerChannel[i], x, y, verticalModuleWidth, outerChannelHeight);
 
 		// Coordinates of the next module
 		x += sideMargin*4 + channelWidth + verticalModuleWidth*2;
-		item++;
 	}
 
 	x=sideMargin*2 + verticalModuleWidth;
@@ -574,46 +538,10 @@
 	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelSeperator.begin(); iter != sortedChannelSeperator.end(); iter++)
 	{
 		// Channel seperator
-		modRect.push_back(new QGraphicsRectItem(0,0,verticalModuleWidth,seperatorHeight));
-		iter->first->setHierRect(modRect.back());
-		modText.push_back(new QGraphicsSimpleTextItem());
-
-		// draw module
-      	if(iter->first->getChildren().size()>0)
-      	{
-        	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
-        	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
-      	}
-      	else   		// no sub hierarchy
-      	{
-        	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
-        	modRect[item]->setPen(QPen(QColor(moduleColor)));
-      	}
-		modRect[item]->setX(x);
-      	modRect[item]->setY(y);
-      	modRect[item]->setZValue(210);
-      	modRect[item]->show();
-		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)verticalModuleWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
-		#ifdef DEBUG_GSYSC
-      		std::cout << "Module " << iter->first->getName()
-	  		<<" has center point " << iter->first->getCenterPoint()->x() 
-			<< "/" << iter->first->getCenterPoint()->y() << std::endl;
-      	#endif
-		modText[item]->setText(iter->first->getName());
-		modText[item]->setRotation(90);
-      	modText[item]->setBrush(QBrush(QColor(textColor)));
-      	textRect = modText[item]->boundingRect();
-      	modText[item]->setX(x+ sideMargin);
-      	modText[item]->setY(y+ topMargin);
-      	modText[item]->setZValue(240);
-      	modText[item]->show(); 
-			
-		canvasView->scene()->addItem(modText[item]);	
-	  	canvasView->scene()->addItem(modRect[item]);
+		drawModuleSquaresVertical(iter->first, x, y, verticalModuleWidth, seperatorHeight);
 
 		// Coordinates of the next module
 		y += seperatorHeight + topMargin;
-		item++;
 	}
 
 	x += verticalModuleWidth + 2*sideMargin + channelWidth;
@@ -622,139 +550,33 @@
 	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedPESeperator.begin(); iter != sortedPESeperator.end(); iter++)
 	{	
 		// PE seperator
-		modRect.push_back(new QGraphicsRectItem(0,0,verticalModuleWidth,seperatorHeight));
-		iter->first->setHierRect(modRect.back());
-		modText.push_back(new QGraphicsSimpleTextItem());
-
-		// draw module
-      	if(iter->first->getChildren().size()>0)
-      	{
-        	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
-        	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
-      	}
-      	else   		// no sub hierarchy
-      	{
-        	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
-        	modRect[item]->setPen(QPen(QColor(moduleColor)));
-      	}
-		modRect[item]->setX(x);
-      	modRect[item]->setY(y);
-      	modRect[item]->setZValue(210);
-      	modRect[item]->show();
-		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)verticalModuleWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
-		#ifdef DEBUG_GSYSC
-      		std::cout << "Module " << iter->first->getName()
-	  		<<" has center point " << iter->first->getCenterPoint()->x() 
-			<< "/" << iter->first->getCenterPoint()->y() << std::endl;
-      	#endif
-		modText[item]->setText(iter->first->getName());
-		modText[item]->setRotation(90);
-      	modText[item]->setBrush(QBrush(QColor(textColor)));
-      	textRect = modText[item]->boundingRect();
-      	modText[item]->setX(x+ sideMargin);
-      	modText[item]->setY(y+ topMargin);
-      	modText[item]->setZValue(240);
-      	modText[item]->show(); 
-			
-		canvasView->scene()->addItem(modText[item]);	
-	  	canvasView->scene()->addItem(modRect[item]);
+		drawModuleSquaresVertical(iter->first, x, y, verticalModuleWidth, seperatorHeight);
 
 		// Coordinates of the next module
 		y += seperatorHeight + topMargin;
-		item++;
 	}
 
-	x = verticalModuleWidth + 2*sideMargin;
+	x = 2*verticalModuleWidth + 3*sideMargin;
 	y = topMargin;
 
 	for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = sortedChannelElems.begin(); iter != sortedChannelElems.end(); iter++)
 	{
 		// Channel
-		modRect.push_back(new QGraphicsRectItem(0,0,channelWidth,moduleHeight));
-		iter->first->setHierRect(modRect.back());
-		modText.push_back(new QGraphicsSimpleTextItem());
-
-		// draw module
-      	if(iter->first->getChildren().size()>0)
-      	{
-        	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
-        	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
-      	}
-      	else   		// no sub hierarchy
-      	{
-        	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
-        	modRect[item]->setPen(QPen(QColor(moduleColor)));
-      	}
-		modRect[item]->setX(x);
-      	modRect[item]->setY(y);
-      	modRect[item]->setZValue(210);
-      	modRect[item]->show();
-		iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)channelWidth)-1,y+(int) ceil(0.5*(double)moduleHeight)-1));
-		#ifdef DEBUG_GSYSC
-      		std::cout << "Module " << iter->first->getName()
-	  		<<" has center point " << iter->first->getCenterPoint()->x() 
-			<< "/" << iter->first->getCenterPoint()->y() << std::endl;
-      	#endif
-		modText[item]->setText(iter->first->getName());
-      	modText[item]->setBrush(QBrush(QColor(textColor)));
-      	textRect = modText[item]->boundingRect();
-      	modText[item]->setX(x+(int) (0.5*(double)channelWidth-0.5*(double)textRect.width()));
-      	modText[item]->setY(y+ (int) (0.5*(double)moduleHeight-0.5*(double)textRect.height()));
-      	modText[item]->setZValue(240);
-      	modText[item]->show(); 
-			
-		canvasView->scene()->addItem(modText[item]);	
-	  	canvasView->scene()->addItem(modRect[item]);
+		drawModuleSquaresHorizontal(iter->first, x, y, channelWidth, moduleHeight);
 
 		// Coordinates of the next module
 		y += moduleHeight + topMargin;
-		item++;
 
 		// PE's
 		for(int i = 0; i < iter->second.size(); i++)
 		{
-			modRect.push_back(new QGraphicsRectItem(0,0,moduleWidth,moduleHeight));
-			iter->first->setHierRect(modRect.back());
-			modText.push_back(new QGraphicsSimpleTextItem());
+		  drawModuleSquaresHorizontal(iter->second[i], x, y, moduleWidth, moduleHeight);
 
-			// draw module
-      		if(iter->first->getChildren().size()>0)
-      		{
-        		modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
-        		modRect[item]->setPen(QPen(QColor(moduleWithChild)));
-      		}
-      		else   		// no sub hierarchy
-      		{
-        		modRect[item]->setBrush(QBrush(QColor(moduleColor)));
-        		modRect[item]->setPen(QPen(QColor(moduleColor)));
-      		}
-			modRect[item]->setX(x);
-      		modRect[item]->setY(y);
-      		modRect[item]->setZValue(210);
-      		modRect[item]->show();
-			iter->first->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)moduleWidth)-1,y+(int) ceil(0.5*(double)moduleHeight)-1));
-			#ifdef DEBUG_GSYSC
-      			std::cout << "Module " << iter->first->getName()
-	  			<<" has center point " << iter->first->getCenterPoint()->x() 
-				<< "/" << iter->first->getCenterPoint()->y() << std::endl;
-      		#endif
-			modText[item]->setText(iter->second[i]->getName());
-      		modText[item]->setBrush(QBrush(QColor(textColor)));
-      		textRect = modText[item]->boundingRect();
-      		modText[item]->setX(x+(int) (0.5*(double)moduleWidth-0.5*(double)textRect.width()));
-      		modText[item]->setY(y+ (int) (0.5*(double)moduleHeight-0.5*(double)textRect.height()));
-      		modText[item]->setZValue(240);
-      		modText[item]->show(); 
-			
-			canvasView->scene()->addItem(modText[item]);	
-	  		canvasView->scene()->addItem(modRect[item]);
-
-			// Coordinates of the next module
-			x += moduleWidth + sideMargin;
-			item++;
+		  // Coordinates of the next module
+		  x += moduleWidth + sideMargin;
 		}
 		y += moduleHeight + topMargin;
-		x = verticalModuleWidth + 2*sideMargin;
+		x = 2*verticalModuleWidth + 3*sideMargin;
 	}	
 
 	x = sideMargin;
@@ -1338,6 +1160,87 @@
     drawConnections();
 
     if (toShow) this->show();
+  }
+
+  void gsysHierarchyWindow::drawModuleSquaresHorizontal(gsysHierarchy* elem, int x, int y, int moduleWidth, int moduleHeight)
+  {
+	modRect.push_back(new QGraphicsRectItem(0, 0, moduleWidth, moduleHeight));
+	elem->setHierRect(modRect.back());
+	modText.push_back(new QGraphicsSimpleTextItem());
+
+	// draw module
+    if(elem->getChildren().size()>0)
+    {
+    	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
+    	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
+    }
+    else   		// no sub hierarchy
+    {
+    	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
+    	modRect[item]->setPen(QPen(QColor(moduleColor)));
+    }
+	modRect[item]->setX(x);
+    modRect[item]->setY(y);
+    modRect[item]->setZValue(210);
+    modRect[item]->show();
+	elem->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)moduleWidth)-1,y+(int) ceil(0.5*(double)moduleHeight)-1));
+	#ifdef DEBUG_GSYSC
+    	std::cout << "Module " << elem->getName()
+		<<" has center point " << elem->getCenterPoint()->x() 
+		<< "/" << elem->getCenterPoint()->y() << std::endl;
+    #endif
+	modText[item]->setText(elem->getName());
+    modText[item]->setBrush(QBrush(QColor(textColor)));
+    textRect = modText[item]->boundingRect();
+    modText[item]->setX(x+(int) (0.5*(double)moduleWidth-0.5*(double)textRect.width()));
+    modText[item]->setY(y+ (int) (0.5*(double)moduleHeight-0.5*(double)textRect.height()));
+    modText[item]->setZValue(240);
+    modText[item]->show(); 
+			
+	canvasView->scene()->addItem(modText[item]);	
+	canvasView->scene()->addItem(modRect[item]);
+	item++;
+  }
+
+  void gsysHierarchyWindow::drawModuleSquaresVertical(gsysHierarchy* elem, int x, int y, int moduleWidth, int moduleHeight)
+  {
+	modRect.push_back(new QGraphicsRectItem(0, 0, moduleWidth, moduleHeight));
+	elem->setHierRect(modRect.back());
+	modText.push_back(new QGraphicsSimpleTextItem());
+
+	// draw module
+    if(elem->getChildren().size()>0)
+    {
+    	modRect[item]->setBrush(QBrush(QColor(moduleWithChild)));
+    	modRect[item]->setPen(QPen(QColor(moduleWithChild)));
+    }
+    else   		// no sub hierarchy
+    {
+    	modRect[item]->setBrush(QBrush(QColor(moduleColor)));
+    	modRect[item]->setPen(QPen(QColor(moduleColor)));
+    }
+	modRect[item]->setX(x);
+    modRect[item]->setY(y);
+    modRect[item]->setZValue(210);
+    modRect[item]->show();
+	elem->setCenterPoint(new QPoint(x+(int) ceil(0.5*(double)verticalModuleWidth)-1,y+(int) ceil(0.5*(double)seperatorHeight)-1));
+	#ifdef DEBUG_GSYSC
+    	std::cout << "Module " << elem->getName()
+		<<" has center point " << elem->getCenterPoint()->x() 
+		<< "/" << elem->getCenterPoint()->y() << std::endl;
+    #endif
+	modText[item]->setText(elem->getName());
+	modText[item]->setRotation(90);
+    modText[item]->setBrush(QBrush(QColor(textColor)));
+    textRect = modText[item]->boundingRect();
+    modText[item]->setX(x+ sideMargin);
+    modText[item]->setY(y+ topMargin);
+    modText[item]->setZValue(240);
+    modText[item]->show(); 
+			
+	canvasView->scene()->addItem(modText[item]);	
+	canvasView->scene()->addItem(modRect[item]);
+	item++;
   }
 
   /*
@@ -2241,7 +2144,7 @@
 		  else 
 		  {
 			// Add the channel to an existing seperator
-			seperatorAndChannel.at(item).push_back(iter->first);
+			//seperatorAndChannel.at(item).push_back(iter->first);
 			break;
 		  }
 		}

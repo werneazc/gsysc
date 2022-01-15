@@ -95,6 +95,8 @@ class gsysHierarchyWindow : public QDialog
   vector<gsysConnection*> connList;        // Connections inside of this level
   vector<gsysConnection*> sideConnList;    // Connections to outer elements
   vector<gsysHierarchy*> outerChannel;
+  vector<QGraphicsRectItem*> modRect;			// Vector fuer die Module
+  vector<QGraphicsSimpleTextItem*> modText;	// Vector fuer deren Text
 
 /************************************************************************
     Sortier die Liste (aktuell) danach, dass die Channels und PE's
@@ -114,6 +116,8 @@ class gsysHierarchyWindow : public QDialog
   void drawSidePort(gsysPort* port, bool left, int nr, int abstand, int portHeight=21);
   void drawNetConns(gsysHierarchy* hier);
   void drawConnections();
+  void drawModuleSquaresHorizontal(gsysHierarchy* elem, int x, int y, int moduleWidth, int moduleHeight);
+  void drawModuleSquaresVertical(gsysHierarchy* elem, int x, int y, int moduleWidth, int moduleHeight);
   bool drawConnStep(gsysConnection* connection,QPoint *p1, QPoint *p2,int lfdNr);
   bool thisLevel(gsysHierarchy* hier);
  
@@ -127,6 +131,7 @@ class gsysHierarchyWindow : public QDialog
   int verticalModuleWidth;
   int seperatorHeight;
   int maxPE;
+  int item;
   char* backgroundColor;
   char* moduleColor;
   char* moduleWithChild;
@@ -149,6 +154,7 @@ class gsysHierarchyWindow : public QDialog
   QLabel* labelWert;
   QLineEdit* lineEditWert;
   QHBoxLayout* moveInfosLayout;
+  QRectF textRect;
   
   char* normalSignal;
   char* normalNode;
