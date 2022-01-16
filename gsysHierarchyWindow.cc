@@ -428,9 +428,6 @@
       cout <<"\t"<< get<0>(hierarchyList[o])->getName() <<endl;
     #endif
 
-    bool found;
-
-
 /************************************************************************
 	Beginn der Bearbeitung der Connections zwischen den GUI Elementen.
 *************************************************************************/
@@ -445,31 +442,30 @@
 				<< " ("<<allConnections[i]->getHier2()
 				<< ")" << std::endl;
       #endif
-      found=false;
       if(thisLevel(allConnections[i]->getHier1()) && thisLevel(allConnections[i]->getHier2()))
       {
-
-/************************************************************************
-	Hier werden die Elemente, welche jeweils in Verbindung stehen
-	und in der GUI enthalten sind zu 'hierElemOverview' hinzugefuegt.
-*************************************************************************/
-//registerConnection(allConnections[i]->getHier1(), allConnections[i]->getHier2());
-        
 		#ifdef DEBUG_GSYSC
 		cout 	<< allConnections[i]->getHier1()->getName()
 				<< " AND " << allConnections[i]->getHier2()->getName()
 				<< " are in this level!" << endl;
 		#endif
-		for(int u=0; u<connList.size(); u++)
-	  	if(connList[u]==allConnections[i]) found=true;
-        if (!found) 
+
+		if(connList.find(allConnections[i]->getHier1()) == connList.end())
 		{
-		  #ifdef DEBUG_GSYSC
-		  cout << "Address of this: " << this << endl;
-		  #endif
 		  allConnections[i]->setParentWindow(this);
-		  connList.push_back(allConnections[i]);
-		} 
+		  connList.insert(pair<gsysHierarchy*, vector<gsysConnection*>> (allConnections[i]->getHier1(), {allConnections[i]}));
+		} else {
+		  connList.at(allConnections[i]->getHier1()).push_back(allConnections[i]);
+		}
+
+		if(connList.find(allConnections[i]->getHier2()) == connList.end())
+		{
+		  allConnections[i]->setParentWindow(this);
+		  connList.insert(pair<gsysHierarchy*, vector<gsysConnection*>> (allConnections[i]->getHier2(), {allConnections[i]}));
+		} else {
+		  connList.at(allConnections[i]->getHier2()).push_back(allConnections[i]);
+		}
+
       }
       else    	
       {
@@ -487,8 +483,7 @@
 	    			<< " is in this level!" << endl;
 	    	#endif
 	    	for(int u=0; u<sideConnList.size(); u++)
-	    		if(sideConnList[u]==allConnections[i]) found=true;
-        	if (!found) sideConnList.push_back(allConnections[i]);
+        	if (!(sideConnList[u]==allConnections[i])) sideConnList.push_back(allConnections[i]);
 	    }
       }
     }
@@ -526,10 +521,10 @@
 
 	for(int i = 0; i < outerChannel.size(); i++)
 	{
-		// Channel seperator
+		// Outer channel seperator
 		drawModuleSquaresVertical(outerChannel[i], x, y, verticalModuleWidth, outerChannelHeight);
 
-		// Coordinates of the next module
+		// Coordinates of the outer channel seperator on the right side
 		x += sideMargin*4 + channelWidth + verticalModuleWidth*2;
 	}
 
@@ -540,7 +535,7 @@
 		// Channel seperator
 		drawModuleSquaresVertical(iter->first, x, y, verticalModuleWidth, seperatorHeight);
 
-		// Coordinates of the next module
+		// Coordinates of the next channel seperator 
 		y += seperatorHeight + topMargin;
 	}
 
@@ -552,7 +547,7 @@
 		// PE seperator
 		drawModuleSquaresVertical(iter->first, x, y, verticalModuleWidth, seperatorHeight);
 
-		// Coordinates of the next module
+		// Coordinates of the next PE seperator 
 		y += seperatorHeight + topMargin;
 	}
 
@@ -564,7 +559,7 @@
 		// Channel
 		drawModuleSquaresHorizontal(iter->first, x, y, channelWidth, moduleHeight);
 
-		// Coordinates of the next module
+		// Coordinates of the next PE row
 		y += moduleHeight + topMargin;
 
 		// PE's
@@ -572,15 +567,14 @@
 		{
 		  drawModuleSquaresHorizontal(iter->second[i], x, y, moduleWidth, moduleHeight);
 
-		  // Coordinates of the next module
+		  // Coordinates of the next PE
 		  x += moduleWidth + sideMargin;
 		}
+
+		// Coordinates of the next channel
 		y += moduleHeight + topMargin;
 		x = 2*verticalModuleWidth + 3*sideMargin;
 	}	
-
-	x = sideMargin;
-	y = topMargin;
 		
 	modRect.clear();
     modText.clear();
@@ -597,561 +591,11 @@
 /************************************************************************
 	Erstellen der Verbindungsports an den jeweiligen Modulen.
 *************************************************************************/
-    for (int co=0; co<connList.size(); co++)
-    {
-      steigung = getSector(normalize(connList[co]->getHier1()->getCenterPoint()),normalize(connList[co]->getHier2()->getCenterPoint()));
-      sigList = connList[co]->getSignals();
-      #ifdef DEBUG_GSYSC
-      cout<<"Connection between "<<connList[co]->getHier1()->getName()<<" and "<<connList[co]->getHier2()->getName()<<" has the following signals:"<<endl;
-      for(int si1=0; si1<sigList.size(); si1++)
-        cout<<"\t"<<sigList[si1]->getName()<<endl;
-      #endif
-      if (steigung == N) 
-      {
-        #ifdef DEBUG_GSYSC
-        std::cout<<connList[co]->getHier1()->getName()<<" and "<<connList[co]->getHier2()->getName()<<" lie to each other in sector \t"<<steigung<<std::endl;
-	#endif
-	if((connList[co]->getHier1()->getCenterPoint()->x() > sideMargin+(dimFactor-1)*(moduleWidth+horizontalSpace)) || 
-	   (connList[co]->getHier1()->getCenterPoint()->x() - (int) ceil((double)moduleWidth*0.5) > sideMargin &&
-	    connList[co]->getHier1()->getWPorts().size() + connList[co]->getHier2()->getWPorts().size() <
-	    connList[co]->getHier1()->getEPorts().size() + connList[co]->getHier2()->getEPorts().size()))
-	  lu = true;      // connection over left side
-	else lu = false;  // connection over right side
-	if(lu)
-	{
-	  connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	  connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	}
-	else // !lu
-	{
-	  connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	  connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	}
-	for(int si=0; si<sigList.size(); si++)
-	{
-	  if(lu)
-	  {
-	    if(connList[co]->getHier1()->getNPorts().size() < connList[co]->getHier1()->getWPorts().size())
-	      connList[co]->getHier1()->addNPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier1()->getNPorts().size() > connList[co]->getHier1()->getWPorts().size())
-	        connList[co]->getHier1()->addWPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier1()->getNPorts().size() == connList[co]->getHier1()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addNPort(sigList[si],W);
-	          else connList[co]->getHier1()->addWPort(sigList[si],N);
-		}  
-	    if(connList[co]->getHier2()->getSPorts().size() < connList[co]->getHier2()->getWPorts().size())
-	      connList[co]->getHier2()->addSPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier2()->getSPorts().size() > connList[co]->getHier2()->getWPorts().size())
-	        connList[co]->getHier2()->addWPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier2()->getSPorts().size() == connList[co]->getHier2()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addSPort(sigList[si],W);
-	          else connList[co]->getHier2()->addWPort(sigList[si],S);
-	        }
-	  }
-	  else	// case: !lu	
-	  {
-	    if(connList[co]->getHier1()->getNPorts().size() < connList[co]->getHier1()->getEPorts().size())
-	      connList[co]->getHier1()->addNPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier1()->getNPorts().size() > connList[co]->getHier1()->getEPorts().size())
-	        connList[co]->getHier1()->addEPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier1()->getNPorts().size() == connList[co]->getHier1()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addNPort(sigList[si],E);
-	          else connList[co]->getHier1()->addEPort(sigList[si],N);
-		}  
-	    if(connList[co]->getHier2()->getSPorts().size() < connList[co]->getHier2()->getEPorts().size())
-	      connList[co]->getHier2()->addSPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier2()->getSPorts().size() > connList[co]->getHier2()->getEPorts().size())
-	        connList[co]->getHier2()->addEPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier2()->getSPorts().size() == connList[co]->getHier2()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addSPort(sigList[si],E);
-	          else connList[co]->getHier2()->addEPort(sigList[si],S);
-	        }
-	  }	
-	}
-      }	
-      if (steigung == NNE || steigung == NE || steigung == ENE) 
-      {
-        #ifdef DEBUG_GSYSC
-        std::cout<<connList[co]->getHier1()->getName()<<" and "<<connList[co]->getHier2()->getName()<<" lie to each other in sector \t"<<steigung<<std::endl;
-	#endif
-	connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	for (int si=0; si<sigList.size(); si++)
-	{
-	    if(connList[co]->getHier1()->getNPorts().size() < connList[co]->getHier1()->getEPorts().size())
-	      connList[co]->getHier1()->addNPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier1()->getNPorts().size() > connList[co]->getHier1()->getEPorts().size())
-	        connList[co]->getHier1()->addEPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier1()->getNPorts().size() == connList[co]->getHier1()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addNPort(sigList[si],E);
-	          else connList[co]->getHier1()->addEPort(sigList[si],N);
-		}  
-	    if(connList[co]->getHier2()->getSPorts().size() < connList[co]->getHier2()->getWPorts().size())
-	      connList[co]->getHier2()->addSPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier2()->getSPorts().size() > connList[co]->getHier2()->getWPorts().size())
-	        connList[co]->getHier2()->addWPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier2()->getSPorts().size() == connList[co]->getHier2()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addSPort(sigList[si],W);
-	          else connList[co]->getHier2()->addWPort(sigList[si],S);
-	        }
-	}
-      }	
-      if (steigung == E) 
-      {
-        #ifdef DEBUG_GSYSC
-        std::cout<<connList[co]->getHier1()->getName()<<" and "<<connList[co]->getHier2()->getName()<<" lie to each other in sector \t"<<steigung<<std::endl;
-	#endif
-	if(connList[co]->getHier1()->getNPorts().size() + connList[co]->getHier2()->getNPorts().size() <
-	   connList[co]->getHier1()->getSPorts().size() + connList[co]->getHier2()->getSPorts().size())
-	  lu = true;      // connection over upper side
-	else lu = false;  // connection over lower side
-	if(lu)
-	{
-	  connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	  connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	}
-	else // !lu
-	{
-	  connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	  connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	}
-	for(int si=0; si<sigList.size(); si++)
-	{
-	  if(lu)
-	  {
-	    if(connList[co]->getHier1()->getNPorts().size() < connList[co]->getHier1()->getEPorts().size())
-	      connList[co]->getHier1()->addNPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier1()->getNPorts().size() > connList[co]->getHier1()->getEPorts().size())
-	        connList[co]->getHier1()->addEPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier1()->getNPorts().size() == connList[co]->getHier1()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addNPort(sigList[si],E);
-	          else connList[co]->getHier1()->addEPort(sigList[si],N);
-		}  
-	    if(connList[co]->getHier2()->getNPorts().size() < connList[co]->getHier2()->getWPorts().size())
-	      connList[co]->getHier2()->addNPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier2()->getNPorts().size() > connList[co]->getHier2()->getWPorts().size())
-	        connList[co]->getHier2()->addWPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier2()->getNPorts().size() == connList[co]->getHier2()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addNPort(sigList[si],W);
-	          else connList[co]->getHier2()->addWPort(sigList[si],N);
-	        }
-	  }	
-	  else	// case: !lu	
-	  {
-	    if(connList[co]->getHier1()->getSPorts().size() < connList[co]->getHier1()->getEPorts().size())
-	      connList[co]->getHier1()->addSPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier1()->getSPorts().size() > connList[co]->getHier1()->getEPorts().size())
-	        connList[co]->getHier1()->addEPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier1()->getSPorts().size() == connList[co]->getHier1()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addSPort(sigList[si],E);
-	          else connList[co]->getHier1()->addEPort(sigList[si],S);
-		}  
-	    if(connList[co]->getHier2()->getSPorts().size() < connList[co]->getHier2()->getWPorts().size())
-	      connList[co]->getHier2()->addSPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier2()->getSPorts().size() > connList[co]->getHier2()->getWPorts().size())
-	        connList[co]->getHier2()->addWPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier2()->getSPorts().size() == connList[co]->getHier2()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addSPort(sigList[si],W);
-	          else connList[co]->getHier2()->addWPort(sigList[si],S);
-	        }
-	  }	
-	}
-      }
-      if (steigung == ESE || steigung == SE || steigung == SSE) 
-      {
-        #ifdef DEBUG_GSYSC
-        std::cout<<connList[co]->getHier1()->getName()<<" and "<<connList[co]->getHier2()->getName()<<" lie to each other in sector \t"<<steigung<<std::endl;
-	#endif
-	connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	for (int si=0; si<sigList.size(); si++)
-	{
-	    if(connList[co]->getHier1()->getSPorts().size() < connList[co]->getHier1()->getEPorts().size())
-	      connList[co]->getHier1()->addSPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier1()->getSPorts().size() > connList[co]->getHier1()->getEPorts().size())
-	        connList[co]->getHier1()->addEPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier1()->getSPorts().size() == connList[co]->getHier1()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addSPort(sigList[si],E);
-	          else connList[co]->getHier1()->addEPort(sigList[si],S);
-		}  
-	    if(connList[co]->getHier2()->getNPorts().size() < connList[co]->getHier2()->getWPorts().size())
-	      connList[co]->getHier2()->addNPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier2()->getNPorts().size() > connList[co]->getHier2()->getWPorts().size())
-	        connList[co]->getHier2()->addWPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier2()->getNPorts().size() == connList[co]->getHier2()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addNPort(sigList[si],W);
-	          else connList[co]->getHier2()->addWPort(sigList[si],N);
-	        }
-	}
-      }
-      if (steigung == S) 
-      {
-        #ifdef DEBUG_GSYSC
-        std::cout<<connList[co]->getHier1()->getName()<<" and "<<connList[co]->getHier2()->getName()<<" lie to each other in sector \t"<<steigung<<std::endl;
-	#endif
-	if((connList[co]->getHier1()->getCenterPoint()->x() > sideMargin+(dimFactor-1)*(moduleWidth+horizontalSpace)) || 
-	   (connList[co]->getHier1()->getCenterPoint()->x() - (int) ceil((double)moduleWidth*0.5) > sideMargin &&
-	    connList[co]->getHier1()->getWPorts().size() + connList[co]->getHier2()->getWPorts().size() <
-	    connList[co]->getHier1()->getEPorts().size() + connList[co]->getHier2()->getEPorts().size()))
-	  lu = true;      // connection over left side
-	else lu = false;  // connection over right side
-	if(lu)
-	{
-	  connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	  connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	}
-	else // !lu
-	{
-	  connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	  connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	}
-	for(int si=0; si<sigList.size(); si++)
-	{
-	  if(lu)
-	  {
-	    if(connList[co]->getHier2()->getNPorts().size() < connList[co]->getHier2()->getWPorts().size())
-	      connList[co]->getHier2()->addNPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier2()->getNPorts().size() > connList[co]->getHier2()->getWPorts().size())
-	        connList[co]->getHier2()->addWPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier2()->getNPorts().size() == connList[co]->getHier2()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addNPort(sigList[si],W);
-	          else connList[co]->getHier2()->addWPort(sigList[si],N);
-		}  
-	    if(connList[co]->getHier1()->getSPorts().size() < connList[co]->getHier1()->getWPorts().size())
-	      connList[co]->getHier1()->addSPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier1()->getSPorts().size() > connList[co]->getHier1()->getWPorts().size())
-	        connList[co]->getHier1()->addWPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier1()->getSPorts().size() == connList[co]->getHier1()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addSPort(sigList[si],W);
-	          else connList[co]->getHier1()->addWPort(sigList[si],S);
-	        }
-	  }	
-	  else	// case: !lu	
-	  {
-	    if(connList[co]->getHier2()->getNPorts().size() < connList[co]->getHier2()->getEPorts().size())
-	      connList[co]->getHier2()->addNPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier2()->getNPorts().size() > connList[co]->getHier2()->getEPorts().size())
-	        connList[co]->getHier2()->addEPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier2()->getNPorts().size() == connList[co]->getHier2()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addNPort(sigList[si],E);
-	          else connList[co]->getHier2()->addEPort(sigList[si],N);
-		}  
-	    if(connList[co]->getHier1()->getSPorts().size() < connList[co]->getHier1()->getEPorts().size())
-	      connList[co]->getHier1()->addSPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier1()->getSPorts().size() > connList[co]->getHier1()->getEPorts().size())
-	        connList[co]->getHier1()->addEPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier1()->getSPorts().size() == connList[co]->getHier1()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addSPort(sigList[si],E);
-	          else connList[co]->getHier1()->addEPort(sigList[si],S);
-	        }
-	  }	
-	}
-      }
-      if (steigung == SSW || steigung == SW || steigung == WSW) 
-      {
-        #ifdef DEBUG_GSYSC
-        std::cout<<connList[co]->getHier1()->getName()<<" and "<<connList[co]->getHier2()->getName()<<" lie to each other in sector \t"<<steigung<<std::endl;
-	#endif
-	connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	for (int si=0; si<sigList.size(); si++)
-	{
-	    if(connList[co]->getHier1()->getSPorts().size() < connList[co]->getHier1()->getWPorts().size())
-	      connList[co]->getHier1()->addSPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier1()->getSPorts().size() > connList[co]->getHier1()->getWPorts().size())
-	        connList[co]->getHier1()->addWPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier1()->getSPorts().size() == connList[co]->getHier1()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addSPort(sigList[si],W);
-	          else connList[co]->getHier1()->addWPort(sigList[si],S);
-		}  
-	    if(connList[co]->getHier2()->getNPorts().size() < connList[co]->getHier2()->getEPorts().size())
-	      connList[co]->getHier2()->addNPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier2()->getNPorts().size() > connList[co]->getHier2()->getEPorts().size())
-	        connList[co]->getHier2()->addEPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier2()->getNPorts().size() == connList[co]->getHier2()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addNPort(sigList[si],E);
-	          else connList[co]->getHier2()->addEPort(sigList[si],N);
-	        }
-	}
-      }	
-      if (steigung == W) 
-      {
-        #ifdef DEBUG_GSYSC
-        std::cout<<connList[co]->getHier1()->getName()<<" and "<<connList[co]->getHier2()->getName()<<" lie to each other in sector \t"<<steigung<<std::endl;
-	#endif
-	if(connList[co]->getHier1()->getNPorts().size() + connList[co]->getHier2()->getNPorts().size() <
-	   connList[co]->getHier1()->getSPorts().size() + connList[co]->getHier2()->getSPorts().size())
-	  lu = true;      // connection over upper side
-	else lu = false;  // connection over lower side
-	if(lu)
-	{
-	  connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	  connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	}
-	else // !lu
-	{
-	  connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	  connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	}
-	for(int si=0; si<sigList.size(); si++)
-	{
-	  if(lu)
-	  {
-	    if(connList[co]->getHier2()->getNPorts().size() < connList[co]->getHier2()->getEPorts().size())
-	      connList[co]->getHier2()->addNPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier2()->getNPorts().size() > connList[co]->getHier2()->getEPorts().size())
-	        connList[co]->getHier2()->addEPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier2()->getNPorts().size() == connList[co]->getHier2()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addNPort(sigList[si],E);
-	          else connList[co]->getHier2()->addEPort(sigList[si],N);
-		}  
-	    if(connList[co]->getHier1()->getNPorts().size() < connList[co]->getHier1()->getWPorts().size())
-	      connList[co]->getHier1()->addNPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier1()->getNPorts().size() > connList[co]->getHier1()->getWPorts().size())
-	        connList[co]->getHier1()->addWPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier1()->getNPorts().size() == connList[co]->getHier1()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addNPort(sigList[si],W);
-	          else connList[co]->getHier1()->addWPort(sigList[si],N);
-	        }
-	  }	
-	  else	// case: !lu
-	  {
-	    if(connList[co]->getHier2()->getSPorts().size() < connList[co]->getHier2()->getEPorts().size())
-	      connList[co]->getHier2()->addSPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier2()->getSPorts().size() > connList[co]->getHier2()->getEPorts().size())
-	        connList[co]->getHier2()->addEPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier2()->getSPorts().size() == connList[co]->getHier2()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addSPort(sigList[si],E);
-	          else connList[co]->getHier2()->addEPort(sigList[si],S);
-		}  
-	    if(connList[co]->getHier1()->getSPorts().size() < connList[co]->getHier1()->getWPorts().size())
-	      connList[co]->getHier1()->addSPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier1()->getSPorts().size() > connList[co]->getHier1()->getWPorts().size())
-	        connList[co]->getHier1()->addWPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier1()->getSPorts().size() == connList[co]->getHier1()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addSPort(sigList[si],W);
-	          else connList[co]->getHier1()->addWPort(sigList[si],S);
-	        }
-	  }	
-	}
-      }
-      if (steigung == WNW || steigung == NW || steigung == NNW) 
-      {
-        #ifdef DEBUG_GSYSC
-        std::cout<<connList[co]->getHier1()->getName()<<" and "<<connList[co]->getHier2()->getName()<<" lie to each other in sector \t"<<steigung<<std::endl;
-	#endif
-	connList[co]->setNode1(new QPoint(connList[co]->getHier1()->getCenterPoint()->x()-(int)ceil((double)moduleWidth*0.5)+1-(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier1()->getCenterPoint()->y()-(int)ceil((double)moduleHeight*0.5)+1-(int)ceil((double)verticalSpace*0.5)));
-	connList[co]->setNode2(new QPoint(connList[co]->getHier2()->getCenterPoint()->x()+(int)floor((double)moduleWidth*0.5)+(int)ceil((double)horizontalSpace*0.5),connList[co]->getHier2()->getCenterPoint()->y()+(int)floor((double)moduleHeight*0.5)+(int)ceil((double)verticalSpace*0.5)));
-	for (int si=0; si<sigList.size(); si++)
-	{
-	    if(connList[co]->getHier1()->getNPorts().size() < connList[co]->getHier1()->getWPorts().size())
-	      connList[co]->getHier1()->addNPort(sigList[si],W);
-	    else
-	      if(connList[co]->getHier1()->getNPorts().size() > connList[co]->getHier1()->getWPorts().size())
-	        connList[co]->getHier1()->addWPort(sigList[si],N);
-	      else
-	        if(connList[co]->getHier1()->getNPorts().size() == connList[co]->getHier1()->getWPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier1()->addNPort(sigList[si],W);
-	          else connList[co]->getHier1()->addWPort(sigList[si],N);
-		}  
-	    if(connList[co]->getHier2()->getSPorts().size() < connList[co]->getHier2()->getEPorts().size())
-	      connList[co]->getHier2()->addSPort(sigList[si],E);
-	    else
-	      if(connList[co]->getHier2()->getSPorts().size() > connList[co]->getHier2()->getEPorts().size())
-	        connList[co]->getHier2()->addEPort(sigList[si],S);
-	      else
-	        if(connList[co]->getHier2()->getSPorts().size() == connList[co]->getHier2()->getEPorts().size())
-		{
-	          rand1 = rand()/RAND_MAX;
-	          if(rand1 >= 0.5) connList[co]->getHier2()->addSPort(sigList[si],E);
-	          else connList[co]->getHier2()->addEPort(sigList[si],S);
-	        }
-	}
-      }
-    }
 
-
-    // Port arrangements left and right for contact to the world outside ...
-    if (ownHierarchy!=0) 
-    {
-      for (int i=0; i<sideConnList.size(); i++)
-      {
-        if(sideConnList[i]->getHier1()->getCenterPoint()->x() < sideMargin+moduleWidth ||
-	   sideConnList[i]->getHier2()->getCenterPoint()->x() < sideMargin+moduleWidth)  // Modul auf linker Seite
-	{
-	  for(int o=0; o<sideConnList[i]->getSignals().size(); o++)
-	  {
-	    #ifdef DEBUG_GSYSC
-	    cout<<"SideConnList.size()="<<sideConnList.size()<<",  sideConnList[i]->getSignals().size()="<<sideConnList[i]->getSignals().size()<<endl;
-	    #endif
-	    if(sideConnList[i]->getHier1()==ownHierarchy) 
-	    {
-	      sideConnList[i]->getHier2()->addWPort(sideConnList[i]->getSignals()[o],QPoint());
-	      ownHierarchy->addLeftPort(sideConnList[i]->getSignals()[o]);
-	      ownHierarchy->getLeftPorts()[ownHierarchy->getLeftPorts().size()-1]->hVar = sideConnList[i]->getHier2()->getCenterPoint()->y()+o+1;
-	    }  
-	    else  
-	    {
-	      sideConnList[i]->getHier1()->addWPort(sideConnList[i]->getSignals()[o],QPoint());
-	      ownHierarchy->addLeftPort(sideConnList[i]->getSignals()[o]);
-	      ownHierarchy->getLeftPorts()[ownHierarchy->getLeftPorts().size()-1]->hVar = sideConnList[i]->getHier1()->getCenterPoint()->y()+o+1;
-	    }  
-	  }
-	}
-	else	// Module on the right; all others should be connected through sideConnList (see above)
-	{
-	  for(int o=0; o<sideConnList[i]->getSignals().size(); o++)
-	  {
-	    if(sideConnList[i]->getHier1()==ownHierarchy) 
-	    {
-	      sideConnList[i]->getHier2()->addEPort(sideConnList[i]->getSignals()[o],QPoint());
-	      ownHierarchy->addRightPort(sideConnList[i]->getSignals()[o]);
-	      ownHierarchy->getRightPorts()[ownHierarchy->getRightPorts().size()-1]->hVar = sideConnList[i]->getHier2()->getCenterPoint()->y()+o+1;
-	    }  
-	    else  
-	    {
-	      sideConnList[i]->getHier1()->addEPort(sideConnList[i]->getSignals()[o],QPoint());
-	      ownHierarchy->addRightPort(sideConnList[i]->getSignals()[o]);
-	      ownHierarchy->getRightPorts()[ownHierarchy->getRightPorts().size()-1]->hVar = sideConnList[i]->getHier1()->getCenterPoint()->y()+o+1;
-	    }  
-	  }
-	}
-      }
-      ownHierarchy->sortSidePorts();
-    
-
-      // draw port arrangements left and right ...
-      int abstandY = (int) floor( (2*(double)topMargin+(double)dimFactor*(double)moduleHeight
-      					+((double)dimFactor-1)*(double)verticalSpace 
-      					- ownHierarchy->getLeftPorts().size() * 21) 
-			  	  / (double)(ownHierarchy->getLeftPorts().size()+1) );      // distances between ports at equidistant distribution
-      cout<<"AbstandY ist "<<abstandY<<";  Zaehler: "<<(2*(double)topMargin+(double)dimFactor*(double)moduleHeight +((double)dimFactor-1)*(double)verticalSpace - ownHierarchy->getLeftPorts().size() * 21)<<" / Nenner: "<<(double)(ownHierarchy->getLeftPorts().size()+1)<<"    <->   getLeftPorts().size()="<<ownHierarchy->getLeftPorts().size()<<endl;		     
-      for(int i=0; i<ownHierarchy->getLeftPorts().size(); i++)
-      {
-        cout<<"LeftPorts().size()="<<ownHierarchy->getLeftPorts().size()<<";  i="<<i<<endl;
-	drawSidePort(ownHierarchy->getLeftPorts()[i],true,i,abstandY);
-      }
-    
-      int donePortsL = 0;
-      int donePortsR = 0;
-      for(map<gsysHierarchy*, int>::iterator i = hierarchyList.begin(); i != hierarchyList.end(); i++)
-      {
-	    if (i->second % dimFactor == 0)
-	    {
-	      for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
-	        iter->first->getWPorts()[iter->second]->setDest(
-	    		QPoint(50, (donePortsL + iter->second + 1) * abstandY + (donePortsL + iter->second) * 21 + 11)
-	    	);
-	      donePortsL += i->first->getWPorts().size();
-	    }
-	    if (i->second % dimFactor == dimFactor-1)
-	    {
-	    for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
-	      iter->first->getEPorts()[iter->second]->setDest(
-	  		QPoint(canvasView->scene()->width() - 51, (donePortsR + iter->second + 1) * abstandY + (donePortsR + iter->second) * 21 + 11)
-	  	);
-	    donePortsR += i->first->getEPorts().size();
-	    }
-        
-      }
-	}
-
-    sigList.clear();
-
-	for(map<gsysHierarchy*, int>::iterator iter = hierarchyList.begin(); iter != hierarchyList.end(); iter++)
-	{
-		drawNetConns(iter->first);
-	}
+	// Coordinates of the bottom left corner of the incoming channel
+	x = 2*verticalModuleWidth + 3*sideMargin;
+	y = topMargin + moduleHeight;
+	drawModulePorts(sortedChannelElems, gsysHierarchy::moduleType::INCOMING_CHANNEL, x, y);
 
 /************************************************************************
 	Methode zum zeichnen der letztendlichen Verbindungslinien 
@@ -1160,6 +604,27 @@
     drawConnections();
 
     if (toShow) this->show();
+  }
+
+  void gsysHierarchyWindow::drawModulePorts(map<gsysHierarchy*, vector<gsysHierarchy*>> elems, gsysHierarchy::moduleType k, int x, int y)
+  {
+	if(k == gsysHierarchy::moduleType::INCOMING_CHANNEL) 
+	{
+	  for(map<gsysHierarchy*, vector<gsysHierarchy*>>::iterator iter = elems.begin(); iter != elems.end(); iter++)
+		for(int i = 0; i < iter->second.size(); i++)							// Go through the PE
+		  {
+		    for(int j = 0; j < connList.at(iter->first).size(); j++)				// Go through the connections
+		      if(connList.at(iter->first)[j]->getHier1() == iter->second[i])		// Found the connection to the PE here...
+		      {
+		  	  connList.at(iter->first)[j]->setNode1(new QPoint((int) (x += moduleWidth*0.3), y));
+		      }
+		      else if(connList.at(iter->first)[j]->getHier2() == iter->second[i])	// ...or here
+		      {
+		  	  connList.at(iter->first)[j]->setNode2(new QPoint((int) (x += moduleWidth*0.3), y));
+		      }
+			x += (int) (moduleWidth*0.4) + sideMargin;
+		  }
+	}
   }
 
   void gsysHierarchyWindow::drawModuleSquaresHorizontal(gsysHierarchy* elem, int x, int y, int moduleWidth, int moduleHeight)
@@ -1662,127 +1127,6 @@
   bool gsysHierarchyWindow::drawConnStep(gsysConnection* connection, QPoint *p1, QPoint *p2,int lfdNr)
   {
 	  return true;
-//    #ifdef DEBUG_GSYSC
-//    std::cout<<"Point 1:  "<<p1->x()<<"/"<<p1->y()<<";     Point 2:  "<<p2->x()<<"/"<<p2->y()<<std::endl;
-//    #endif
-//    if(lfdNr > 2*dimFactor) 
-//    {
-//      std::cerr<<"ERROR:  endless recursion threatens in function 'drawConnStep'!!!!!"<<std::endl;
-//      return false;
-//    }
-//    short steigung;
-//    QList<QGraphicsItem*> cil = canvasView->scene()->items(*p1);
-//    QGraphicsRectItem *nodeRect = 0;
-//    for(int o=0; o<cil.size(); o++)
-//    {	    
-//      if(cil[o]->type() == QGraphicsRectItem::Type) 
-//      {
-//		nodeRect = (QGraphicsRectItem*) cil[o];
-//      }	
-//    }  
-//
-///************************************************************************
-//	Zeichnen eines Knotens der Verbindungen als Rechteck.
-//*************************************************************************/
-//    if(nodeRect==0)  
-//      nodeRect = new QGraphicsRectItem(p1->x()-11,p1->y()-11,24,24);
-//      nodeRect->setZValue(100);
-//      nodeRect->setPen(QPen(QColor(normalNode)));
-//      nodeRect->setBrush(QBrush(QColor(normalNode)));
-//      nodeRect->show();
-//	  canvasView->scene()->addItem(nodeRect);
-//      connection->addTraceElem(nodeRect);
-//    if(*p1 == *p2) return true;
-//    else
-//    {
-//
-///************************************************************************
-//	Zeichnen einer Linie als Verbindung zwischen zwei GUI 
-//	Elementen.
-//*************************************************************************/
-//      steigung = getSector(p1,p2);
-//      QGraphicsLineItem *connLine = new QGraphicsLineItem();
-//      connLine->setZValue(20);
-//      connLine->setPen(QPen(QColor(normalSignal)));
-//      if(steigung == N || steigung == NNW || steigung == NNE)
-//      {
-//        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
-//		drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
-//      }
-//      if(steigung == E || steigung == ENE || steigung == ESE)
-//      {
-//        connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
-//		drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
-//      }
-//      if(steigung == S || steigung == SSW || steigung == SSE)
-//      {
-//        connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
-//		drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
-//      }
-//      if(steigung == W || steigung == WNW || steigung == WSW)
-//      {
-//        connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
-//		drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
-//      }
-//      if(steigung == NE)
-//      {
-//        if(floor(rand()/RAND_MAX+0.5) == 0.0)
-//		{
-//    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
-//			drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
-//		}
-//		else
-//		{
-//    	    connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
-//			drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
-//		}
-//      }
-//      if(steigung == NW)
-//      {
-//        if(floor(rand()/RAND_MAX+0.5) == 0.0)
-//		{
-//    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()-moduleHeight-verticalSpace);
-//			drawConnStep(connection,new QPoint(p1->x(),p1->y()-moduleHeight-verticalSpace),p2,lfdNr+1);
-//		}
-//		else
-//		{
-//    	    connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
-//			drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
-//		}
-//      }
-//      if(steigung == SE)
-//      {
-//        if(floor(rand()/RAND_MAX+0.5) == 0.0)
-//		{
-//    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
-//			drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
-//		}
-//		else
-//		{
-//    	    connLine->setLine(p1->x(),p1->y(),p1->x()+moduleWidth+horizontalSpace,p1->y());
-//			drawConnStep(connection,new QPoint(p1->x()+moduleWidth+horizontalSpace,p1->y()),p2,lfdNr+1);
-//		}
-//      }
-//      if(steigung == SW)
-//      {
-//        if(floor(rand()/RAND_MAX+0.5) == 0.0)
-//		{
-//    	    connLine->setLine(p1->x(),p1->y(),p1->x(),p1->y()+moduleHeight+verticalSpace);
-//			drawConnStep(connection,new QPoint(p1->x(),p1->y()+moduleHeight+verticalSpace),p2,lfdNr+1);
-//		}
-//		else
-//		{
-//    	    connLine->setLine(p1->x(),p1->y(),p1->x()-moduleWidth-horizontalSpace,p1->y());
-//			drawConnStep(connection,new QPoint(p1->x()-moduleWidth-horizontalSpace,p1->y()),p2,lfdNr+1);
-//		}
-//      }
-//      connLine->show();
-//	  canvasView->scene()->addItem(connLine);
-//      connection->addTraceElem(new QGraphicsPathItem(connLine));               //(connLine);
-//      return true;
-//    }
-//
-//    nodeRect = 0;
   }
 
   /*
@@ -1792,7 +1136,7 @@
   {
     for(int i=0; i<connList.size(); i++)
     {
-      drawConnStep(connList[i],connList[i]->getNode1(),connList[i]->getNode2(),1);
+      //drawConnStep(connList[i],connList[i]->getNode1(),connList[i]->getNode2(),1);
     }
   }
 
@@ -1964,46 +1308,6 @@
   {
     return ownHierarchy;
   }  
-
-  /*
-   *   get the sector in which the line between the points 'source' and 'dest'
-   *   can be found. This means a sector of a circle divided into 16 parts.
-   *   Horizontal, vertical and diagonal from the central point of view are respectively one direction,
-   *   the sector between those direction give the rest of 8 sectors.
-   *   The direction coding is given in the header file.
-   */
-  short gsysHierarchyWindow::getSector(QPoint *source, QPoint *dest)
-  {
-    if (*source == *dest) return 0;
-    if (source->x() == dest->x())
-      if (source->y() < dest->y()) return S;
-      else return N;
-    if (source->y() == dest->y())
-      if (source->x() < dest->x()) return E;
-      else return W;
-    if (abs(source->x() - dest->x()) == abs(source->y() - dest->y()))
-      if(source->x() < dest->x())
-        if(source->y() < dest->y()) return SE;
-		else return NE;
-      else
-        if(source->y() < dest->y()) return SW;
-		else return NW;
-    if (source->x() < dest->x())
-      if (source->y() < dest->y())
-        if (abs((source->y()-dest->y()) / (source->x()-dest->x())) > 1.0) return SSE;
-		else return ESE;
-      else
-        if (abs((source->y()-dest->y()) / (source->x()-dest->x())) > 1.0) return NNE;
-		else return ENE;
-    else  
-      if (source->y() < dest->y())
-        if (abs((source->y()-dest->y()) / (source->x()-dest->x())) > 1.0) return SSW;
-		else return WSW;
-      else
-        if (abs((source->y()-dest->y()) / (source->x()-dest->x())) > 1.0) return NNW;
-		else return WNW;
-    return -1;	
-  }
 
   /*
    *   	Sort channel and PE elements according to their relative position 

@@ -91,12 +91,12 @@ class gsysHierarchyWindow : public QDialog
 
   private:
   
-  map<gsysHierarchy*, int> hierarchyList;  // (hier, index)
-  vector<gsysConnection*> connList;        // Connections inside of this level
-  vector<gsysConnection*> sideConnList;    // Connections to outer elements
+  map<gsysHierarchy*, int> hierarchyList;                       // (hier, index)
+  map<gsysHierarchy*, vector<gsysConnection*>> connList;        // Connections inside of this level
+  vector<gsysConnection*> sideConnList;                         // Connections to outer elements
   vector<gsysHierarchy*> outerChannel;
-  vector<QGraphicsRectItem*> modRect;			// Vector fuer die Module
-  vector<QGraphicsSimpleTextItem*> modText;	// Vector fuer deren Text
+  vector<QGraphicsRectItem*> modRect;			                      // Vector fuer die Module
+  vector<QGraphicsSimpleTextItem*> modText;	                    // Vector fuer deren Text
 
 /************************************************************************
     Sortier die Liste (aktuell) danach, dass die Channels und PE's
@@ -111,13 +111,13 @@ class gsysHierarchyWindow : public QDialog
   gsysHierarchy* parent;
   gsysHierarchy* ownHierarchy;
   int dimFactor;
-  short getSector(QPoint *source, QPoint *dest);
   QPoint* normalize(QPoint *p);
   void drawSidePort(gsysPort* port, bool left, int nr, int abstand, int portHeight=21);
   void drawNetConns(gsysHierarchy* hier);
   void drawConnections();
   void drawModuleSquaresHorizontal(gsysHierarchy* elem, int x, int y, int moduleWidth, int moduleHeight);
   void drawModuleSquaresVertical(gsysHierarchy* elem, int x, int y, int moduleWidth, int moduleHeight);
+  void drawModulePorts(map<gsysHierarchy*, vector<gsysHierarchy*>> elems, gsysHierarchy::moduleType k, int x, int y);
   bool drawConnStep(gsysConnection* connection,QPoint *p1, QPoint *p2,int lfdNr);
   bool thisLevel(gsysHierarchy* hier);
  
